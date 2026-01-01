@@ -2,6 +2,7 @@
 
 namespace Websyspro\Core\Server;
 
+use Websyspro\Core\Server\Enums\HttpMethod;
 use Websyspro\Core\Util;
 
 class HttpServer
@@ -63,10 +64,166 @@ class HttpServer
   ): void {
     $this->addRouter(
       handler: $handler,
-      method: "GET",
+      method: HttpMethod::GET->value,
       uri: $uri,
     );
   }
+
+  /**
+   * Registers a POST route.
+   *
+   * This method is a convenience wrapper around addRouter(),
+   * specifically for HTTP POST requests.
+   *
+   * It associates a URI pattern with a handler function
+   * that will be executed when an incoming POST request
+   * matches the route definition.
+   *
+   * @param string $uri URI pattern for the POST route
+   * @param callable|null $handler  Callback executed when the route is matched
+   *
+   * @return void
+   */
+  public function post(
+    string $uri,
+    callable|null $handler = null
+  ): void {
+    $this->addRouter(
+      handler: $handler,
+      method: HttpMethod::POST->value,
+      uri: $uri,
+    );
+  }
+
+  /**
+   * Registers a PUT route.
+   *
+   * This method is a convenience wrapper around addRouter(),
+   * specifically for HTTP PUT requests.
+   *
+   * It associates a URI pattern with a handler function
+   * that will be executed when an incoming PUT request
+   * matches the route definition.
+   *
+   * @param string $uri URI pattern for the PUT route
+   * @param callable|null $handler  Callback executed when the route is matched
+   *
+   * @return void
+   */
+  public function put(
+    string $uri,
+    callable|null $handler = null
+  ): void {
+    $this->addRouter(
+      handler: $handler,
+      method: HttpMethod::PUT->value,
+      uri: $uri,
+    );
+  }
+
+  /**
+   * Registers a PATCH route.
+   *
+   * This method is a convenience wrapper around addRouter(),
+   * specifically for HTTP PATCH requests.
+   *
+   * It associates a URI pattern with a handler function
+   * that will be executed when an incoming PATCH request
+   * matches the route definition.
+   *
+   * @param string $uri URI pattern for the PATCH route
+   * @param callable|null $handler  Callback executed when the route is matched
+   *
+   * @return void
+   */
+  public function patch(
+    string $uri,
+    callable|null $handler = null
+  ): void {
+    $this->addRouter(
+      handler: $handler,
+      method: HttpMethod::PATCH->value,
+      uri: $uri,
+    );
+  }
+
+  /**
+   * Registers a DELETE route.
+   *
+   * This method is a convenience wrapper around addRouter(),
+   * specifically for HTTP DELETE requests.
+   *
+   * It associates a URI pattern with a handler function
+   * that will be executed when an incoming DELETE request
+   * matches the route definition.
+   *
+   * @param string $uri URI pattern for the DELETE route
+   * @param callable|null $handler  Callback executed when the route is matched
+   *
+   * @return void
+   */
+  public function delete(
+    string $uri,
+    callable|null $handler = null
+  ): void {
+    $this->addRouter(
+      handler: $handler,
+      method: HttpMethod::DELETE->value,
+      uri: $uri,
+    );
+  }
+
+  /**
+   * Registers a OPTIONS route.
+   *
+   * This method is a convenience wrapper around addRouter(),
+   * specifically for HTTP OPTIONS requests.
+   *
+   * It associates a URI pattern with a handler function
+   * that will be executed when an incoming OPTIONS request
+   * matches the route definition.
+   *
+   * @param string $uri URI pattern for the OPTIONS route
+   * @param callable|null $handler  Callback executed when the route is matched
+   *
+   * @return void
+   */
+  public function options(
+    string $uri,
+    callable|null $handler = null
+  ): void {
+    $this->addRouter(
+      handler: $handler,
+      method: HttpMethod::OPTIONS->value,
+      uri: $uri,
+    );
+  }
+
+  /**
+   * Registers a HEAD route.
+   *
+   * This method is a convenience wrapper around addRouter(),
+   * specifically for HTTP HEAD requests.
+   *
+   * It associates a URI pattern with a handler function
+   * that will be executed when an incoming HEAD request
+   * matches the route definition.
+   *
+   * @param string $uri URI pattern for the HEAD route
+   * @param callable|null $handler  Callback executed when the route is matched
+   *
+   * @return void
+   */
+  public function head(
+    string $uri,
+    callable|null $handler = null
+  ): void {
+    $this->addRouter(
+      handler: $handler,
+      method: HttpMethod::HEAD->value,
+      uri: $uri,
+    );
+  }  
 
   /**
    * Registers a new route definition in the router collection.
