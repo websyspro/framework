@@ -246,5 +246,29 @@ class Util
     }
 
     return isset($value);
-  }  
+  }
+  
+  /**
+   * Checks whether the given value is a valid callable function.
+   *
+   * This method is a small wrapper around PHP's native `is_callable`
+   * function and is mainly used to improve readability and semantic
+   * clarity when working with functional-style utilities.
+   *
+   * @param callable $fn The value to be checked
+   * @return bool Returns true if the value is callable, false otherwise
+   */  
+  public static function isFN(
+    callable $fn
+  ): bool {
+    return is_callable( value: $fn );
+  }
+
+  public static function callUserFN(
+    callable $fn, array $args = []
+  ): mixed {
+    return \call_user_func(
+      $fn, ...$args
+    );
+  }
 } 

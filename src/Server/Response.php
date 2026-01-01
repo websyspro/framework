@@ -53,9 +53,9 @@ class Response
      * Explicitly closes the connection after the response
      */
     http_response_code( response_code: $code );
-    header( header: "Content-Type: {$contentType}");
-    header( header: "Content-Length: {$contenLength}");
-    header( header: "Connection: close");
+    header( header: "Content-Type: {$contentType}" );
+    header( header: "Content-Length: {$contenLength}" );
+    header( header: "Connection: close" );
 
     /**
      * Outputs the response body and stops execution 

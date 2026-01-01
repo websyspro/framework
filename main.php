@@ -12,15 +12,3 @@ $httpServer->get( "/", function (Response $response, Request $request) {
   ]);
 });
 $httpServer->listen();
-
-
-// http_response_code( 200 );
-// header( "Content-Type: application/json" );
-
-// exit(
-//   json_encode([
-//       "status" => "success",
-//       "message" => $httpServer
-//     ], JSON_PRETTY_PRINT
-//   )
-// );
