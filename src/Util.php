@@ -128,7 +128,7 @@ class Util
     array ...$arrays
   ): array {
     return array_merge(
-      $arrays, ...$arrays
+      $array, ...$arrays
     );
   }
   

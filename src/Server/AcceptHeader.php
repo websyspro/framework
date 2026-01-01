@@ -231,7 +231,7 @@ class AcceptHeader
     return Util::existVar(
       $this->contentBody, 
       "files"
-    ) === false;;
+    ) === false;
   }  
 
   /**
@@ -423,6 +423,10 @@ class AcceptHeader
    * **/   
   private function acceptContentOuters(
   ): array {
+    if(Util::isNull($this->contentType)){
+      return [];
+    }
+
     return [
       "files" => [
         "file" => new File(
