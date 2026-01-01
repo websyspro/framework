@@ -2,16 +2,19 @@
 
 namespace Websyspro\Core\Server;
 
-class HeaderAccept
+use Websyspro\Core\Util;
+
+class AcceptHeader
 {
   public string|null $method = null;
+  public bool|null $requestType = false;
   public array|string|null $requestUri = null;
   public array|string|null $requestQuery = null;
   public array|string|null $requestParam = null;
   public string|null $contentType = null;
   public string|null $contentBoundary = null;
   public array|object|string|null $contentBody = null;
-  public string|null $remotePort = null;
+  public string|int|null $remotePort = null;
   public string|null $remoteAddr = null;
 
   public function __construct() 
@@ -20,6 +23,7 @@ class HeaderAccept
     $this->acceptContentParse();
     $this->acceptContentBodyParse();
     $this->acceptRequestUriParse();
+    $this->acceptRemoteParse();
   }
 
   /**
@@ -30,11 +34,11 @@ class HeaderAccept
    * **/ 
   public function query(
   ): array|object|string|null {
-    if( $this->isNotQuerys() ){
+    if($this->isNotQuerys()){
       return null;
     }
 
-    return $this->requestQuery;
+    return $this->requestQuery[ "fields" ];
   }  
 
   /**
@@ -45,11 +49,11 @@ class HeaderAccept
    * **/ 
   public function body(
   ): array|object|string|null {
-    if( $this->isNotFields() ){
+    if($this->isNotFields()){
       return null;
     }
 
-    return $this->contentBody[ "fields" ];
+    return $this->contentBody["fields"];
   }
 
   public function files(
@@ -101,27 +105,27 @@ class HeaderAccept
     }
 
     // Mapper $requestUri path start ":"
-    $requestUri = array_map(
-      fn(string $path) => (
+    $requestUri = Util::mapper(
+      $requestUri, fn(string $path) => (
         str_starts_with( $path, ":") ? "*" : $path
-      ), $requestUri
+      )
     );
 
     // Check is paths equals
-    $compareUri = array_map( 
-      fn( string $path, int $i ) => (
+    $compareUri = Util::mapper( 
+      $requestUri, fn( string $path, int $i ) => (
         str_starts_with( $path, "*") === false 
           ? $path === $this->requestUri[ $i ] : true
-      ), $requestUri, array_keys( $this->requestUri )
+      )
     );
 
     // Filter is values true
-    $compareUri = array_filter( 
+    $compareUri = Util::where( 
       $compareUri, fn(bool $bool) => $bool === true
     );
 
     // Is SUM $compareUri for equal or >1 
-    return array_sum( $compareUri ) === 0 ? false : true;
+    return Util::exist( $compareUri);
   }
 
   /**
@@ -133,8 +137,8 @@ class HeaderAccept
   private function isEqualRequestUriPaths(
     array|null $requestUri = null
   ) : bool {
-    return \sizeof( $this->requestUri ) 
-       !== \sizeof( $requestUri );
+    return Util::size( $this->requestUri ) 
+       !== Util::size( $requestUri );
   }
 
   /**
@@ -145,7 +149,10 @@ class HeaderAccept
    * **/   
   private function isNotFields(
   ): bool {
-    return isset( $this->contentBody[ "fields" ]) === false;
+    return Util::existVar(
+      $this->contentBody, 
+      "fields"
+    ) === false;
   }
 
   /**
@@ -156,7 +163,9 @@ class HeaderAccept
    * **/   
   private function isNotQuerys(
   ): bool {
-    return $this->requestQuery === null;
+    return Util::isNull(
+      $this->requestQuery
+    );
   }  
 
   /**
@@ -167,7 +176,10 @@ class HeaderAccept
    * **/ 
   private function isNotFiles(
   ): bool {
-    return isset( $this->contentBody[ "files" ]) === false;
+    return Util::existVar(
+      $this->contentBody, 
+      "files"
+    ) === false;;
   }  
 
   /**
@@ -194,10 +206,8 @@ class HeaderAccept
    * **/   
   private function AcceptOptionsDefault(
   ): array {
-    return array_merge(
-      [ 
-        "CONTENT_TYPE" => null
-      ], $_SERVER
+    return Util::merge(
+      [ "CONTENT_TYPE" => null ], $_SERVER
     );
   }
 
@@ -223,11 +233,9 @@ class HeaderAccept
    * **/  
   private function contentTypeApplicationJson(
   ) : array {
-    return [
-      "fields" => json_decode(
-        file_get_contents( "php://input" )
-      )
-    ];
+    return [ "fields" => json_decode(
+      file_get_contents( "php://input" )
+    )];
   }  
 
   /**
@@ -250,7 +258,7 @@ class HeaderAccept
 
     if((bool)$hasFile === false){
       [ $formData, $_, 
-        $contentValue
+        $content
       ] = $data;
 
       $carr[ "fields" ][
@@ -259,15 +267,15 @@ class HeaderAccept
           '$1', 
           $formData
         )
-      ] = $contentValue;
+      ] = $content;
     } else {
       [ $formData, 
         $contentType
       ] = $data;
 
-      $contentValue = implode(
+      $content = implode(
         "\r\n", 
-        \array_slice( 
+        Util::slice( 
           $data, 
           3,  
           -1
@@ -283,8 +291,7 @@ class HeaderAccept
       ] = new File(
         preg_replace( "#.*\sfilename=\"([^\"]+)\".*#", "$1", $formData ),
         preg_replace( "#^.*\:\s#", "$1", $contentType ),
-        (float)bcdiv( \strlen( $contentValue ), 1024, 4 ),
-        $contentValue
+        $content
       );
     }
 
@@ -299,7 +306,6 @@ class HeaderAccept
    * **/  
   private function contentTypeFormData(
     array $formData = [],
-    array $formDataArr = [],
     array $phpInputArr = []
   ): array {
     // Split file "php://input" with path #(\-{28}[0-9]{24})#
@@ -310,13 +316,17 @@ class HeaderAccept
       )
     );
 
-    $formData = array_map(
+    
+    // mapper e break in form-data
+    $formData = Util::mapper(
+      $phpInputArr,
       fn(string $data) => (
         preg_split( "#\r\n#", $data )
-      ), $phpInputArr
+      ), 
     );
-
-    $formData = \array_slice( 
+    
+    // array slice remove first element e last element
+    $formData = Util::slice( 
       $formData,
       1, 
       bcsub( 
@@ -325,22 +335,25 @@ class HeaderAccept
       )
     );
 
-    $formData = array_map(
-      fn(array $formData) => array_slice(
+    // array mapper remove first element
+    $formData = Util::mapper(
+      $formData,
+      fn(array $formData) => Util::slice(
         $formData, 1
-      ), $formData
+      ), 
     );
 
-    $formData = array_reduce(
+    // array reduce 
+    return Util::reduce(
       $formData,
       fn(
         array $carr,
         array $data
-      ) => $this->ContentTypeFormDataParse( $carr, $data ), 
+      ) => $this->ContentTypeFormDataParse( 
+        $carr, $data 
+      ), 
       []
     );
-
-    return $formData;
   }
 
   /**
@@ -358,8 +371,27 @@ class HeaderAccept
       ), $formData
     );
 
+    return [ "fields" => $formData ];
+  }
+
+  /**
+   * @private AcceptContentOuters
+   * 
+   * @param none
+   * @return array
+   * **/   
+  private function acceptContentOuters(
+  ): array {
     return [
-      "fields" => $formData
+      "files" => [
+        "file" => new File(
+          "file",
+          $this->contentType,
+          file_get_contents(
+            "php://input"
+          )
+        )
+      ]
     ];
   }
 
@@ -371,19 +403,12 @@ class HeaderAccept
    * **/  
   private function acceptContentBodyParse(
   ): void {
-    if( $this->contentType === "application/json" ){
-      $this->contentBody = $this->contentTypeApplicationJson();
-    } else if( $this->contentType === "multipart/form-data" ){
-      $this->contentBody = $this->contentTypeFormData();
-    } else if( $this->contentType === "application/x-www-form-urlencoded" ){
-      $this->contentBody = $this->contentTypeFormUrlEncoded();
-    }
-
-    /*
-    $this->contentBody = preg_split( 
-      "#\r\n#", file_get_contents(
-      "php://input"
-    )); */
+    $this->contentBody = match($this->contentType){
+      "application/json" => $this->contentTypeApplicationJson(),
+      "multipart/form-data" => $this->contentTypeFormData(),
+      "application/x-www-form-urlencoded" => $this->contentTypeFormUrlEncoded(),
+        default => $this->acceptContentOuters()
+    };
   }
 
   /**
@@ -395,16 +420,22 @@ class HeaderAccept
   private function acceptRequestUriParse(
   ): void {
     if( $this->requestUri !== null ){
-      // Define requestQuery
+      // define requestQuery
       if(preg_match( "#\?#", $this->requestUri ) === 1){
         parse_str( preg_replace(
           "#^.*\?#", 
           "", 
           $this->requestUri
-        ), $this->requestQuery );
+        ), $this->requestQuery[ "fields" ] );
       }
 
-      // Define requestUri paths
+      // define requestType start with (/)api
+      $this->requestType = preg_match(
+        "#^(/)api.*#",
+        $this->requestUri
+      ) === 1;
+
+      // define requestUri paths
       $this->requestUri = preg_split( 
         "#/#", preg_replace( 
           "#(^/)|(/$)|(\?.*$)#",
@@ -412,6 +443,19 @@ class HeaderAccept
           $this->requestUri 
         ), -1, PREG_SPLIT_NO_EMPTY
       );
+    }
+  }
+
+  /**
+   * @private AcceptRemoteParse
+   * 
+   * @param none
+   * @return none
+   * **/  
+  private function acceptRemoteParse(
+  ): void {
+    if(empty($this->remotePort) === false){
+      $this->remotePort = (int)$this->remotePort;
     }
   }
 }

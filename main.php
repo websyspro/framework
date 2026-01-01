@@ -1,14 +1,14 @@
 <?php
 
-use Websyspro\Core\Server\HeaderAccept;
+use Websyspro\Core\Server\AcceptHeader;
 
-http_response_code(200);
-header("Content-Type: application/json");
+http_response_code( 200 );
+header( "Content-Type: application/json" );
 
 exit(
   json_encode([
       "status" => "success",
-      "message" => new HeaderAccept()
+      "message" => new AcceptHeader()
     ], JSON_PRETTY_PRINT
   )
 );
