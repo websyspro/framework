@@ -2,6 +2,8 @@
 
 namespace Websyspro\Core\Server;
 
+use Websyspro\Core\Util;
+
 class HttpServer
 {
   /**
@@ -41,6 +43,22 @@ class HttpServer
 
   public function listen(
   ): void {
+    Util::mapper(
+      $this->routers, 
+      function(
+        Router $router
+      ) {
+        if(is_callable($router->handler)){
+          \call_user_func(
+            $router->handler, ...[
+              $this->response, $this->request
+            ]
+          );
+        }
+      }
+    );
+
+  
     // match(Util::countArgs( $handler )){
     //   1 => $handler($this->response),
     //   2 => $handler($this->request),

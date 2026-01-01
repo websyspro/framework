@@ -180,6 +180,27 @@ class Util
     array|object $array
   ): int {
     return \sizeof($array);
+  }
+  
+  /**
+   * Returns the number of elements in an array or object.
+   *
+   * This method is a thin wrapper around PHP's sizeof() / count(),
+   * allowing consistent usage across the framework when dealing
+   * with arrays or iterable objects.
+   *
+   * Common use cases:
+   * - Counting request parameters
+   * - Validating collection sizes
+   * - Checking payload structure
+   *
+   * @param string $value Array or object to be counted
+   * @return int Number of elements
+   */
+  public static function sizeText(
+    string $value
+  ): int {
+    return \strlen($value);
   }  
 
   /**
