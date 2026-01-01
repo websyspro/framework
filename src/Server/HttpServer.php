@@ -6,7 +6,11 @@ use Websyspro\Core\Util;
 
 class HttpServer
 {
-  public static array $routers = [];
+  /**
+   * Summary of routers
+   * @var array<int, Router>
+   */
+  public array $routers = [];
 
   public function __construct(
     public AcceptHeader $acceptHeader = new AcceptHeader(),
@@ -15,17 +19,20 @@ class HttpServer
   ){}
 
   public function get(
-    string $method,
+    string $uri,
     callable|null $handler = null
-  ): HttpServer {
-    match(Util::countArgs( $handler )){
-      1 => $handler($this->response),
-      2 => $handler($this->request),
-        default => $handler()
-    };
-
-    return $this;
+  ): void {
+    $this->routers[] = new Router(
+      uri: $uri,
+      handler: $handler
+    );
   }
   public function listen(
-  ): void {}
+  ): void {
+    // match(Util::countArgs( $handler )){
+    //   1 => $handler($this->response),
+    //   2 => $handler($this->request),
+    //     default => $handler()
+    // };    
+  }
 }
