@@ -150,6 +150,24 @@ class Util
       $fn, 
       $initial
     );
+  }
+  
+  /**
+   * Joins array elements using CRLF line breaks.
+   *
+   * This method concatenates all values of the array into a single string,
+   * separating each element with "\r\n" (Carriage Return + Line Feed).
+   *
+   * Commonly used when rebuilding raw HTTP content, headers,
+   * multipart/form-data blocks or text-based payloads.
+   *
+   * @param array $array List of strings to be joined
+   * @return string Combined string with CRLF separators
+   */  
+  public static function joinWithBr(
+    array $array
+  ): mixed {
+    return implode( "\r\n", $array );
   }  
 
   /**

@@ -11,7 +11,7 @@ header( "Content-Type: application/json" );
 exit(
   json_encode([
       "status" => "success",
-      "message" => new HttpServer()
+      "message" => $httpServer
     ], JSON_PRETTY_PRINT
   )
 );
