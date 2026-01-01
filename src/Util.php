@@ -1,5 +1,17 @@
 <?php
 
+/**
+ * Class Util
+ *
+ * Utility helper class that provides functional-style operations
+ * for arrays and objects, such as map, filter, reduce and helpers
+ * commonly used across the framework.
+ *
+ * Designed to work with both arrays and objects in a predictable way.
+ *
+ * @package Websyspro\Core
+ */
+
 namespace Websyspro\Core;
 
 use ReflectionFunction;
@@ -7,13 +19,14 @@ use ReflectionFunction;
 class Util
 {
   /**
-   * @private Slice
-   * 
-   * @param array $array
-   * @param int $offset
-   * @param int|null $length
+   * Returns a portion of an array.
+   * Wrapper around PHP array_slice.
+   *
+   * @param array $array   Source array
+   * @param int   $offset  Start offset
+   * @param int|null $length Optional length
    * @return array
-   * **/  
+   */ 
   public static function slice(
     array $array,
     int $offset,
@@ -27,11 +40,14 @@ class Util
   }
 
   /**
-   * @private CountArgs
-   * 
+   * Counts how many parameters a callable accepts.
+   *
+   * Used to determine whether a callback expects
+   * value-only or value + key.
+   *
    * @param callable $fn
    * @return int
-   * **/   
+   */  
   public static function countArgs(
     callable $fn
   ): int {
@@ -40,13 +56,16 @@ class Util
   }  
 
   /**
-   * @private Mapper
-   * 
+   * Maps over an array or object and transforms its values.
+   *
+   * The callback may receive:
+   *  - fn(value)
+   *  - fn(value, key)
+   *
    * @param array|object $array
    * @param callable $fn
-   * @param array $arrayFromArry
    * @return array|object
-   * **/  
+   */ 
   public static function mapper(
     array|object $array,
     callable $fn
@@ -68,13 +87,15 @@ class Util
   }
 
   /**
-   * @private Where
-   * 
-   * @param array $array
+   * Filters an array or object using a callback.
+   *
+   * Preserves keys for associative arrays.
+   *
+   * @param array|object $array
    * @param callable $fn
-   * @param array $arrayFromArry
-   * @return array|object
-   * **/  
+   * @param array $arrayFromArry Internal accumulator
+   * @return array
+   */  
   public static function where(
     array|object $array,
     callable $fn,
@@ -96,11 +117,12 @@ class Util
   }
 
   /**
-   * @private Size
-   * 
+   * Merges multiple arrays into one.
+   *
    * @param array $array
+   * @param array ...$arrays
    * @return array
-   * **/  
+   */  
   public static function merge(
     array $array,
     array ...$arrays
@@ -111,13 +133,13 @@ class Util
   }
   
   /**
-   * @private Reduce
-   * 
+   * Reduces an array to a single value.
+   *
    * @param array $array
    * @param callable $fn
-   * @param array $initial
+   * @param array $initial Initial accumulator value
    * @return mixed
-   * **/  
+   */ 
   public static function reduce(
     array $array,
     callable $fn,
@@ -131,11 +153,11 @@ class Util
   }  
 
   /**
-   * @private Size
-   * 
-   * @param array $array
+   * Returns the size of an array or object.
+   *
+   * @param array|object $array
    * @return int
-   * **/  
+   */ 
   public static function size(
     array|object $array
   ): int {
@@ -143,11 +165,11 @@ class Util
   }  
 
   /**
-   * @private Exist
-   * 
-   * @param array $array
-   * @return int
-   * **/  
+   * Checks whether an array or object has at least one element.
+   *
+   * @param array|object $array
+   * @return bool
+   */ 
   public static function exist(
     array|object $array
   ): bool {
@@ -155,11 +177,11 @@ class Util
   }
   
   /**
-   * @private isNull
-   * 
-   * @param array $array
-   * @return int
-   * **/  
+   * Checks whether a value is null.
+   *
+   * @param mixed $value
+   * @return bool
+   */  
   public static function isNull(
     mixed $value
   ): bool {
@@ -167,16 +189,20 @@ class Util
   }   
   
   /**
-   * @private ExistVar
-   * 
-   * @param array $array
-   * @return int
-   * **/  
+   * Checks if a variable or array key exists.
+   *
+   * If a key is provided, checks array key existence.
+   * Otherwise, checks if the value itself exists.
+   *
+   * @param mixed $value
+   * @param mixed $key
+   * @return bool
+   */  
   public static function existVar(
     mixed $value,
     mixed $key = null
   ): bool {
-    if(Util::isNull($key) === false){
+    if( Util::isNull($key) === false ){
       return isset($value[ $key ]);
     }
 

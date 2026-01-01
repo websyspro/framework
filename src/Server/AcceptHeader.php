@@ -1,22 +1,70 @@
 <?php
 
+/**
+ * Class AcceptHeader
+ *
+ * Responsible for parsing the entire HTTP request context, including:
+ * - HTTP method (GET, POST, etc.)
+ * - Request URI and query string
+ * - Content-Type and body parsing
+ * - Uploaded files (multipart/form-data)
+ * - Remote client information (IP and port)
+ *
+ * This class works as a lightweight HTTP Request parser,
+ * similar to Laravel Request, ASP.NET Request or Express.js Request.
+ *
+ * @package Websyspro\Core\Server
+ */
+
 namespace Websyspro\Core\Server;
 
 use Websyspro\Core\Util;
 
 class AcceptHeader
 {
+  /** @var string|null HTTP request method */
   public string|null $method = null;
+
+  /** @var bool|null Indicates if request starts with /api */
   public bool|null $requestType = false;
+
+  /** @var array|string|null Parsed request URI segments */
   public array|string|null $requestUri = null;
+
+  /** @var array|string|null Parsed query string */
   public array|string|null $requestQuery = null;
+
+  /** @var array|string|null Request parameters */
   public array|string|null $requestParam = null;
+
+  /** @var string|null Content-Type header */
   public string|null $contentType = null;
+
+  /** @var string|null Boundary used in multipart/form-data */
   public string|null $contentBoundary = null;
+
+  /**
+   * Parsed request body:
+   * [
+   *   'fields' => array|object,
+   *   'files'  => array
+   * ]
+   *
+   * @var array|object|string|null
+   */
   public array|object|string|null $contentBody = null;
+
+  /** @var string|int|null Remote client port */
   public string|int|null $remotePort = null;
+
+  /** @var string|null Remote client IP address */
   public string|null $remoteAddr = null;
 
+  /**
+   * AcceptHeader constructor.
+   *
+   * Initializes and parses all request information.
+   */ 
   public function __construct() 
   {
     $this->acceptOptions();
@@ -27,11 +75,10 @@ class AcceptHeader
   }
 
   /**
-   * @public CompareMethod
-   * 
-   * @param string|null $method
-   * @return bool
-   * **/ 
+   * Returns parsed query string parameters.
+   *
+   * @return array|object|string|null
+   */
   public function query(
   ): array|object|string|null {
     if($this->isNotQuerys()){
@@ -42,11 +89,10 @@ class AcceptHeader
   }  
 
   /**
-   * @public CompareMethod
-   * 
-   * @param string|null $method
-   * @return bool
-   * **/ 
+   * Returns parsed body fields.
+   *
+   * @return array|object|string|null
+   */
   public function body(
   ): array|object|string|null {
     if($this->isNotFields()){
@@ -56,6 +102,11 @@ class AcceptHeader
     return $this->contentBody["fields"];
   }
 
+  /**
+   * Returns uploaded files.
+   *
+   * @return array|object|string|null
+   */  
   public function files(
   ): array|object|string|null {
     if( $this->isNotFiles() ){
@@ -66,11 +117,11 @@ class AcceptHeader
   }  
 
   /**
-   * @public CompareMethod
-   * 
+   * Compares the current HTTP method.
+   *
    * @param string|null $method
    * @return bool
-   * **/
+   */
   public function compareMethod(
     string|null $method = null
   ): bool {
@@ -78,11 +129,15 @@ class AcceptHeader
   }
 
   /**
-   * @public CompareUri
-   * 
-   * @param string|null $requestUri
+   * Compares the current URI against a route pattern.
+   * Supports dynamic parameters using ":" notation.
+   *
+   * Example:
+   *   /users/:id
+   *
+   * @param string|array|null $requestUri
    * @return bool
-   * **/
+   */
   public function compareUri(
     string|array|null $requestUri = null
   ): bool {
@@ -129,11 +184,11 @@ class AcceptHeader
   }
 
   /**
-   * @private IsEqualRequestUriPaths
-   * 
+   * Checks if URI path sizes are different.
+   *
    * @param array|null $requestUri
    * @return bool
-   * **/  
+   */  
   private function isEqualRequestUriPaths(
     array|null $requestUri = null
   ) : bool {
@@ -142,11 +197,10 @@ class AcceptHeader
   }
 
   /**
-   * @private IsNotFields
-   * 
-   * @param none
+   * Checks if body fields are missing.
+   *
    * @return bool
-   * **/   
+   */  
   private function isNotFields(
   ): bool {
     return Util::existVar(
@@ -156,11 +210,10 @@ class AcceptHeader
   }
 
   /**
-   * @private IsNotFields
-   * 
-   * @param none
+   * Checks if query string is missing.
+   *
    * @return bool
-   * **/   
+   */   
   private function isNotQuerys(
   ): bool {
     return Util::isNull(
@@ -169,11 +222,10 @@ class AcceptHeader
   }  
 
   /**
-   * @private isNotFiles
-   * 
-   * @param none
+   * Checks if request has no uploaded files.
+   *
    * @return bool
-   * **/ 
+   */
   private function isNotFiles(
   ): bool {
     return Util::existVar(
@@ -183,11 +235,8 @@ class AcceptHeader
   }  
 
   /**
-   * @private AcceptOptions
-   * 
-   * @param none
-   * @return none
-   * **/ 
+   * Loads request options from $_SERVER.
+   */
   private function acceptOptions(
   ): void {
     [ "REQUEST_METHOD" => $this->method,
@@ -199,11 +248,10 @@ class AcceptHeader
   }
 
   /**
-   * @private AcceptOptionsDefault
-   * 
-   * @param none
+   * Defines default request options.
+   *
    * @return array
-   * **/   
+   */
   private function AcceptOptionsDefault(
   ): array {
     return Util::merge(
@@ -212,11 +260,8 @@ class AcceptHeader
   }
 
   /**
-   * @private AcceptContentParse
-   * 
-   * @param none
-   * @return array
-   * **/
+   * Extracts boundary and normalizes Content-Type.
+   */
   private function acceptContentParse(
   ): void {
     if( $this->contentType !== null ){
@@ -226,11 +271,10 @@ class AcceptHeader
   }
 
   /**
-   * @private ContentTypeApplicationJson
-   * 
-   * @param none
+   * Parses application/json body.
+   *
    * @return array
-   * **/  
+   */ 
   private function contentTypeApplicationJson(
   ) : array {
     return [ "fields" => json_decode(
@@ -239,12 +283,9 @@ class AcceptHeader
   }  
 
   /**
-   * @private ContentTypeFormDataParse
-   * 
-   * @param array $car
-   * @param array $data
-   * @return none
-   * **/   
+   * Determines how to parse the request body
+   * based on the Content-Type.
+   */   
   private function ContentTypeFormDataParse(
     array $carr,
     array $data    
@@ -396,11 +437,9 @@ class AcceptHeader
   }
 
   /**
-   * @private AcceptContentBodyParse
-   * 
-   * @param none
-   * @return none
-   * **/  
+   * Determines how to parse the request body
+   * based on the Content-Type.
+   */
   private function acceptContentBodyParse(
   ): void {
     $this->contentBody = match($this->contentType){
@@ -412,11 +451,8 @@ class AcceptHeader
   }
 
   /**
-   * @private AcceptRequestUriParse
-   * 
-   * @param none
-   * @return none
-   * **/
+   * Parses URI, query string and API request type.
+   */
   private function acceptRequestUriParse(
   ): void {
     if( $this->requestUri !== null ){
@@ -447,11 +483,8 @@ class AcceptHeader
   }
 
   /**
-   * @private AcceptRemoteParse
-   * 
-   * @param none
-   * @return none
-   * **/  
+   * Normalizes remote port value.
+   */ 
   private function acceptRemoteParse(
   ): void {
     if(empty($this->remotePort) === false){
