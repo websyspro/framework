@@ -264,6 +264,23 @@ class Util
     return is_callable( value: $fn );
   }
 
+  /**
+   * Executes a user-defined callable with the given arguments.
+   *
+   * This method is a small abstraction over PHP's call_user_func(),
+   * allowing dynamic execution of callbacks while supporting
+   * argument spreading.
+   *
+   * It is commonly used to invoke:
+   *  - Route handlers
+   *  - Middleware functions
+   *  - User-defined callbacks
+   *
+   * @param callable $fn The callable function or method to be executed
+   * @param array $args List of arguments passed to the callable
+   *
+   * @return mixed The return value of the executed callable
+   */  
   public static function callUserFN(
     callable $fn, array $args = []
   ): mixed {
