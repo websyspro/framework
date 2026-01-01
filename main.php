@@ -3,9 +3,7 @@
 use Websyspro\Core\Server\HttpServer;
 
 $httpServer = new HttpServer();
-$httpServer->get("/", function (){
-  
-});
+$httpServer->get("/", function () {});
 
 http_response_code( 200 );
 header( "Content-Type: application/json" );

@@ -2,8 +2,6 @@
 
 namespace Websyspro\Core\Server;
 
-use Websyspro\Core\Util;
-
 class HttpServer
 {
   /**
@@ -22,11 +20,25 @@ class HttpServer
     string $uri,
     callable|null $handler = null
   ): void {
-    $this->routers[] = new Router(
+    $this->addRouter(
+      handler: $handler,
+      method: "GET",
       uri: $uri,
-      handler: $handler
     );
   }
+
+  private function addRouter(
+    string $method,
+    string $uri,
+    callable|null $handler = null
+  ): void {
+    $this->routers[] = new Router(
+      handler: $handler,
+      method: $method,
+      uri: $uri,
+    );
+  }
+
   public function listen(
   ): void {
     // match(Util::countArgs( $handler )){
