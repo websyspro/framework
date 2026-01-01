@@ -447,10 +447,14 @@ class AcceptHeader
   private function acceptContentBodyParse(
   ): void {
     $this->contentBody = match($this->contentType){
-      "application/json" => $this->contentTypeApplicationJson(),
-      "multipart/form-data" => $this->contentTypeFormData(),
-      "application/x-www-form-urlencoded" => $this->contentTypeFormUrlEncoded(),
-        default => $this->acceptContentOuters()
+      "application/json"
+        => $this->contentTypeApplicationJson(),
+      "multipart/form-data"
+        => $this->contentTypeFormData(),
+      "application/x-www-form-urlencoded"
+        => $this->contentTypeFormUrlEncoded(),
+      default
+        => $this->acceptContentOuters()
     };
   }
 

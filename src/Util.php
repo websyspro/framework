@@ -185,7 +185,7 @@ class Util
   public static function isNull(
     mixed $value
   ): bool {
-    return is_null($value);
+    return $value === null;
   }   
   
   /**
