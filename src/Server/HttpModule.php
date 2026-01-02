@@ -2,13 +2,11 @@
 
 namespace Websyspro\Core\Server;
 
+use Websyspro\Core\Server\Decorations\Controller\AbstractEndpoint;
 use Websyspro\Core\Server\Decorations\Controller\Module;
+use Websyspro\Core\Util;
 use ReflectionAttribute;
 use ReflectionClass;
-use ReflectionMethod;
-use Websyspro\Core\Server\Decorations\Controller\AbstractEndpoint;
-use Websyspro\Core\Server\Enums\ControllerType;
-use Websyspro\Core\Util;
 
 class HttpModule
 {
@@ -50,8 +48,8 @@ class HttpModule
       ), 
       fn: fn( string $method ): array|object => (
         Util::mapper(
-          array: $reflectionClass->getMethod( $method )->getAttributes(), 
-          fn: fn(ReflectionAttribute $reflectionAttribute) => (
+          array: $reflectionClass->getMethod( name: $method )->getAttributes(), 
+          fn: fn(ReflectionAttribute $reflectionAttribute): array => (
             [ $reflectionClass->getName(), $method, $reflectionAttribute->newInstance() ]
           )
         )
@@ -65,36 +63,36 @@ class HttpModule
     [ $controller, $name, $endpoint ] = $endpoint;
     if( $endpoint instanceof AbstractEndpoint ){
       [ $controllerPaths ] = Util::slice(
-        preg_split( 
-          "#\\\\#", 
-          $controller, 
-          -1, 
-          PREG_SPLIT_DELIM_CAPTURE ),
-          -1
+        array: preg_split( 
+          pattern: "#\\\\#", 
+          subject: $controller, 
+          limit: -1, 
+          flags: PREG_SPLIT_DELIM_CAPTURE ),
+          offset: -1
       );
       
       $controllerPaths = Util::mapper(
-        Util::slice(
-          preg_split( 
-            "#(?=[A-Z])#", 
-            $controllerPaths, 
-            -1, 
-            PREG_SPLIT_NO_EMPTY
+        array: Util::slice(
+          array: preg_split( 
+            pattern: "#(?=[A-Z])#", 
+            subject: $controllerPaths, 
+            limit: -1, 
+            flags: PREG_SPLIT_NO_EMPTY
           ),
-          0,
-          -1
-        ), fn(string $paths): string => strtolower($paths)
+          offset: 0,
+          length: -1
+        ), fn: fn(string $paths): string => strtolower( string: $paths )
       );
 
       $method = $endpoint->httpMethod()->value;
       $uri = Util::sprintFormat( 
-        "%s/{$endpoint->uri()}", implode(
+        format: "%s/{$endpoint->uri()}", args: implode(
           "/", $controllerPaths
         )
       );
 
       $this->httpServer->addRouterByModule(
-        $controller, $method, $name, $uri
+        controller: $controller, method: $method, name: $name, uri: $uri
       );
     }
   }
