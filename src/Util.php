@@ -269,7 +269,7 @@ class Util
   
   public static function sprintFormat(
     string $format,
-    mixed ...$args
+    array $args
   ): string {
     return \sprintf( $format, ...$args);
   }

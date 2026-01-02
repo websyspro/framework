@@ -86,9 +86,9 @@ class HttpModule
 
       $method = $endpoint->httpMethod()->value;
       $uri = Util::sprintFormat( 
-        format: "%s/{$endpoint->uri()}", args: implode(
-          "/", $controllerPaths
-        )
+        format: "%s/{$endpoint->uri()}", args: [
+          implode( "/", $controllerPaths )
+        ]
       );
 
       $this->httpServer->addRouterByModule(
