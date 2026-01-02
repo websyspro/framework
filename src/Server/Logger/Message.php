@@ -12,7 +12,7 @@ class Message
     string $logIp = "::1",
     string $logPort = "00000"   
   ): bool {
-    return Log::message(
+    return Log::debug(
       $logType,
       $logText
     );
@@ -24,6 +24,6 @@ class Message
     string $logIp = "::1",
     string $logPort = "00000"        
   ): bool {
-    return Log::error($logType, $logText);
+    return Log::fail($logType, $logText);
   }
 }

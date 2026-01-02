@@ -23,9 +23,20 @@ class Log
     return $starDiff;
   }
 
+  private static function getIp(
+  ): string {
+    return $_SERVER['REMOTE_ADDR'] ?? "::1";
+ 
+  }
+
+  private static function getAddr(
+  ): string {
+    return $_SERVER['REMOTE_PORT'] ?? "00000";
+  }  
+
   private static function getNow(
   ): string {
-    return date( "[d/m/Y H:i:s]" );
+    return date( "[D M  j H:i:s Y]" );
   }
 
   private static function isStartTimer(
@@ -36,15 +47,17 @@ class Log
   }
 
 
-  public static function message(
+  public static function debug(
     LogType $type,
     string $message 
   ): bool {
     Log::isStartTimer();
     fwrite( fopen('php://stdout', 'w'), (
-      sprintf("\x1b[37m%s\x1b[32m Log \x1b[33m[{$type->value}] \x1b[32m{$message}\x1b[37m \x1b[37m+%sms\n", 
+      sprintf("\x1b[37m%s\x1b[32m [%s]:%s \x1b[33m[{$type->value}] \x1b[32m{$message}\x1b[37m \x1b[37m+%sms\n", 
         ... [
           Log::getNow(),
+          Log::getIp(),
+          Log::getAddr(),
           Log::getNowTimer()
         ]
       )
@@ -55,15 +68,17 @@ class Log
     return true;
   }
 
-  public static function error(
+  public static function fail(
     LogType $type,
     string $message     
   ): bool {
     Log::isStartTimer();
     fwrite( fopen('php://stdout', 'w'), (
-      sprintf( "\x1b[37m%s\x1b[32m Log \x1b[33m[{$type->value}] \x1b[31m{$message} \x1b[37m+%sms\n",
+      sprintf( "\x1b[37m%s\x1b[32m [%s]:%s \x1b[33m[{$type->value}] \x1b[31m{$message} \x1b[37m+%sms\n",
         ... [
           Log::getNow(),
+          Log::getIp(),
+          Log::getAddr(),
           Log::getNowTimer()
         ]
       )

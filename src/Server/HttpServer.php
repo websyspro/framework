@@ -255,7 +255,10 @@ class HttpServer
     string $uri,
     callable|null $handler = null
   ): void {
-    Log::message(LogType::service, "test");
+    Log::debug(
+      LogType::service, 
+      "Test"
+    );
 
     $this->routers[] = new Router(
       $method, $this->acceptAPIBase( $uri ), $handler
