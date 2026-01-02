@@ -66,6 +66,16 @@ class Request
     return $this->acceptHeader->param();
   }
 
+  /**
+   * Returns the resolved route files.
+   *
+   * @return array|object|string|null The route parameters.
+   */  
+  public function files(
+  ): array|object|string|null {
+    return $this->acceptHeader->files();
+  } 
+
 
   public function defineParam(
     string $requestUri,
