@@ -2,9 +2,8 @@
 
 namespace Websyspro\Core\Server\Decorations\Controller;
 
-use Websyspro\Enums\ControllerType;
-use Websyspro\Exceptions\Error;
-use Websyspro\Commons\Utils;
+use Websyspro\Core\Server\Enums\ControllerType;
+use Websyspro\Core\Util;
 
 abstract class AbstractParameter
 {
@@ -15,7 +14,7 @@ abstract class AbstractParameter
     string $instanceType,
     string|null $key = null
   ): mixed {
-    $valueType = Utils::getType(
+    $valueType = Util::getType(
       $value
     );
 
