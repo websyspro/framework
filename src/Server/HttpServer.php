@@ -295,19 +295,36 @@ class HttpServer
     string $uri,
     callable|null $handler = null
   ): void {
-    $this->routers[] = new Router(
+    $this->routers[] = new RouteDirect(
       $method, $this->acceptAPIBase( $uri ), $handler
     );
   }
 
+  /**
+   * Adiciona uma nova rota ao conjunto de routers, associada a um módulo específico.
+   *
+   * @param AbstractEndpoint $endpoint O endpoint responsável por tratar a rota.
+   * @param HttpMethod $httpMethod O método HTTP da rota (GET, POST, etc.).
+   * @param string $name Nome identificador da rota.
+   * @param string $uri URI da rota, que será processada por `acceptAPIBase`.
+   *
+   * Funcionalidade:
+   * - Cria uma instância de `RouterByModule` com os parâmetros fornecidos.
+   * - O método HTTP é convertido para seu valor (`$httpMethod->value`).
+   * - A URI passa pelo método `$this->acceptAPIBase()` antes de ser registrada.
+   * - Adiciona a nova rota ao array `$this->routers`.
+   *
+   * Observações:
+   * - Esse método não retorna valor (`void`); apenas registra a rota internamente.
+   */  
   public function addRouterByModule(
-    AbstractEndpoint $endpoint,
-    HttpMethod $httpMethod,
+    string $controller,
+    string $method,
     string $name,
     string $uri
   ): void {
-    $this->routers[] = new RouterByModule(
-      $endpoint, $httpMethod->value, $name, $this->acceptAPIBase( $uri )
+    $this->routers[] = new Router(
+      $controller, $method, $name, $this->acceptAPIBase( $uri )
     );
   }  
 
@@ -325,12 +342,29 @@ class HttpServer
     return strtolower( PHP_SAPI ) === "cli";
   }
 
+  /**
+   * Itera sobre todas as rotas registradas e faz o log de suas informações
+   * somente se o contexto atual for de um cliente.
+   *
+   * Passos:
+   * 1. Verifica se o contexto atual é de um cliente via `$this->isClient()`.
+   * 2. Se for, percorre o array `$this->routers` usando `Util::mapper`.
+   * 3. Para cada objeto `Router`, registra um log de depuração (`Log::debug`)
+   *    com o método HTTP e a URI da rota.
+   *
+   * Observações:
+   * - `Router $router` representa uma rota registrada, que deve ter métodos
+   *   `method()` e `uri()` para retornar o tipo da requisição e o caminho.
+   * - `LogType::controller` indica que o log está categorizado como relacionado
+   *   a controllers.
+   * - Esse método não retorna nada (`void`), apenas realiza logging.
+   */  
   private function routersByClientInfors(
   ): void {
     if($this->isClient()){
       Util::mapper(
         $this->routers,
-        function( Router $router ) {
+        function( RouteDirect|Router $router ) {
           Log::debug(
             LogType::controller, 
             "Route {$router->method()} {$router->uri()}"
@@ -351,7 +385,7 @@ class HttpServer
   ): void {
     $this->routers = Util::where( 
       $this->routers, 
-      fn( Router $router ) => (
+      fn( RouteDirect|Router $router ) => (
         $this->request->compareMethod(
           $router->method()
         )
@@ -369,11 +403,9 @@ class HttpServer
   private function routersByUris(
   ): void {
     $this->routers = Util::where( 
-      $this->routers, 
-      fn( Router $router ) => (
-        $this->request->compareUri(
-          $router->uri()
-        )
+      array: $this->routers, 
+      fn: fn( RouteDirect|Router $router ): bool => (
+        $this->request->compareUri( requestUri: $router->uri())
       )
     );
   }
@@ -418,12 +450,14 @@ class HttpServer
   private function routersExec(
   ): void {
     [ $router ] = $this->routers;
-    if( $router instanceof Router ){
+    if( $router instanceof RouteDirect ){
       if( Util::isFN( $router->handler )){
         Util::callUserFN( $router->handler, [
           $this->response, $this->request->defineParam($router->uri()),
         ]);
       }
+    } else if( $router instanceof Router ) {
+      print_r( $router );
     }
   }
 

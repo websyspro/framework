@@ -60,12 +60,11 @@ class HttpModule
   }
   
   private function addRouteFromController(
-    ReflectionClass $controller,
-    array $router
+    array $endpoint
   ): void {
-    [ $controller, $name, $endpoint ] = $router;
+    [ $controller, $name, $endpoint ] = $endpoint;
     if( $endpoint instanceof AbstractEndpoint ){
-      [ $controller ] = Util::slice(
+      [ $controllerPaths ] = Util::slice(
         preg_split( 
           "#\\\\#", 
           $controller, 
@@ -74,11 +73,11 @@ class HttpModule
           -1
       );
       
-      $controller = Util::mapper(
+      $controllerPaths = Util::mapper(
         Util::slice(
           preg_split( 
             "#(?=[A-Z])#", 
-            $controller, 
+            $controllerPaths, 
             -1, 
             PREG_SPLIT_NO_EMPTY
           ),
@@ -87,15 +86,15 @@ class HttpModule
         ), fn(string $paths): string => strtolower($paths)
       );
 
-      $httpMethod = $endpoint->httpMethod();
+      $method = $endpoint->httpMethod()->value;
       $uri = Util::sprintFormat( 
         "%s/{$endpoint->uri()}", implode(
-          "/", $controller
+          "/", $controllerPaths
         )
       );
 
       $this->httpServer->addRouterByModule(
-        $endpoint, $httpMethod, $name, $uri
+        $controller, $method, $name, $uri
       );
     }
   }
@@ -115,8 +114,7 @@ class HttpModule
           array: $endpoints, 
           fn: fn(mixed $endpoint) => (
             $this->addRouteFromController(
-              controller: $reflectionClass, 
-              router: $endpoint
+              endpoint: $endpoint
             )
           )
         )
