@@ -260,9 +260,23 @@ class HttpServer
     );
   }
 
-  private function routersByDebugs(
+  /**
+   * Determines if the current PHP execution is running in the CLI (Command Line Interface).
+   *
+   * This method checks the PHP SAPI (Server API) and returns true if
+   * the script is being executed from the command line (e.g., `php index.php`),
+   * or false if it is running via a web server (e.g., Apache, Nginx, PHP-FPM).
+   *
+   * @return bool True if running in CLI, false otherwise.
+   */  
+  private function isClient(
+  ): bool {
+    return strtolower( PHP_SAPI ) === "cli";
+  }
+
+  private function routersByClientInfors(
   ): void {
-    if(strtolower( PHP_SAPI ) === "cli" ){
+    if($this->isClient()){
       Util::mapper(
         $this->routers,
         function( Router $router ) {
@@ -363,6 +377,44 @@ class HttpServer
   }
 
   /**
+   * Handles routing when the PHP script is executed from the CLI (Command Line Interface).
+   *
+   * This method delegates the routing logic specifically for client-side
+   * execution, typically when running commands like `php index.php`.
+   */  
+  public function listenByClient(
+  ): void {
+    $this->routersByClientInfors();
+  }
+
+  /**
+   * Handles routing when the PHP script is executed as a web API request.
+   *
+   * This method performs the full routing workflow for API requests:
+   * 1. Filter routers by HTTP method.
+   * 2. Filter routers by URI.
+   * 3. Check if any matching routers exist.
+   * 4. Execute the matched router handler.
+   *
+   * Any exception thrown during routing is caught and passed to the
+   * error handler for consistent JSON error responses.
+   */  
+  public function listenByApi(
+  ): void {
+    try {
+      $this->routersByMethods();
+      $this->routersByUris();
+      $this->routersEmpty();
+      $this->routersExec();
+    } 
+    catch ( Exception $error ){
+      $this->routersIsError( 
+        $error
+      );
+    }    
+  }  
+
+  /**
    * Iterates through all registered routes and executes
    * their handlers when applicable.
    *
@@ -379,17 +431,8 @@ class HttpServer
    */  
   public function listen(
   ): void {
-    try {
-      $this->routersByDebugs();
-      $this->routersByMethods();
-      $this->routersByUris();
-      $this->routersEmpty();
-      $this->routersExec();
-    } 
-    catch ( Exception $error ){
-      $this->routersIsError( 
-        $error
-      );
-    }
+    $this->isClient()
+      ? $this->listenByClient()
+      : $this->listenByApi();
   }
 }
