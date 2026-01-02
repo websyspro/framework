@@ -8,8 +8,22 @@ use Websyspro\Core\Util;
 use ReflectionAttribute;
 use ReflectionClass;
 
+/**
+ * Responsável por registrar automaticamente as rotas
+ * de um módulo HTTP a partir de seus controllers.
+ *
+ * O processo funciona da seguinte forma:
+ * 1. Lê a annotation/attribute #[Module] do módulo informado
+ * 2. Extrai a lista de controllers
+ * 3. Analisa cada método dos controllers via Reflection
+ * 4. Converte attributes de endpoints em rotas do HttpServer
+ */
 class HttpModule
 {
+  /**
+   * @param HttpServer $httpServer Instância do servidor HTTP
+   * @param string $module Classe do módulo anotada com #[Module]
+   */ 
   public function __construct(
     public HttpServer $httpServer,
     public string $module
@@ -17,6 +31,11 @@ class HttpModule
     $this->ready();
   }
 
+  /**
+   * Obtém a lista de controllers definidos no attribute #[Module].
+   *
+   * @return array Lista de classes de controllers
+   */  
   private function controllers(
   ): array {
     $reflectionClass = new ReflectionClass(
@@ -38,6 +57,13 @@ class HttpModule
     return [];
   }
   
+  /**
+   * Extrai os métodos públicos de um controller (exceto o construtor)
+   * e associa cada método aos seus attributes (endpoints).
+   *
+   * @param ReflectionClass $reflectionClass
+   * @return array Estrutura contendo controller, método e endpoint
+   */  
   private function methodFromController(
     ReflectionClass $reflectionClass
   ) : array {
@@ -57,6 +83,17 @@ class HttpModule
     );
   }
   
+  /**
+   * Registra uma rota no HttpServer a partir de um endpoint.
+   *
+   * Responsabilidades:
+   * - Normalizar o nome do controller para URI
+   * - Converter CamelCase em paths (UserController → user)
+   * - Concatenar a URI do endpoint
+   * - Registrar a rota via HttpServer
+   *
+   * @param array $endpoint Estrutura [controller, methodName, endpoint]
+   */  
   private function addRouteFromController(
     array $endpoint
   ): void {
@@ -97,6 +134,12 @@ class HttpModule
     }
   }
 
+  /**
+   * Processa todos os métodos de um controller
+   * e registra suas rotas.
+   *
+   * @param string $objectOrClass Classe do controller
+   */  
   private function routesFromController(
     string $objectOrClass
   ): void {
@@ -120,6 +163,12 @@ class HttpModule
     );
   } 
 
+  /**
+   * Ponto de entrada do módulo.
+   *
+   * Percorre todos os controllers definidos no módulo
+   * e registra suas rotas automaticamente.
+   */  
   private function ready(
   ): void {
     Util::mapper(
