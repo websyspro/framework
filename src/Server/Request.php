@@ -22,6 +22,18 @@ class Request
   public function __construct(
     public AcceptHeader $acceptHeader = new AcceptHeader()
   ){}
+
+  /**
+   * Returns the request URI.
+   *
+   * This method delegates the responsibility of resolving
+   * the current request URI to the AcceptHeader component.
+   *
+   * @return string The requested URI.
+   */
+  public function requestUri(): string {
+    return $this->acceptHeader->requestUri();
+  }
   
   /**
    * Returns the parsed request body according to the accepted content type.
@@ -51,6 +63,14 @@ class Request
   public function param(
   ): array|object|string|null {
     return $this->acceptHeader->param();
+  }
+
+
+  public function defineParam(
+    string $requestUri,
+  ): Request {
+    $this->acceptHeader->defineParam( $requestUri );
+    return $this;
   }
   
   /**

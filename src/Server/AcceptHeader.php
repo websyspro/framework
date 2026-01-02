@@ -18,6 +18,7 @@
 
 namespace Websyspro\Core\Server;
 
+use Websyspro\Core\Server\Exceptions\Error;
 use Websyspro\Core\Util;
 
 class AcceptHeader
@@ -26,7 +27,7 @@ class AcceptHeader
   public string|null $method = null;
 
   /** @var bool|null Indicates if request starts with /api */
-  public bool|null $requestFromApi = false;
+  public bool|null $requestIsApi = false;
 
   /** @var array|string|null Parsed request URI segments */
   public array|string|null $requestUri = null;
@@ -74,6 +75,11 @@ class AcceptHeader
     $this->acceptRemoteParse();
   }
 
+  public function requestUri(
+  ): string {
+    return implode( "/", $this->requestUri );
+  }
+
   /**
    * Returns parsed query string parameters.
    *
@@ -114,7 +120,56 @@ class AcceptHeader
     }
 
     return $this->requestParam["fields"];
-  }  
+  }
+  
+  /**
+   * Defines and extracts route parameters from the request URI.
+   *
+   * This method parses a route definition that contains dynamic
+   * parameters (e.g. :id{int}) and maps them to the actual values
+   * extracted from the current request URI.
+   *
+   * The extracted parameters are stored internally in the
+   * $this->requestParam array under the "fields" key.
+   *
+   * @param string $requestUri The route URI definition containing parameter placeholders.
+   */  
+  public function defineParam(
+    string $requestUri,
+  ): void {
+    // Split $requestUri por "/"
+    $requestUri = preg_split(
+      "#/#", 
+      $requestUri, 
+      -1, 
+      PREG_SPLIT_NO_EMPTY
+    );
+
+    // Mapper $requestUri path start ":"
+    $requestUri = Util::mapper(
+      $requestUri, 
+      function( 
+        string $path, int $index
+      ): void {
+        $hasParam = preg_match(
+          "#^:.*#", $path
+        ) === 1;
+
+        if( $hasParam === true ){
+          if($this->isNotParams()){
+            $this->requestParam["fields"] = [];
+          }
+          
+          $this->requestParam[ "fields" ][
+            preg_replace( [ "#^:#", "#\{.*#" ], "", $path )
+          ] = $this->defineParamFromType( 
+            $this->requestUri[ $index ], 
+            preg_replace( [ "#^.*{#", "#\}$#" ], "", $path )
+          );
+        }
+      }
+    );
+  }
 
   /**
    * Returns uploaded files.
@@ -156,7 +211,7 @@ class AcceptHeader
     string|array|null $requestUri = null
   ): bool {
     // Check is $requestUri null
-    if($requestUri === null){
+    if( $requestUri === null ){
       return false;
     }
 
@@ -169,7 +224,7 @@ class AcceptHeader
     );
 
     // Check is sizeof($requestUri)
-    if($this->isEqualRequestUriPaths( $requestUri )){
+    if( $this->isEqualRequestUriPaths( $requestUri )){
       return false;
     }
 
@@ -190,12 +245,30 @@ class AcceptHeader
 
     // Filter is values true
     $compareUri = Util::where( 
-      $compareUri, fn(bool $bool) => $bool === true
+      $compareUri, fn(bool $bool) => $bool === false
     );
 
     // Is SUM $compareUri for equal or >1 
-    return Util::exist( $compareUri);
+    return Util::exist( $compareUri ) === false;
   }
+
+  /**
+   * Prepends the API base path to the given URI when the request
+   * is coming from the API context.
+   *
+   * If the request is identified as an API request, the method
+   * prefixes the URI with "api/".
+   * Otherwise, it returns the URI unchanged.
+   *
+   * @param string $uri The original route URI.
+   * @return string The adjusted URI with or without the API base path.
+   */  
+  public function acceptAPIBase(
+    string $uri
+  ): string {
+    $uri = preg_replace( "#(^/)|(/$)#", "", $uri );
+    return $this->requestIsApi ? "api/{$uri}" : $uri;
+  }  
 
   /**
    * Checks if URI path sizes are different.
@@ -208,6 +281,71 @@ class AcceptHeader
   ) : bool {
     return Util::size( $this->requestUri ) 
        !== Util::size( $requestUri );
+  }
+
+  /**
+   * Converts a raw route parameter value based on its declared type.
+   *
+   * This method ensures that parameters extracted from the URI
+   * are correctly typed and valid according to their definition.
+   * 
+   * Supported types:
+   *   - int / integer
+   *   - float
+   *   - bool / boolean
+   *   - string
+   *   - uuid
+   *
+   * If the value does not match the expected type, a BadRequest
+   * exception (HTTP 400) is thrown, indicating that the client
+   * sent an invalid parameter.
+   *
+   * @param mixed  $value The raw value extracted from the URI.
+   * @param string $type  The declared type of the route parameter.
+   *
+   * @return mixed The value converted to the appropriate type.
+   *
+   * @throws BadRequestException If the value does not match the expected type.
+   */  
+  private function defineParamFromType(
+    mixed $value,
+    string $type
+  ): mixed {
+    switch( strtolower( $type )){
+      case "int":
+      case "integer":
+        if( is_numeric( $value ) === false ){
+          Error::BadRequest( "Expected int, got: {$value}" );
+        }
+
+        return (int)$value;
+      case "float":
+        if( is_numeric( $value ) === false ) {
+          Error::BadRequest("Expected float, got: {$value}" );
+        }
+
+        return (float) $value;
+      case "bool":
+      case "boolean":
+        return filter_var(
+          $value, 
+          FILTER_VALIDATE_BOOLEAN, 
+          FILTER_NULL_ON_FAILURE
+        ) ?? false;
+
+      case "string":
+        return (string) $value;
+
+      case "uuid":
+        if( preg_match('#^[0-9a-f]{8}-[0-9a-f]{4}-[1-5][0-9a-f]{3}-[89ab][0-9a-f]{3}-[0-9a-f]{12}$#i', $value) === 0 ) {
+          Error::BadRequest( "Invalid UUID format: {$value}" );
+        }
+
+        return $value;
+
+      default:
+        return $value;
+    }
   }
 
   /**
@@ -496,7 +634,7 @@ class AcceptHeader
       }
 
       // define requestFromApi start with (/)api
-      $this->requestFromApi = preg_match(
+      $this->requestIsApi = preg_match(
         "#^(/)api.*#",
         $this->requestUri
       ) === 1;
@@ -520,22 +658,5 @@ class AcceptHeader
     if(empty($this->remotePort) === false){
       $this->remotePort = (int)$this->remotePort;
     }
-  }
-
-  /**
-   * Prepends the API base path to the given URI when the request
-   * is coming from the API context.
-   *
-   * If the request is identified as an API request, the method
-   * prefixes the URI with "api/".
-   * Otherwise, it returns the URI unchanged.
-   *
-   * @param string $uri The original route URI.
-   * @return string The adjusted URI with or without the API base path.
-   */  
-  public function acceptAPIBase(
-    string $uri
-  ): string {
-    return $this->requestFromApi ? "api/{$uri}" : $uri;
   }
 }

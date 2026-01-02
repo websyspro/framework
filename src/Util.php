@@ -151,6 +151,24 @@ class Util
       $initial
     );
   }
+
+  /**
+   * Determines whether a given value exists in the provided array.
+   *
+   * This method is a thin wrapper around PHP's native `in_array` function,
+   * providing a consistent interface for array comparisons within the
+   * application utilities.
+   *
+   * @param mixed $value The value to search for in the array.
+   * @param array $array The array to be searched.
+   * @return bool Returns true if the value is found in the array, false otherwise.
+   */
+  public static function inArray(
+    mixed $value,
+    array $array
+  ): bool {
+    return \in_array( $value, $array);
+  }
   
   /**
    * Joins array elements using CRLF line breaks.

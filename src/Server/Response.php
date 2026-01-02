@@ -15,7 +15,9 @@
 
 namespace Websyspro\Core\Server;
 
+use Exception;
 use Websyspro\Core\Server\Enums\ContentType;
+use Websyspro\Core\Server\Enums\HttpStatus;
 use Websyspro\Core\Util;
 
 class Response
@@ -36,7 +38,7 @@ class Response
    * @param string $contentType MIME type of the response
    * @return void
    */
-  public function send(
+  private function send(
     int $code,
     string $content,   
     string $contentType,
@@ -64,6 +66,28 @@ class Response
   }
 
   /**
+   * Builds a JSON response payload based on the given value and HTTP status code.
+   *
+   * The "success" flag is determined by checking whether the provided
+   * HTTP status code represents a successful response (2xx range).
+   * Only explicitly allowed success status codes are considered valid.
+   *
+   * @param mixed $value The response content to be encoded as JSON.
+   * @param int $code The HTTP status code (default: 200).
+   * @return string The JSON-encoded response string.
+   */  
+  private function contentJson(
+    mixed $value,
+    int $code = 200    
+  ): string {
+    $success = HttpStatus::isSuccess( $code );
+    return json_encode( [
+      "success" => $success,
+      "content" => $value,
+    ]);
+  }
+
+  /**
    * Sends a JSON response.
    *
    * Automatically:
@@ -81,7 +105,7 @@ class Response
   ): void {
     $this->send(
       code: $code, 
-      content: json_encode( $value ),
+      content: $this->contentJson( $value, $code ),
       contentType: ContentType::JSON->value, 
     );
   }

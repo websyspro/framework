@@ -2,7 +2,10 @@
 
 namespace Websyspro\Core\Server;
 
+use Exception;
 use Websyspro\Core\Server\Enums\HttpMethod;
+use Websyspro\Core\Server\Enums\HttpStatus;
+use Websyspro\Core\Server\Exceptions\Error;
 use Websyspro\Core\Util;
 
 class HttpServer
@@ -256,6 +259,93 @@ class HttpServer
   }
 
   /**
+   * Filters the registered routers by HTTP method.
+   *
+   * This method narrows down the list of available routes by
+   * keeping only those whose HTTP method matches the current
+   * request method.
+   */  
+  private function routersByMethods(
+  ): void {
+    $this->routers = Util::where( 
+      $this->routers, 
+      fn( Router $router ) => (
+        $this->request->compareMethod(
+          $router->method()
+        )
+      )
+    );
+  }
+
+  /**
+   * Filters the registered routers by URI.
+   *
+   * This method narrows down the list of available routes by
+   * keeping only those whose URI matches the current
+   * request URI.
+   */  
+  private function routersByUris(
+  ): void {
+    $this->routers = Util::where( 
+      $this->routers, 
+      fn( Router $router ) => (
+        $this->request->compareUri(
+          $router->uri()
+        )
+      )
+    );
+  }
+  
+  /**
+   * Ensures that at least one route was matched.
+   *
+   * If no routers are available after applying all filters,
+   * this method triggers a "Not Found" error response.
+   */  
+  private function routersEmpty(
+  ): void {
+    if( Util::exist( $this->routers ) === false ){
+      Error::NotFound( "Route {$this->request->requestUri()} not found" );
+    }
+  }
+
+  /**
+   * Handles errors that occur during route execution.
+   *
+   * This method converts the given exception into a JSON response,
+   * using the exception message as the response body and the
+   * exception code as the HTTP status code.
+   *
+   * @param Exception $error The exception thrown during route handling.
+   */  
+  private function routersIsError(
+    Exception $error
+  ): void {
+    [ $message, $code ] = [
+      $error->getMessage(),
+      $error->getCode()
+    ];
+    
+    $this->response->json(
+      HttpStatus::resolvePublicMessage(
+        $code, $message
+      ), $code
+    );
+  }
+
+  private function routersExec(
+  ): void {
+    [ $router ] = $this->routers;
+    if( $router instanceof Router ){
+      if( Util::isFN( $router->handler )){
+        Util::callUserFN( $router->handler, [
+          $this->response, $this->request->defineParam($router->uri()),
+        ]);
+      }
+    }
+  }
+
+  /**
    * Iterates through all registered routes and executes
    * their handlers when applicable.
    *
@@ -272,17 +362,16 @@ class HttpServer
    */  
   public function listen(
   ): void {
-    Util::mapper(
-      $this->routers, 
-      function(
-        Router $router
-      ): void {
-        if( Util::isFN( $router->handler )){
-          Util::callUserFN( $router->handler, [ 
-            $this->response, $this->request 
-          ]);
-        }
-      }
-    );
+    try {
+      $this->routersByMethods();
+      $this->routersByUris();
+      $this->routersEmpty();
+      $this->routersExec();
+    } 
+    catch ( Exception $error ){
+      $this->routersIsError( 
+        $error
+      );
+    }
   }
 }
