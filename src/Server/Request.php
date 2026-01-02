@@ -31,7 +31,8 @@ class Request
    *
    * @return string The requested URI.
    */
-  public function requestUri(): string {
+  public function requestUri(
+  ): string|null {
     return $this->acceptHeader->requestUri();
   }
   

@@ -77,8 +77,8 @@ class AcceptHeader
   }
 
   public function requestUri(
-  ): string {
-    return implode( "/", $this->requestUri );
+  ): string|null {
+    return $this->requestIsApi ? implode( "/", $this->requestUri ) : null;
   }
 
   /**

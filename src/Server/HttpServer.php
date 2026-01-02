@@ -255,14 +255,24 @@ class HttpServer
     string $uri,
     callable|null $handler = null
   ): void {
-    Log::debug(
-      LogType::service, 
-      "Test"
-    );
-
     $this->routers[] = new Router(
       $method, $this->acceptAPIBase( $uri ), $handler
     );
+  }
+
+  private function routersByDebugs(
+  ): void {
+    if(strtolower( PHP_SAPI ) === "cli" ){
+      Util::mapper(
+        $this->routers,
+        function( Router $router ) {
+          Log::debug(
+            LogType::controller, 
+            "Route {$router->method()} {$router->uri()}"
+          );
+        }
+      );
+    }
   }
 
   /**
@@ -370,6 +380,7 @@ class HttpServer
   public function listen(
   ): void {
     try {
+      $this->routersByDebugs();
       $this->routersByMethods();
       $this->routersByUris();
       $this->routersEmpty();
