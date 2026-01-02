@@ -7,20 +7,20 @@ use Websyspro\Core\Server\Response;
 use Websyspro\Test\Account\AccountModule;
 
 $httpServer = new HttpServer();
-// $httpServer->module(
-//   modules: [
-//     AccountModule::class
-//   ]
-// );
+$httpServer->module(
+  modules: [
+    AccountModule::class
+  ]
+);
 
 
 // $httpServer->get( "/product/:productId{int}/detail/:message/test", function( Response $response, Request $request ) use ($httpServer) {
 //   $response->json( new HttpModule($httpServer, AccountModule::class) );
 // });
 
-//$httpServer->listen();
+$httpServer->listen();
 
-$httpModule = new HttpModule($httpServer, AccountModule::class);
+//$httpModule = new HttpModule($httpServer, AccountModule::class);
 
 // $httpServer->get( "/product/test", function( Response $response, Request $request ) {
 //   $response->json( $request->body() );

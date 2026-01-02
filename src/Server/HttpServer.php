@@ -3,6 +3,7 @@
 namespace Websyspro\Core\Server;
 
 use Exception;
+use Websyspro\Core\Server\Decorations\Controller\AbstractEndpoint;
 use Websyspro\Core\Server\Enums\HttpMethod;
 use Websyspro\Core\Server\Enums\HttpStatus;
 use Websyspro\Core\Server\Exceptions\Error;
@@ -298,6 +299,17 @@ class HttpServer
       $method, $this->acceptAPIBase( $uri ), $handler
     );
   }
+
+  public function addRouterByModule(
+    AbstractEndpoint $endpoint,
+    HttpMethod $httpMethod,
+    string $name,
+    string $uri
+  ): void {
+    $this->routers[] = new RouterByModule(
+      $endpoint, $httpMethod->value, $name, $this->acceptAPIBase( $uri )
+    );
+  }  
 
   /**
    * Determines if the current PHP execution is running in the CLI (Command Line Interface).

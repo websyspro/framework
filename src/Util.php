@@ -265,7 +265,14 @@ class Util
     array $array
   ): mixed {
     return implode( "\r\n", $array );
-  }  
+  }
+  
+  public static function sprintFormat(
+    string $format,
+    mixed ...$args
+  ): string {
+    return \sprintf( $format, ...$args);
+  }
 
   /**
    * Returns the size of an array or object.
