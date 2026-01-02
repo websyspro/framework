@@ -48,6 +48,14 @@ class HttpServer
     )
   ){}
 
+  public function module(
+    array $modules = []
+  ): void {
+    if( Util::exist( $modules )){
+      
+    }
+  }
+
   /**
    * Registers a GET route.
    *
@@ -382,7 +390,7 @@ class HttpServer
    * This method delegates the routing logic specifically for client-side
    * execution, typically when running commands like `php index.php`.
    */  
-  public function listenByClient(
+  private function listenByClient(
   ): void {
     $this->routersByClientInfors();
   }
@@ -399,7 +407,7 @@ class HttpServer
    * Any exception thrown during routing is caught and passed to the
    * error handler for consistent JSON error responses.
    */  
-  public function listenByApi(
+  private function listenByApi(
   ): void {
     try {
       $this->routersByMethods();
