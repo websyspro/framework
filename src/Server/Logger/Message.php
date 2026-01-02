@@ -1,8 +1,8 @@
 <?php
 
-namespace Websyspro\Logger;
+namespace Websyspro\Core\Server\Logger;
 
-use Websyspro\Logger\Enums\LogType;
+use Websyspro\Core\Server\Logger\Enums\LogType;
 
 class Message
 {

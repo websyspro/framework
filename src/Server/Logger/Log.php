@@ -1,8 +1,8 @@
 <?php
 
-namespace Websyspro\Logger;
+namespace Websyspro\Core\Server\Logger;
 
-use Websyspro\Logger\Enums\LogType;
+use Websyspro\Core\Server\Logger\Enums\LogType;
 
 class Log
 {
@@ -37,12 +37,12 @@ class Log
 
 
   public static function message(
-    LogType $logType,
-    string $logText 
+    LogType $type,
+    string $message 
   ): bool {
     Log::isStartTimer();
     fwrite( fopen('php://stdout', 'w'), (
-      sprintf("\x1b[37m%s\x1b[32m Log \x1b[33m[{$logType->value}] \x1b[32m{$logText}\x1b[37m \x1b[37m+%sms\n", 
+      sprintf("\x1b[37m%s\x1b[32m Log \x1b[33m[{$type->value}] \x1b[32m{$message}\x1b[37m \x1b[37m+%sms\n", 
         ... [
           Log::getNow(),
           Log::getNowTimer()
@@ -56,12 +56,12 @@ class Log
   }
 
   public static function error(
-    LogType $logType,
-    string $logText    
+    LogType $type,
+    string $message     
   ): bool {
     Log::isStartTimer();
     fwrite( fopen('php://stdout', 'w'), (
-      sprintf( "\x1b[37m%s\x1b[32m Log \x1b[33m[{$logType->value}] \x1b[31m{$logText} \x1b[37m+%sms\n",
+      sprintf( "\x1b[37m%s\x1b[32m Log \x1b[33m[{$type->value}] \x1b[31m{$message} \x1b[37m+%sms\n",
         ... [
           Log::getNow(),
           Log::getNowTimer()

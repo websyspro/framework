@@ -6,6 +6,8 @@ use Exception;
 use Websyspro\Core\Server\Enums\HttpMethod;
 use Websyspro\Core\Server\Enums\HttpStatus;
 use Websyspro\Core\Server\Exceptions\Error;
+use Websyspro\Core\Server\Logger\Enums\LogType;
+use Websyspro\Core\Server\Logger\Log;
 use Websyspro\Core\Util;
 
 class HttpServer
@@ -253,6 +255,8 @@ class HttpServer
     string $uri,
     callable|null $handler = null
   ): void {
+    Log::message(LogType::service, "test");
+
     $this->routers[] = new Router(
       $method, $this->acceptAPIBase( $uri ), $handler
     );

@@ -1,6 +1,6 @@
 <?php
 
-namespace Websyspro\Logger\Enums;
+namespace Websyspro\Core\Server\Logger\Enums;
 
 enum LogType: string {
   case module = "Module";
