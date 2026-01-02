@@ -342,7 +342,6 @@ class AcceptHeader
         }
 
         return $value;
-
       default:
         return $value;
     }

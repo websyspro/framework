@@ -23,6 +23,23 @@ use Websyspro\Core\Util;
 class Response
 {
   /**
+   * Initializes a new Response instance.
+   *
+   * This constructor sets the default HTTP status code for the response.
+   * By default, the status code is 200 (OK), but it can be overridden
+   * when creating the instance.
+   *
+   * Example:
+   *   $response = new Response();       // status 200 by default
+   *   $response = new Response(404);    // status 404
+   *
+   * @param int $code The initial HTTP status code for the response.
+   */  
+  public function __construct(
+    private int $code = 200
+  ){}
+
+  /**
    * Sends an HTTP response using PHP's native
    * header and response handling.
    *
@@ -88,6 +105,27 @@ class Response
   }
 
   /**
+   * Sets the HTTP status code for the response.
+   *
+   * This method assigns the given status code to the response
+   * object and returns the current instance to allow method
+   * chaining.
+   *
+   * Example:
+   *   $response->status(200)->json($data);
+   *
+   * @param int $code The HTTP status code to set (e.g., 200, 404, 500).
+   *
+   * @return Response Returns the current Response instance for chaining.
+   */
+  public function status(
+    int $code
+  ): Response {
+    $this->code = $code;
+    return $this;
+  }
+
+  /**
    * Sends a JSON response.
    *
    * Automatically:
@@ -101,11 +139,11 @@ class Response
    */  
   public function json(
     mixed $value,
-    int $code = 200
+    int|null $code = null
   ): void {
     $this->send(
-      code: $code, 
-      content: $this->contentJson( $value, $code ),
+      code: $code ?? $this->code, 
+      content: $this->contentJson( $value, $code ?? $this->code ),
       contentType: ContentType::JSON->value, 
     );
   }
