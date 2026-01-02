@@ -9,4 +9,8 @@ $httpServer->get( "/product/:productId{int}/detail/:message/test", function( Res
   $response->json( $request->param() );
 });
 
+$httpServer->get( "/product/test", function( Response $response, Request $request ) {
+  $response->json( $request->body() );
+});
+
 $httpServer->listen();
