@@ -81,7 +81,7 @@ class Response
   ): void {
     $this->send(
       code: $code, 
-      content: json_encode($value),
+      content: json_encode( $value ),
       contentType: ContentType::JSON->value, 
     );
   }

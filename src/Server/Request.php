@@ -67,5 +67,33 @@ class Request
     string $uri
   ): string {
     return $this->acceptHeader->acceptAPIBase( $uri );
+  }
+  
+  /**
+   * Compares the current HTTP method.
+   *
+   * @param string|null $method
+   * @return bool
+   */
+  public function compareMethod(
+    string|null $method = null
+  ): bool {
+    return $this->acceptHeader->compareMethod( $method );
+  } 
+  
+  /**
+   * Compares the current URI against a route pattern.
+   * Supports dynamic parameters using ":" notation.
+   *
+   * Example:
+   *   /users/:id
+   *
+   * @param string|array|null $requestUri
+   * @return bool
+   */
+  public function compareUri(
+    string|array|null $requestUri = null
+  ): bool {
+    return $this->acceptHeader->compareUri( $requestUri );
   }  
 }
