@@ -26,7 +26,7 @@ class AcceptHeader
   public string|null $method = null;
 
   /** @var bool|null Indicates if request starts with /api */
-  public bool|null $requestType = false;
+  public bool|null $requestFromApi = false;
 
   /** @var array|string|null Parsed request URI segments */
   public array|string|null $requestUri = null;
@@ -82,7 +82,7 @@ class AcceptHeader
   public function query(
   ): array|object|string|null {
     if($this->isNotQuerys()){
-      return null;
+      return [];
     }
 
     return $this->requestQuery[ "fields" ];
@@ -96,11 +96,25 @@ class AcceptHeader
   public function body(
   ): array|object|string|null {
     if($this->isNotFields()){
-      return null;
+      return [];
     }
 
     return $this->contentBody["fields"];
   }
+
+  /**
+   * Returns parsed param fields.
+   *
+   * @return array|object|string|null
+   */
+  public function param(
+  ): array|object|string|null {
+    if($this->isNotParams()){
+      return [];
+    }
+
+    return $this->requestParam["fields"];
+  }  
 
   /**
    * Returns uploaded files.
@@ -110,7 +124,7 @@ class AcceptHeader
   public function files(
   ): array|object|string|null {
     if( $this->isNotFiles() ){
-      return null;
+      return [];
     }
 
     return $this->contentBody[ "files" ];
@@ -209,6 +223,18 @@ class AcceptHeader
     ) === false;
   }
 
+  /**
+   * Checks if query string is missing.
+   *
+   * @return bool
+   */   
+  private function isNotParams(
+  ): bool {
+    return Util::isNull(
+      $this->requestParam
+    );
+  }
+  
   /**
    * Checks if query string is missing.
    *
@@ -469,8 +495,8 @@ class AcceptHeader
         ), $this->requestQuery[ "fields" ] );
       }
 
-      // define requestType start with (/)api
-      $this->requestType = preg_match(
+      // define requestFromApi start with (/)api
+      $this->requestFromApi = preg_match(
         "#^(/)api.*#",
         $this->requestUri
       ) === 1;
@@ -494,5 +520,22 @@ class AcceptHeader
     if(empty($this->remotePort) === false){
       $this->remotePort = (int)$this->remotePort;
     }
+  }
+
+  /**
+   * Prepends the API base path to the given URI when the request
+   * is coming from the API context.
+   *
+   * If the request is identified as an API request, the method
+   * prefixes the URI with "api/".
+   * Otherwise, it returns the URI unchanged.
+   *
+   * @param string $uri The original route URI.
+   * @return string The adjusted URI with or without the API base path.
+   */  
+  public function acceptAPIBase(
+    string $uri
+  ): string {
+    return $this->requestFromApi ? "api/{$uri}" : $uri;
   }
 }

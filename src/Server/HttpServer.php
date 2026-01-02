@@ -31,16 +31,16 @@ class HttpServer
    * Default instances are created automatically, allowing
    * the server to operate without external dependency injection.
    *
-   * @param AcceptHeader $acceptHeader Handles request header parsing
    * @param Response $response Responsible for response output
    * @param Request $request Represents the incoming request
    *
    * @return void
    */
   public function __construct(
-    public AcceptHeader $acceptHeader = new AcceptHeader(),
-    public Response $response = new Response(),
-    public Request $request = new Request()
+    private Response $response = new Response(),
+    private Request $request = new Request(
+      new AcceptHeader()
+    )
   ){}
 
   /**
@@ -63,9 +63,7 @@ class HttpServer
     callable|null $handler = null
   ): void {
     $this->addRouter(
-      handler: $handler,
-      method: HttpMethod::GET->value,
-      uri: $uri,
+      HttpMethod::GET->value, $uri, $handler
     );
   }
 
@@ -89,9 +87,7 @@ class HttpServer
     callable|null $handler = null
   ): void {
     $this->addRouter(
-      handler: $handler,
-      method: HttpMethod::POST->value,
-      uri: $uri,
+      HttpMethod::POST->value, $uri, $handler
     );
   }
 
@@ -115,9 +111,7 @@ class HttpServer
     callable|null $handler = null
   ): void {
     $this->addRouter(
-      handler: $handler,
-      method: HttpMethod::PUT->value,
-      uri: $uri,
+      HttpMethod::PUT->value, $uri, $handler
     );
   }
 
@@ -141,9 +135,7 @@ class HttpServer
     callable|null $handler = null
   ): void {
     $this->addRouter(
-      handler: $handler,
-      method: HttpMethod::PATCH->value,
-      uri: $uri,
+      HttpMethod::PATCH->value, $uri, $handler
     );
   }
 
@@ -167,9 +159,7 @@ class HttpServer
     callable|null $handler = null
   ): void {
     $this->addRouter(
-      handler: $handler,
-      method: HttpMethod::DELETE->value,
-      uri: $uri,
+      HttpMethod::DELETE->value, $uri, $handler
     );
   }
 
@@ -193,9 +183,7 @@ class HttpServer
     callable|null $handler = null
   ): void {
     $this->addRouter(
-      handler: $handler,
-      method: HttpMethod::OPTIONS->value,
-      uri: $uri,
+      HttpMethod::OPTIONS->value, $uri, $handler
     );
   }
 
@@ -219,11 +207,26 @@ class HttpServer
     callable|null $handler = null
   ): void {
     $this->addRouter(
-      handler: $handler,
-      method: HttpMethod::HEAD->value,
-      uri: $uri,
+      HttpMethod::HEAD->value, $uri, $handler
     );
-  }  
+  }
+  
+  /**
+   * Delegates the URI normalization to the Request object,
+   * applying the API base path when necessary.
+   *
+   * This method acts as a proxy, forwarding the URI to the
+   * request layer, which decides whether the "api/" prefix
+   * should be applied based on the current request context.
+   *
+   * @param string $uri The original route URI.
+   * @return string The normalized URI, with or without the API base path.
+   */  
+  private function acceptAPIBase(
+    string $uri
+  ): string {
+    return $this->request->acceptAPIBase( $uri );
+  }
 
   /**
    * Registers a new route definition in the router collection.
@@ -248,9 +251,7 @@ class HttpServer
     callable|null $handler = null
   ): void {
     $this->routers[] = new Router(
-      handler: $handler,
-      method: $method,
-      uri: $uri,
+      $method, $this->acceptAPIBase( $uri ), $handler
     );
   }
 
@@ -272,12 +273,12 @@ class HttpServer
   public function listen(
   ): void {
     Util::mapper(
-      array: $this->routers, 
-      fn: function(
+      $this->routers, 
+      function(
         Router $router
       ): void {
-        if( Util::isFN( fn: $router->handler )){
-          Util::callUserFN( fn: $router->handler, args: [ 
+        if( Util::isFN( $router->handler )){
+          Util::callUserFN( $router->handler, [ 
             $this->response, $this->request 
           ]);
         }
