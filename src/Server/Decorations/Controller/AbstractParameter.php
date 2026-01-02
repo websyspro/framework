@@ -3,6 +3,7 @@
 namespace Websyspro\Core\Server\Decorations\Controller;
 
 use Websyspro\Core\Server\Enums\ControllerType;
+use Websyspro\Core\Server\Exceptions\Error;
 use Websyspro\Core\Util;
 
 abstract class AbstractParameter
@@ -18,22 +19,21 @@ abstract class AbstractParameter
       $value
     );
 
-    if( Utils::isNull( $value )){
-      Error::internalServerError( 
+    if( Util::isNull( $value )){
+      Error::InternalServerError( 
         "Attributo [{$this->controllerType->name}] is null"
       );      
     }
 
     if( $valueType !== $instanceType ){
-      Error::internalServerError( 
+      Error::InternalServerError( 
         "Attributes [{$this->controllerType->name}] with incompatible types, received {} expected {$instanceType}"
       );       
     }
     
-
-    if( Utils::isArray( $value )){
-      if( Utils::sizeArray( $value ) === 0 && Utils::isNull( $key )){
-        Error::internalServerError( 
+    if( Util::isArray( $value )){
+      if( Util::sizeArray( $value ) === 0 && Util::isNull( $key )){
+        Error::InternalServerError( 
           "Attributo [{$this->controllerType->name}]({$key})) is not exists"
         );
       }
@@ -41,17 +41,17 @@ abstract class AbstractParameter
       /*
        * Verificar instanceType is Primitivo
        * */
-      if( Utils::isPrimitiveType( $instanceType )){
-        return Utils::isNull( $key ) ? $value : $value[ $key ];
+      if( Util::isPrimitiveType( $instanceType )){
+        return Util::isNull( $key ) ? $value : $value[ $key ];
       } else {
-        return Utils::isNull( $key ) 
-          ? Utils::hydrateObject( $value, $instanceType )
-          : Utils::hydrateObject( $value[ $key ], $instanceType );
+        return Util::isNull( $key ) 
+          ? Util::hydrateObject( $value, $instanceType )
+          : Util::hydrateObject( $value[ $key ], $instanceType );
       }
     }
 
-    if( Utils::isObject( $value )){
-      if( Utils::isObjectEmpty( $value ) && Utils::isNull( $key )){
+    if( Util::isObject( $value )){
+      if( Util::isObjectEmpty( $value ) && Util::isNull( $key )){
         Error::internalServerError( 
           "Attributo [{$this->controllerType->name}]({$key})) is not exists"
         );
@@ -60,12 +60,12 @@ abstract class AbstractParameter
       /*
        * Verificar instanceType is Primitivo
        * */
-      if( Utils::isPrimitiveType( $instanceType )){
-        return Utils::isNull( $key ) ? $value : $value[ $key ];
+      if( Util::isPrimitiveType( $instanceType )){
+        return Util::isNull( $key ) ? $value : $value[ $key ];
       } else {
-        return Utils::isNull( $key ) 
-            ? Utils::hydrateObject( $value, $instanceType )
-            : Utils::hydrateObject( $value[$key], $instanceType );
+        return Util::isNull( $key ) 
+            ? Util::hydrateObject( $value, $instanceType )
+            : Util::hydrateObject( $value[$key], $instanceType );
       }
     }
 
