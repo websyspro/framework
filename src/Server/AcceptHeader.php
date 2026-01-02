@@ -18,6 +18,7 @@
 
 namespace Websyspro\Core\Server;
 
+use Exception;
 use Websyspro\Core\Server\Exceptions\Error;
 use Websyspro\Core\Util;
 
@@ -305,7 +306,7 @@ class AcceptHeader
    *
    * @return mixed The value converted to the appropriate type.
    *
-   * @throws BadRequestException If the value does not match the expected type.
+   * @throws Exception If the value does not match the expected type.
    */  
   private function defineParamFromType(
     mixed $value,
