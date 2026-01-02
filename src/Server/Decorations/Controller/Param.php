@@ -2,9 +2,9 @@
 
 namespace Websyspro\Core\Server\Decorations\Controller;
 
-use Websyspro\Enums\ControllerType;
-use Websyspro\Request;
 use Attribute;
+use Websyspro\Core\Server\Enums\ControllerType;
+use Websyspro\Core\Server\Request;
 
 #[Attribute(Attribute::TARGET_PARAMETER)]
 class Param extends AbstractParameter
@@ -20,7 +20,7 @@ class Param extends AbstractParameter
     string $instanceType
   ): mixed {
     return $this->getValue(
-      $request->params, 
+      $request->param(), 
       $instanceType, 
       $this->key
     );
