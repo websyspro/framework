@@ -10,6 +10,16 @@ use Websyspro\Core\Server\Logger\Enums\LogType;
 use Websyspro\Core\Server\Logger\Log;
 use Websyspro\Core\Util;
 
+/**
+ * Core HTTP server class for routing and request handling.
+ *
+ * This class provides a minimalistic framework for defining HTTP routes,
+ * handling requests, executing route handlers, and returning structured
+ * JSON responses with proper HTTP status codes.
+ *
+ * It supports both CLI execution (for debugging/logging) and standard
+ * API requests.
+ */
 class HttpServer
 {
   /**
@@ -48,11 +58,32 @@ class HttpServer
     )
   ){}
 
+  /**
+   * Registers or initializes modules for the application.
+   *
+   * This method takes an array of module class names and creates
+   * instances of `HttpModule` for each one, passing the current
+   * context (`$this`) to the module constructor.
+   *
+   * Example usage:
+   *   $app->module([
+   *       MyFirstModule::class,
+   *       MySecondModule::class
+   *   ]);
+   *
+   * Notes:
+   *   - Only executes if the $modules array is not empty.
+   *   - Uses `Util::mapper()` to iterate over the modules array.
+   *
+   * @param array $modules An array of module class names to register.
+   */  
   public function module(
     array $modules = []
   ): void {
     if( Util::exist( $modules )){
-      
+      Util::mapper( $modules, fn(string $module) => (
+        new HttpModule( $this, $module )
+      ));
     }
   }
 
