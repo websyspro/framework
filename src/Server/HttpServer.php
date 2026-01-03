@@ -418,8 +418,8 @@ class HttpServer
    */  
   private function routersEmpty(
   ): void {
-    if( Util::exist( $this->routers ) === false ){
-      Error::NotFound( "Route {$this->request->requestUri()} not found" );
+    if( Util::exist( array: $this->routers ) === false ){
+      Error::NotFound( message: "Route {$this->request->requestUri()} not found" );
     }
   }
 

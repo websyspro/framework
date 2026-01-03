@@ -2,6 +2,7 @@
 
 namespace Websyspro\Core\Server\Decorations\Controller;
 
+use Exception;
 use Websyspro\Core\Server\Enums\ControllerType;
 use Websyspro\Core\Util;
 
@@ -129,15 +130,27 @@ abstract class AbstractParameter
         "type" => $parameterType,
         "text" => $parameterValue
       ];
-    } else {
-      return [
-        "type" => $parameterType, 
-        "text" => Util::hydrateObject(
-          originClass: $parameterValue, 
-          destineClass: $parameterType
-        )
-      ];
+    } else if( Util::isObject( $parameterValue )){
+      try {
+        return [
+          "type" => $parameterType,
+          "text" => Util::hydrateObject(
+            originClass: $parameterValue, 
+            destineClass: $parameterType
+          )
+        ];
+      } catch ( Exception $error ){
+        return [
+          "type" => null,
+          "text" => null
+        ];
+      }
     };
+
+    return [
+      "type" => null,
+      "text" => null
+    ];
   }
 
   /**
@@ -197,13 +210,15 @@ abstract class AbstractParameter
     }
 
     /**
-     * Filters resolved parameter values, keeping only valid results.
+     * Filters out invalid resolved parameter values.
      *
-     * A parameter value is considered valid when:
-     * - The resolved type is not null.
-     * - The resolved value is not null.
+     * Only entries that contain both:
+     * - a non-null resolved type
+     * - a non-null resolved value ("text")
      *
-     * Invalid or unresolved entries are removed from the result set.
+     * are kept. This ensures that only successfully
+     * validated and hydrated parameter values are
+     * processed further.
      */    
     return Util::where(
       array: $paramterValue, 

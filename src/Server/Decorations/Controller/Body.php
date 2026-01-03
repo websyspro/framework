@@ -82,11 +82,13 @@ class Body extends AbstractParameter
      * By isolating this behavior, the parameter resolution process
      * remains consistent and reusable across different contexts.
      */ 
-    return $this->hydrateTypes(
-      $paramterValue,
-      $paramterName,
-      $paramterTypes,
-      $paramterDefault
+    return Util::mapper(
+      array: $this->hydrateTypes(
+        paramterValue: $paramterValue,
+        paramterName: $paramterName,
+        paramterTypes: $paramterTypes,
+        paramterDefault: $paramterDefault
+      ), fn: fn( array $value ): mixed => $value["text"]
     ); 
   }
 }

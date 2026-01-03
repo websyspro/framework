@@ -9,6 +9,7 @@ use ReflectionNamedType;
 use ReflectionParameter;
 use ReflectionType;
 use ReflectionUnionType;
+use Uri\Rfc3986\Uri;
 use Websyspro\Core\Server\Decorations\Controller\AllowAnonymous;
 use Websyspro\Core\Server\Decorations\Controller\Authenticate;
 use Websyspro\Core\Server\Decorations\Controller\Controller;
@@ -383,36 +384,109 @@ class Router
     return $reflectionMethodParameters;
   }
 
+  private function depencyInject(
+  ): mixed {
+    return [];
+  }
+
+  /**
+   * Resolves, validates, and injects method parameters based on request data.
+   *
+   * This method is responsible for building the final list of arguments
+   * that will be passed to the controller method. The process involves:
+   *
+   * - Reading parameter metadata defined on the controller method
+   *   (attributes, default values, names, and allowed types).
+   * - Executing each parameter attribute to extract and resolve
+   *   its value from the incoming request.
+   * - Filtering out unresolved or invalid parameters.
+   * - Ensuring that all required parameters were successfully resolved.
+   *
+   * If any parameter cannot be resolved, the route is considered invalid
+   * and a "Not Found" error is raised.
+   *
+   * @param Request $request The current HTTP request instance.
+   *
+   * @return array<int, mixed>
+   *         A sequential array of resolved parameter values, ready to be
+   *         injected into the controller method call.
+   */  
   private function doParamters(
     Request $request    
   ): array {
-    Util::mapper(
-      array: $this->parametersFromMethod(),
-      fn: function( array $prameter ) use( $request ) : array {
+    /**
+     * Retrieves all parameter definitions from the controller method,
+     * including attributes, default values, expected types, and names.
+     */    
+    $parametersFromMethod = $this->parametersFromMethod();
+
+    /**
+     * Resolves each parameter using its associated attribute instance.
+     *
+     * For every parameter definition:
+     * - The attribute instance is executed.
+     * - The attribute is responsible for extracting the value
+     *   from the request and validating it against the expected types.
+     * - The resolved parameter value is returned or null if resolution fails.
+     */    
+    $parameters = Util::mapper(
+      array: $parametersFromMethod,
+      fn: function( array $prameter ) use( $request ) : mixed {
         [ "paramterInstance" => $paramterInstance,
           "paramterDefault" => $paramterDefault,
           "paramterTypes" => $paramterTypes,
           "paramterName" => $paramterName
         ] = $prameter;
 
-        $compiledParameters = $paramterInstance->execute( 
+        /**
+         * Executes the parameter attribute logic.
+         *
+         * The execute method returns an array of possible resolutions;
+         * the first valid result is selected.
+         */        
+        [ $paramter ] = $paramterInstance->execute( 
           $request, $paramterName, $paramterTypes, $paramterDefault
         );
 
-        print_r($compiledParameters);
-
-        return [];
+        return $paramter;
       }
     );
 
-    return [];
-  }
+    /**
+     * Removes parameters that could not be resolved.
+     *
+     * Any null value indicates a failed parameter resolution.
+     */    
+    $parameters = Util::where(
+      array: $parameters, fn: fn(mixed $value ): bool => $value !== null
+    );
 
+    /**
+     * Validates that all expected parameters were resolved.
+     *
+     * If the number of resolved parameters does not match the number
+     * declared in the controller method, the route is considered invalid.
+     */    
+    $sizeParameters = Util::sizeArray( array: $parameters );
+    $sizeParametersFromMethod = Util::sizeArray( array: $parameters );
+
+    if( $sizeParameters !== $sizeParametersFromMethod ){
+      Error::NotFound( "Route {$request->requestUri()} not found" );
+    }
+
+    /**
+     * Returns the final list of resolved parameters, ready to be
+     * injected into the controller method invocation.
+     */    
+    return $parameters;
+  }
+  
   public function execute(
     Request $request
   ): mixed {
     $this->doMiddlewares( request: $request );
     $this->doParamters( request: $request );
+    
 
     return [];
   }
