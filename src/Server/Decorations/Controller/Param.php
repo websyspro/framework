@@ -17,11 +17,13 @@ class Param extends AbstractParameter
   
   public function execute(
     Request $request,
-    string $instanceType
+    string $instanceType,
+    mixed $defaultValue = null
   ): mixed {
     return $this->getValue(
       $request->param(), 
-      $instanceType, 
+      $instanceType,
+      $defaultValue, 
       $this->key
     );
   }

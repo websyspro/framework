@@ -58,11 +58,13 @@ class Query extends AbstractParameter
    */  
   public function execute(
     Request $request,
-    string $instanceType
+    string $instanceType,
+    mixed $defaultValue = null
   ): mixed {
     return $this->getValue(
       $request->query(), 
-      $instanceType, 
+      $instanceType,
+      $defaultValue,
       $this->key
     );
   }

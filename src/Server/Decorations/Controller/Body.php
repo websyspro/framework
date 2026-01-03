@@ -4,8 +4,8 @@ namespace Websyspro\Core\Server\Decorations\Controller;
 
 use Websyspro\Core\Server\Enums\ControllerType;
 use Websyspro\Core\Server\Request;
+use Websyspro\Core\Util;
 use Attribute;
-
 
 /**
  * Marks a controller method parameter to be populated from the request body.
@@ -59,12 +59,69 @@ class Body extends AbstractParameter
    */  
   public function execute(
     Request $request,
-    string $instanceType
-  ): mixed {
-    return $this->getValue(
-      $request->body(), 
-      $instanceType, 
-      $this->key
+    string $paramterName,
+    array $paramterTypes = [],
+    mixed $paramterDefault = null
+  ): array {
+    /**
+     * Retrieves the raw request body to be used as the source
+     * for parameter value resolution.
+     */    
+    $paramterValue = $request->body();
+
+    /**
+     * Retrieves the request body and attempts to resolve the parameter value
+     * against all possible declared parameter types.
+     *
+     * If no explicit parameter types are declared, the runtime type of the
+     * request body is used as a fallback.
+     *
+     * Each candidate type is passed to `getValue()` in order to determine
+     * whether the parameter value can be successfully resolved.
+     */    
+    $paramterValue = Util::mapper(
+      array: Util::merge(
+        array: $paramterTypes, arrays: Util::sizeArray($paramterTypes) === 0 
+          ? [Util::getType( value: $paramterValue )] : []
+      ), fn: fn( string $paramterType ): array|null => (
+        $this->getValue(
+          parameterValue: $paramterValue,
+          parameterType: $paramterType,
+          paramterDefault: $paramterDefault,
+        )
+      )
+    );
+
+    /**
+     * If a specific key is defined, attempt to extract the parameter value
+     * from the provided source using that key.
+     *
+     * - When the source value is an array, the key is used as an array index.
+     *
+     * If the key does not exist in the source, the parameter default value
+     * is returned as a fallback.
+     */    
+    if (Util::isNull(value: $this->key ) === false) {
+      if (Util::isArray(value: $paramterValue )) {
+        return $paramterValue[ $this->key ] ?? $paramterDefault;
+      }
+    }
+
+    /**
+     * Filters resolved parameter values, keeping only valid results.
+     *
+     * A parameter value is considered valid when:
+     * - The resolved type is not null.
+     * - The resolved value is not null.
+     *
+     * Invalid or unresolved entries are removed from the result set.
+     */    
+    return Util::where(
+      array: $paramterValue, 
+      fn: fn(array $value): bool => (
+        Util::isNull( value: $value[ "type" ]) === false &&
+        Util::isNull( value: $value[ "text" ]) === false
+      )
     );
   }
 }

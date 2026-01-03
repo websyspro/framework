@@ -5,6 +5,10 @@ namespace Websyspro\Core\Server;
 use ReflectionAttribute;
 use ReflectionClass;
 use ReflectionMethod;
+use ReflectionNamedType;
+use ReflectionParameter;
+use ReflectionType;
+use ReflectionUnionType;
 use Websyspro\Core\Server\Decorations\Controller\AllowAnonymous;
 use Websyspro\Core\Server\Decorations\Controller\Authenticate;
 use Websyspro\Core\Server\Decorations\Controller\Controller;
@@ -13,6 +17,7 @@ use Websyspro\Core\Server\Decorations\Controller\Get;
 use Websyspro\Core\Server\Decorations\Controller\Patch;
 use Websyspro\Core\Server\Decorations\Controller\Post;
 use Websyspro\Core\Server\Decorations\Controller\Put;
+use Websyspro\Core\Server\Exceptions\Error;
 use Websyspro\Core\Util;
 
 /**
@@ -210,21 +215,204 @@ class Router
     );
   }
 
+  /**
+   * Resolves the declared type(s) of a reflected parameter.
+   *
+   * This method normalizes different ReflectionType implementations:
+   * - If the type is a ReflectionNamedType, its name is returned as a string.
+   * - If the type is a ReflectionUnionType, an array of type names is returned.
+   * - For unsupported or unknown ReflectionType implementations,
+   *   an empty array is returned.
+   *
+   * @param ReflectionParameter $reflectionParameter
+   *        The reflection type extracted from a parameter.
+   *
+   * @return string|array<int, string>
+   *         A single type name for named types, or an array of type names
+   *         for union types.
+   */  
+  private function typeFromParameter(
+    ReflectionParameter $reflectionParameter
+  ): array {
+    if( $reflectionParameter->getType() instanceof ReflectionNamedType) {
+      return [ $reflectionParameter->getType()->getName() ];
+    } else if( $reflectionParameter->getType() instanceof ReflectionUnionType ){
+      return Util::mapper(
+        array: $reflectionParameter->getType()->getTypes(),
+        fn: fn(ReflectionNamedType $reflectionNamedType): string => $reflectionNamedType->getName()
+      );
+    }
+
+    return [];
+  }
+
+  /**
+   * Retrieves the name of a reflected method parameter.
+   *
+   * This method returns the parameter identifier as declared
+   * in the method signature.
+   *
+   * @param ReflectionParameter $reflectionParameter
+   *        The reflected parameter being inspected.
+   *
+   * @return string The parameter name.
+   */  
+  private function nameFromParameter(
+    ReflectionParameter $reflectionParameter
+  ): string {
+    return $reflectionParameter->getName();
+  }
+
+  /**
+   * Instantiates and returns the object represented by a reflection attribute.
+   *
+   * This method creates a new instance of the attribute class using
+   * the arguments defined in the attribute declaration.
+   *
+   * @param ReflectionAttribute $reflectionAttribute
+   *        The reflection attribute to be instantiated.
+   *
+   * @return mixed The instantiated attribute object.
+   */  
+  private function instanceFromAttribute(
+    ReflectionAttribute $reflectionAttribute
+  ): mixed {
+    return $reflectionAttribute->newInstance();
+  }
+
+  /**
+   * Resolves the default value of a reflected method parameter.
+   *
+   * If the parameter is optional, its declared default value is returned.
+   * Otherwise, null is returned to indicate that no default value exists.
+   *
+   * @param ReflectionParameter $reflectionParameter
+   *        The reflected parameter being inspected.
+   *
+   * @return mixed The default value if defined, or null when the parameter
+   *               does not declare a default value.
+   */  
+  private function defaultFromParameter(
+    ReflectionParameter $reflectionParameter
+  ): mixed {
+    if( $reflectionParameter->isOptional() ){
+      return $reflectionParameter->getDefaultValue();
+    }
+
+    return null;
+  }
+
+  /**
+   * Resolves and normalizes all parameters declared on the current controller method.
+   *
+   * For each reflected method parameter, this method:
+   * - Reads the parameter attributes.
+   * - Ensures that exactly one attribute is declared.
+   * - Instantiates the attribute.
+   * - Resolves the parameter default value.
+   * - Resolves the parameter declared type(s).
+   *
+   * The resulting structure is later used by the parameter resolver
+   * to inject values into the controller method invocation.
+   *
+   * @return array<int, array{
+   *     paramterInstance: object,
+   *     paramterDefault: mixed,
+   *     paramterTypes: string|array<int, string>
+   * }>
+   */  
   private function parametersFromMethod(
   ): array {
-    return [
-      new ReflectionMethod(
-        objectOrMethod: $this->controller,
-        method: $this->name
-      )
-    ];
-  } 
+    $reflectionMethod = new ReflectionMethod(
+      objectOrMethod: $this->controller,
+      method: $this->name
+    );
+
+    /**
+     * @var array<int, array{paramterInstance: object, paramterDefault: mixed, paramterType: array<int, string>}> 
+     */
+    $reflectionMethodParameters = Util::mapper(
+      array: $reflectionMethod->getParameters(), 
+      fn: function(ReflectionParameter $reflectionParameter): array {
+        $attributsFromParameter = $reflectionParameter->getAttributes();
+
+        /*
+         * Ensure that the parameter declares at least one attribute.
+         * If no attribute is found, this indicates an invalid configuration
+         * and an internal server error is raised.
+         * */
+        if( Util::exist(  $attributsFromParameter ) === false ){
+          Error::InternalServerError(
+            "The parameter {$reflectionParameter->getName()} does not have an attribute."
+          );
+        }
+
+        /* Ensure that the parameter has at most one attribute.
+         * If more than one attribute is found, this indicates an invalid
+         * or ambiguous configuration and an internal server error is raised.
+         * */
+        if( Util::sizeArray( $attributsFromParameter) > 1 ){
+          Error::InternalServerError(
+            "The parameter {$reflectionParameter->getName()} should have only one attribute"
+          );
+        }
+
+        /**
+         * Maps each parameter attribute to a structured array containing:
+         * - The instantiated attribute object.
+         * - The declared type of the reflected parameter.
+         *
+         * This structure is used later to resolve or inject the parameter
+         * value based on attribute metadata and type information.
+         *
+         * @return array<int, array{instance: object, type: ?\ReflectionType}>
+         */    
+        [ $paramter ] = Util::mapper(
+          $attributsFromParameter, fn( ReflectionAttribute $reflectionAttribute ) => ([
+            "paramterInstance" => $this->instanceFromAttribute( $reflectionAttribute ),
+            "paramterDefault" => $this->defaultFromParameter( $reflectionParameter ),
+            "paramterTypes" => $this->typeFromParameter( $reflectionParameter ),
+            "paramterName" => $this->nameFromParameter( $reflectionParameter )
+          ])
+        );
+        
+        return $paramter;
+      }
+    );
+
+    return $reflectionMethodParameters;
+  }
+
+  private function doParamters(
+    Request $request    
+  ): array {
+    Util::mapper(
+      array: $this->parametersFromMethod(),
+      fn: function( array $prameter ) use( $request ) : array {
+        [ "paramterInstance" => $paramterInstance,
+          "paramterDefault" => $paramterDefault,
+          "paramterTypes" => $paramterTypes,
+          "paramterName" => $paramterName
+        ] = $prameter;
+
+        $compiledParameters = $paramterInstance->execute( 
+          $request, $paramterName, $paramterTypes, $paramterDefault
+        );
+
+        print_r($compiledParameters);
+
+        return [];
+      }
+    );
+
+    return [];
+  }
 
   public function execute(
     Request $request
   ): mixed {
     $this->doMiddlewares( request: $request );
-    print_r( $this->parametersFromMethod() );
+    $this->doParamters( request: $request );
 
     return [];
   }

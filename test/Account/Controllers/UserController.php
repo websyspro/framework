@@ -4,10 +4,14 @@ namespace Websyspro\Test\Account\Controllers;
 
 use Websyspro\Core\Server\Decorations\Controller\AllowAnonymous;
 use Websyspro\Core\Server\Decorations\Controller\Authenticate;
-use Websyspro\Core\Server\Decorations\Controller\Body;
 use Websyspro\Core\Server\Decorations\Controller\Controller;
-use Websyspro\Core\Server\Decorations\Controller\Get;
+use Websyspro\Core\Server\Decorations\Controller\Body;
 use Websyspro\Core\Server\Decorations\Controller\Post;
+
+class UserDto {
+  public string $body;
+  public string $content;
+}
 
 #[Authenticate]
 #[Controller(prefix: "user")]
@@ -15,18 +19,19 @@ class UserController
 {
   public function __construct(){}
 
-  #[Get(uri: "/")]
+  #[Post(uri: "/")]
   #[AllowAnonymous]
   public function list(
-  ): array {
-    return [];
+    #[Body] UserDto $items
+  ): mixed {
+    return $items;
   }
 
   #[Post("/create")]
   #[AllowAnonymous]
   public function create(
-    #[Body] array $body
+    #[Body] array $items = []
   ): array {
-    return $body;
+    return $items;
   }
 }

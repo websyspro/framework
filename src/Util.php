@@ -346,7 +346,11 @@ class Util
     mixed $key = null
   ): bool {
     if( Util::isNull($key) === false ){
-      return isset($value[ $key ]);
+      if( Util::isArray($value)){
+        return isset($value[ $key ]);
+      } else if( Util::isObject($value)){
+        return isset($value->{ $key });
+      }
     }
 
     return isset($value);
@@ -432,10 +436,10 @@ class Util
   public static function isPrimitiveType(
     string $primitiveType
   ): bool {
-    return in_array( $primitiveType, [
+    return Util::inArray( $primitiveType, [
       "int", "integer", "float", "double", "string",
-      "bool", "boolean", "array", "object", "null"
-    ], true );
+      "bool", "boolean", "array", "null"
+    ]);
   }
   
   /**
@@ -461,7 +465,7 @@ class Util
    * @param string $className The fully-qualified class name to instantiate.
    * @return object The hydrated object instance.
    */  
-  public static function hydrateObject( 
+  public static function hydrateObject_( 
     mixed $data,
     string $className
   ): object {
@@ -482,7 +486,7 @@ class Util
       $typeName = $type->getName();
       $propName = $prop->getName();
 
-      if(!array_key_exists($propName, $data)){
+      if( \array_key_exists($propName, $data) === false ){
         continue;
       }
 
@@ -500,5 +504,143 @@ class Util
     }
 
     return $instance;
-  }  
+  }
+
+  /**
+   * Hydrates an object instance from an array or stdClass data source.
+   *
+   * This method dynamically maps values from a given data structure
+   * (array or object) into a strongly typed DTO or object instance.
+   * The hydration process is based on reflection and property type hints.
+   *
+   * The process follows these rules:
+   *
+   * - Only properties that exist in the target class are considered.
+   * - Values are matched by property name.
+   * - Primitive (built-in) types are assigned directly.
+   * - Non-primitive types (custom classes / DTOs) are hydrated recursively.
+   * - Properties without a resolvable type or missing data are skipped.
+   * - The constructor is not executed during instantiation.
+   *
+   * This method is designed to be generic and reusable, serving as
+   * a core utility for request mapping, DTO hydration, entity mapping,
+   * and other object transformation scenarios.
+   *
+   * @param object|array $data
+   *        The source data used to hydrate the object. Can be an array
+   *        or a stdClass-like object.
+   *
+   * @param string $dtoClass
+   *        Fully qualified class name of the object to be hydrated.
+   *
+   * @return object
+   *         A hydrated instance of the given class.
+   */
+  public static function hydrateObject(
+    object|array $originClass,
+    string $destineClass
+  ): mixed {
+    /**
+     * Creates a ReflectionClass instance for the target DTO class.
+     *
+     * Reflection is used to inspect properties, types, and metadata
+     * without requiring prior knowledge of the class structure.
+     */
+    $reflectionClass = new ReflectionClass(
+      objectOrClass: $destineClass
+    );
+
+    /**
+     * Instantiates the DTO without executing its constructor.
+     *
+     * This allows full control over property hydration and avoids
+     * side effects or required constructor parameters.
+     */
+    $instance = $reflectionClass->newInstanceWithoutConstructor();
+
+    /**
+     * Iterates over all declared properties of the DTO.
+     *
+     * Only properties defined in the target class are considered,
+     * ensuring strict and predictable hydration behavior.
+     */
+    foreach ($reflectionClass->getProperties() as $property) {
+
+      /**
+       * Retrieves the property name used to map incoming data.
+       */
+      $propertyName = $property->getName();
+
+      /**
+       * Skips hydration when the incoming data does not contain
+       * a matching property key.
+       *
+       * Supports both array-based and object-based payloads.
+       */
+      if( Util::existVar($originClass, $propertyName) === false ){
+        continue;
+      }
+
+      /**
+       * Extracts the value from the data source, handling both
+       * array and object access transparently.
+       */
+      $value = Util::isArray( value: $originClass )
+        ? $originClass[$propertyName]
+        : $originClass->{$propertyName};
+
+      /**
+       * Retrieves the declared type of the property.
+       *
+       * Only named types are supported; union or complex types
+       * are ignored to preserve deterministic behavior.
+       */
+      $type = $property->getType();
+
+      if ($type instanceof ReflectionNamedType === false) {
+        continue;
+      }
+
+      /**
+       * Resolves the type name of the property.
+       *
+       * This value is used to determine whether the property
+       * represents a primitive type or a nested object.
+       */
+      $typeName = $type->getName();
+
+      /**
+       * Handles primitive (built-in) PHP types.
+       *
+       * Primitive values are assigned directly without
+       * additional transformation or validation.
+       */
+      if ($type->isBuiltin()) {
+        $property->setValue($instance, $value);
+        continue;
+      }
+
+      /**
+       * Handles object or DTO types recursively.
+       *
+       * When the property type is a class, the value is assumed
+       * to be an array or object compatible with that class
+       * and is hydrated recursively.
+       */
+      if (class_exists($typeName)) {
+        $property->setValue(
+          $instance,
+          Util::hydrateObject(
+            originClass: $value,
+            destineClass: $typeName
+          )
+        );
+      }
+    }
+
+    /**
+     * Returns the fully hydrated object instance.
+     */
+    return $instance;
+  }
 } 
