@@ -66,62 +66,27 @@ class Body extends AbstractParameter
     /**
      * Retrieves the raw request body to be used as the source
      * for parameter value resolution.
-     */    
+     */     
     $paramterValue = $request->body();
-
+    
     /**
-     * Retrieves the request body and attempts to resolve the parameter value
-     * against all possible declared parameter types.
+     * Delegates the resolution and hydration of the parameter value
+     * to the hydrateTypes method.
      *
-     * If no explicit parameter types are declared, the runtime type of the
-     * request body is used as a fallback.
+     * This call centralizes the logic responsible for:
+     * - Resolving the correct value from the raw parameter input.
+     * - Validating the value against the allowed parameter types.
+     * - Applying the default value when necessary.
+     * - Returning a properly hydrated and type-safe result.
      *
-     * Each candidate type is passed to `getValue()` in order to determine
-     * whether the parameter value can be successfully resolved.
-     */    
-    $paramterValue = Util::mapper(
-      array: Util::merge(
-        array: $paramterTypes, arrays: Util::sizeArray($paramterTypes) === 0 
-          ? [Util::getType( value: $paramterValue )] : []
-      ), fn: fn( string $paramterType ): array|null => (
-        $this->getValue(
-          parameterValue: $paramterValue,
-          parameterType: $paramterType,
-          paramterDefault: $paramterDefault,
-        )
-      )
-    );
-
-    /**
-     * If a specific key is defined, attempt to extract the parameter value
-     * from the provided source using that key.
-     *
-     * - When the source value is an array, the key is used as an array index.
-     *
-     * If the key does not exist in the source, the parameter default value
-     * is returned as a fallback.
-     */    
-    if (Util::isNull(value: $this->key ) === false) {
-      if (Util::isArray(value: $paramterValue )) {
-        return $paramterValue[ $this->key ] ?? $paramterDefault;
-      }
-    }
-
-    /**
-     * Filters resolved parameter values, keeping only valid results.
-     *
-     * A parameter value is considered valid when:
-     * - The resolved type is not null.
-     * - The resolved value is not null.
-     *
-     * Invalid or unresolved entries are removed from the result set.
-     */    
-    return Util::where(
-      array: $paramterValue, 
-      fn: fn(array $value): bool => (
-        Util::isNull( value: $value[ "type" ]) === false &&
-        Util::isNull( value: $value[ "text" ]) === false
-      )
-    );
+     * By isolating this behavior, the parameter resolution process
+     * remains consistent and reusable across different contexts.
+     */ 
+    return $this->hydrateTypes(
+      $paramterValue,
+      $paramterName,
+      $paramterTypes,
+      $paramterDefault
+    ); 
   }
 }
