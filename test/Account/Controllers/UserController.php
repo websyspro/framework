@@ -11,6 +11,7 @@ use Websyspro\Core\Server\Decorations\Controller\Post;
 class UserDto {
   public string $body;
   public string $content;
+  public int $test;
 }
 
 #[Authenticate]
