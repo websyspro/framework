@@ -451,13 +451,21 @@ class HttpServer
   ): void {
     [ $router ] = $this->routers;
     if( $router instanceof RouteDirect ){
-      if( Util::isFN( $router->handler )){
-        Util::callUserFN( $router->handler, [
-          $this->response, $this->request->defineParam($router->uri()),
+      if( Util::isFN( fn: $router->handler )){
+        Util::callUserFN( fn: $router->handler, args: [
+          $this->response, $this->request->defineParam(
+            requestUri: $router->uri()
+          ),
         ]);
       }
     } else if( $router instanceof Router ) {
-      $router->execute( $this->request );
+      $this->response->json(
+        value: $router->execute( 
+          request: $this->request->defineParam(
+            requestUri: $router->uri()
+          )
+        )
+      );
     }
   }
 

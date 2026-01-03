@@ -9,7 +9,6 @@ use ReflectionNamedType;
 use ReflectionParameter;
 use ReflectionType;
 use ReflectionUnionType;
-use Uri\Rfc3986\Uri;
 use Websyspro\Core\Server\Decorations\Controller\AllowAnonymous;
 use Websyspro\Core\Server\Decorations\Controller\Authenticate;
 use Websyspro\Core\Server\Decorations\Controller\Controller;
@@ -480,14 +479,23 @@ class Router
      */    
     return $parameters;
   }
+
+  private function doInstanceController(
+  ): object {
+    return DependenceInjection::getInstance( 
+      class: $this->controller
+    );
+  }
   
   public function execute(
     Request $request
   ): mixed {
     $this->doMiddlewares( request: $request );
-    $this->doParamters( request: $request );
+    $this->doInstanceController();
     
-
-    return [];
+    return call_user_func_array(
+      callback: [ $this->doInstanceController(), $this->name ],
+      args: $this->doParamters( request: $request )
+    );
   }
 }

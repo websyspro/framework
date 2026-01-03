@@ -1,10 +1,9 @@
 <?php
 
-namespace Websyspro;
+namespace Websyspro\Core\Server;
 
 use ReflectionClass;
 use ReflectionParameter;
-use Websyspro\Commons\Utils;
 use Websyspro\Core\Util;
 
 class DependenceInjection
@@ -43,7 +42,7 @@ class DependenceInjection
   ): object {
     $reflectionClass = (
       new ReflectionClass(
-        $objectClass
+        objectOrClass: $objectClass
       )
     );
 
@@ -58,12 +57,12 @@ class DependenceInjection
 
       if( $getParameters ){
         $getParametersList = Util::mapper(
-          $getParameters, (
-            function( ReflectionParameter $reflectionParameter ) {
+          array: $getParameters, fn: (
+            function( ReflectionParameter $reflectionParameter ): mixed {
               if( $reflectionParameter->isDefaultValueAvailable() === false ){
                 return DependenceInjection::gets(
-                   DependenceInjection::nameFromParameter(
-                    $reflectionParameter
+                   objectClass: DependenceInjection::nameFromParameter(
+                    reflectionParameter: $reflectionParameter
                    )
                 );
               }
@@ -73,7 +72,7 @@ class DependenceInjection
           )
         );
 
-        return call_user_func_array([
+        return call_user_func_array( [
           new ReflectionClass(
             $objectClass
           ), "newInstance"
