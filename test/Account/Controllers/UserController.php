@@ -4,6 +4,7 @@ namespace Websyspro\Test\Account\Controllers;
 
 use Websyspro\Core\Server\Decorations\Controller\AllowAnonymous;
 use Websyspro\Core\Server\Decorations\Controller\Authenticate;
+use Websyspro\Core\Server\Decorations\Controller\Body;
 use Websyspro\Core\Server\Decorations\Controller\Controller;
 use Websyspro\Core\Server\Decorations\Controller\Get;
 use Websyspro\Core\Server\Decorations\Controller\Post;
@@ -22,8 +23,10 @@ class UserController
   }
 
   #[Post("/create")]
+  #[AllowAnonymous]
   public function create(
+    #[Body] array $body
   ): array {
-    return [];
+    return $body;
   }
 }

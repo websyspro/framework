@@ -1,5 +1,7 @@
 <?php
 
+namespace Websyspro\Core\Server;
+
 /**
  * Class File
  *
@@ -11,8 +13,6 @@
  *
  * @package Websyspro\Core\Server
  */
-
-namespace Websyspro\Core\Server;
 
 class File
 {

@@ -204,10 +204,10 @@ class Util
    */  
   public static function merge(
     array $array,
-    array ...$arrays
+    array $arrays
   ): array {
     return array_merge(
-      $array, ...$arrays
+      $array, $arrays
     );
   }
   

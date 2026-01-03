@@ -457,7 +457,7 @@ class HttpServer
         ]);
       }
     } else if( $router instanceof Router ) {
-      print_r( $router );
+      $router->execute( $this->request );
     }
   }
 

@@ -42,9 +42,7 @@ class HttpModule
       objectOrClass: $this->module
     );
 
-    [ $moduleClass ] = $reflectionClass->getAttributes(
-      name: Module::class
-    );
+    [ $moduleClass ] = $reflectionClass->getAttributes( name: Module::class );
 
     if( $moduleClass instanceof ReflectionAttribute ){
       $newInstance = $moduleClass->newInstance();

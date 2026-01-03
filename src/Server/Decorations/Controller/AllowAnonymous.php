@@ -5,7 +5,7 @@ namespace Websyspro\Core\Server\Decorations\Controller;
 use Websyspro\Core\Server\Enums\ControllerType;
 use Websyspro\Core\Server\Request;
 use Attribute;
-
+use Websyspro\Core\Server\Exceptions\Error;
 
 /**
  * Marks a controller method as "allow anonymous".
