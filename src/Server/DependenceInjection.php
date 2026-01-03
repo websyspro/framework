@@ -2,9 +2,9 @@
 
 namespace Websyspro\Core\Server;
 
-use ReflectionClass;
-use ReflectionParameter;
 use Websyspro\Core\Util;
+use ReflectionParameter;
+use ReflectionClass;
 
 class DependenceInjection
 {

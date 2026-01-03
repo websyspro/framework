@@ -2,13 +2,6 @@
 
 namespace Websyspro\Core\Server;
 
-use ReflectionAttribute;
-use ReflectionClass;
-use ReflectionMethod;
-use ReflectionNamedType;
-use ReflectionParameter;
-use ReflectionType;
-use ReflectionUnionType;
 use Websyspro\Core\Server\Decorations\Controller\AllowAnonymous;
 use Websyspro\Core\Server\Decorations\Controller\Authenticate;
 use Websyspro\Core\Server\Decorations\Controller\Controller;
@@ -18,7 +11,14 @@ use Websyspro\Core\Server\Decorations\Controller\Patch;
 use Websyspro\Core\Server\Decorations\Controller\Post;
 use Websyspro\Core\Server\Decorations\Controller\Put;
 use Websyspro\Core\Server\Exceptions\Error;
+use ReflectionAttribute;
+use ReflectionNamedType;
+use ReflectionParameter;
+use ReflectionUnionType;
 use Websyspro\Core\Util;
+use ReflectionMethod;
+use ReflectionClass;
+use ReflectionType;
 
 /**
  * Representa uma rota registrada a partir de um módulo.
