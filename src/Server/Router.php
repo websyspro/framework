@@ -383,11 +383,6 @@ class Router
     return $reflectionMethodParameters;
   }
 
-  private function depencyInject(
-  ): mixed {
-    return [];
-  }
-
   /**
    * Resolves, validates, and injects method parameters based on request data.
    *
@@ -487,13 +482,44 @@ class Router
     );
   }
   
+  /**
+   * Executes the controller action lifecycle.
+   *
+   * This method represents the full execution pipeline for a route:
+   *
+   * - Executes all resolved middlewares associated with the controller
+   *   and the target method.
+   * - Instantiates the controller class.
+   * - Resolves and injects method parameters based on the current request.
+   * - Invokes the controller method dynamically with the resolved arguments.
+   *
+   * The controller method return value is propagated as the final
+   * execution result.
+   *
+   * @param Request $request The current HTTP request instance.
+   *
+   * @return mixed
+   *         The value returned by the invoked controller method.
+   */  
   public function execute(
     Request $request
   ): mixed {
+    /**
+     * Executes all middlewares before the controller action is called.
+     *
+     * Middlewares may perform tasks such as authentication,
+     * authorization, or request preprocessing.
+     */    
     $this->doMiddlewares( request: $request );
-    $this->doInstanceController();
     
-    return call_user_func_array(
+    /**
+     * Dynamically invokes the controller method.
+     *
+     * - The method name is resolved at runtime.
+     * - Parameters are automatically hydrated and injected.
+     * - call_user_func_array allows flexible argument passing.
+     */    
+    return \call_user_func_array(
       callback: [ $this->doInstanceController(), $this->name ],
       args: $this->doParamters( request: $request )
     );
