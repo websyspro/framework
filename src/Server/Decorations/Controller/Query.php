@@ -2,10 +2,10 @@
 
 namespace Websyspro\Core\Server\Decorations\Controller;
 
-use Attribute;
 use Websyspro\Core\Server\Enums\ControllerType;
 use Websyspro\Core\Server\Request;
-
+use Websyspro\Core\Util;
+use Attribute;
 
 /**
  * Marks a controller method parameter to be populated from the query string.
@@ -44,28 +44,50 @@ class Query extends AbstractParameter
   ){}
   
   /**
-   * Executes the attribute logic to extract the value from the query string.
+   * Executes the attribute logic to extract the value from the request body.
    *
    * Delegates to AbstractParameter::getValue() to handle:
-   *   - Fetching the value from $request->query()
+   *   - Fetching the value from the body
    *   - Casting it to the correct type
    *   - Handling default values or missing keys
    *
-   * @param Request $request The current request object.
-   * @param string  $instanceType The expected type of the parameter.
+   * @param Request $request       The current request object.
+   * @param string  $instanceType  The expected type of the parameter.
    *
-   * @return mixed The extracted and properly typed query parameter value.
-   */  
+   * @return mixed The extracted and properly typed value.
+   */   
   public function execute(
     Request $request,
-    string $instanceType,
-    mixed $defaultValue = null
-  ): mixed {
-    return $this->getValue(
-      $request->query(), 
-      $instanceType,
-      $defaultValue,
-      $this->key
+    string $paramterName,
+    array $paramterTypes = [],
+    mixed $paramterDefault = null
+  ): array {
+    /**
+     * Retrieves the raw request body to be used as the source
+     * for parameter value resolution.
+     */     
+    $paramterValue = $request->query();
+    
+    /**
+     * Delegates the resolution and hydration of the parameter value
+     * to the hydrateTypes method.
+     *
+     * This call centralizes the logic responsible for:
+     * - Resolving the correct value from the raw parameter input.
+     * - Validating the value against the allowed parameter types.
+     * - Applying the default value when necessary.
+     * - Returning a properly hydrated and type-safe result.
+     *
+     * By isolating this behavior, the parameter resolution process
+     * remains consistent and reusable across different contexts.
+     */ 
+    return Util::mapper(
+      array: $this->hydrateTypes(
+        paramterValue: $paramterValue,
+        paramterName: $paramterName,
+        paramterTypes: $paramterTypes,
+        paramterDefault: $paramterDefault
+      ), fn: fn( array $value ): mixed => $value["text"]
     );
   }
 }

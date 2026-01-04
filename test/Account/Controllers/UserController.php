@@ -6,7 +6,10 @@ use Websyspro\Core\Server\Decorations\Controller\AllowAnonymous;
 use Websyspro\Core\Server\Decorations\Controller\Authenticate;
 use Websyspro\Core\Server\Decorations\Controller\Controller;
 use Websyspro\Core\Server\Decorations\Controller\Body;
+use Websyspro\Core\Server\Decorations\Controller\Get;
+use Websyspro\Core\Server\Decorations\Controller\Param;
 use Websyspro\Core\Server\Decorations\Controller\Post;
+use Websyspro\Core\Server\Decorations\Controller\Query;
 
 class UserDto {
   public string $body;
@@ -20,12 +23,18 @@ class UserController
 {
   public function __construct(){}
 
-  #[Post(uri: "/")]
+  #[Get(uri: "/:testId")]
   #[AllowAnonymous]
   public function list(
-    #[Body] UserDto $items
+    #[Body] UserDto $body,
+    #[Query] array $query,
+    #[Param] array $param
   ): mixed {
-    return $items;
+    return [
+      "body" => $body,
+      "query" => $query,
+      "param" => $param
+    ];
   }
 
   #[Post("/create")]

@@ -439,7 +439,17 @@ class HttpServer
       $error->getMessage(),
       $error->getCode()
     ];
-    
+
+    /**
+     * Sends a JSON response to the client using the resolved HTTP status code.
+     *
+     * The public message is resolved based on the HTTP status code and
+     * the internal exception message, ensuring that sensitive or internal
+     * details are not exposed to the client.
+     *
+     * This method centralizes the transformation of internal errors into
+     * safe, public-facing HTTP responses.
+     */
     $this->response->json(
       HttpStatus::resolvePublicMessage(
         $code, $message

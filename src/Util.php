@@ -397,6 +397,16 @@ class Util
     );
   }
 
+  public static function callClassFN(
+    object $object, 
+    string $method,
+    array $args = []
+  ): mixed {
+    return \call_user_func_array(
+      [ $object, $method ], $args
+    );
+  }  
+
   /**
    * Returns the type of a given value as a string.
    *

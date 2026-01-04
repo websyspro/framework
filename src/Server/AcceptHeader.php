@@ -516,17 +516,8 @@ class AcceptHeader
     array $phpInputArr = []
   ): array {
     /**
-     * Handles POST requests by extracting form fields from the request body.
-     *
-     * When the HTTP method is POST, the global $_POST array is used
-     * as the source of parameter values and returned under the
-     * "fields" key.
-     */    
-    if (HttpMethod::POST->value === $this->method) {
-      return [ "fields" => $_POST ];
-    }
-
-    // Split file "php://input" with path #(\-{28}[0-9]{24})#
+     * Split file "php://input" with path #(\-{28}[0-9]{24})#
+     * */
     $phpInputArr = preg_split(
       "#(\-{28}[0-9]{24})#",
       file_get_contents(

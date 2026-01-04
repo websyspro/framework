@@ -462,11 +462,12 @@ class Router
      * declared in the controller method, the route is considered invalid.
      */    
     $sizeParameters = Util::sizeArray( array: $parameters );
-    $sizeParametersFromMethod = Util::sizeArray( array: $parameters );
+    $sizeParametersFromMethod = Util::sizeArray( array: $parametersFromMethod );
 
     if( $sizeParameters !== $sizeParametersFromMethod ){
-      Error::NotFound( "Route {$request->requestUri()} not found" );
+      Error::UnprocessableEntity( "Request does not match the controller method signature." );
     }
+
 
     /**
      * Returns the final list of resolved parameters, ready to be
@@ -511,7 +512,7 @@ class Router
      * authorization, or request preprocessing.
      */    
     $this->doMiddlewares( request: $request );
-    
+
     /**
      * Dynamically invokes the controller method.
      *
@@ -519,8 +520,8 @@ class Router
      * - Parameters are automatically hydrated and injected.
      * - call_user_func_array allows flexible argument passing.
      */    
-    return \call_user_func_array(
-      callback: [ $this->doInstanceController(), $this->name ],
+    return Util::callClassFN(
+      object: $this->doInstanceController(), method: $this->name,
       args: $this->doParamters( request: $request )
     );
   }

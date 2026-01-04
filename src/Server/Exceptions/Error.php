@@ -46,4 +46,17 @@ class Error
       message: $message, code: HttpStatus::UNAUTHORIZED->value
     );
   }
+
+  /**
+   * Thrown when the request payload is valid JSON
+   * but cannot be processed into the expected type (DTO, entity, etc).
+   */
+  public static function UnprocessableEntity(
+    string $message
+  ): Exception {
+    return throw new Exception(
+      message: $message,
+      code: HttpStatus::UNPROCESSABLE_ENTITY->value
+    );
+  }  
 }

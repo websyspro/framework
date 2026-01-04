@@ -1,5 +1,11 @@
 <?php
 
+namespace Websyspro\Core\Server;
+
+use Websyspro\Core\Server\Enums\ContentType;
+use Websyspro\Core\Server\Enums\HttpStatus;
+use Websyspro\Core\Util;
+
 /**
  * Class Response
  *
@@ -12,14 +18,6 @@
  *   (Apache, Nginx, PHP built-in server).
  * - It does NOT build raw HTTP responses manually.
  */
-
-namespace Websyspro\Core\Server;
-
-use Exception;
-use Websyspro\Core\Server\Enums\ContentType;
-use Websyspro\Core\Server\Enums\HttpStatus;
-use Websyspro\Core\Util;
-
 class Response
 {
   /**
