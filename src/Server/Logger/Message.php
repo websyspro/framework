@@ -8,9 +8,7 @@ class Message
 {
   public static function infors(
     LogType $logType,
-    string $logText,
-    string $logIp = "::1",
-    string $logPort = "00000"   
+    string $logText
   ): bool {
     return Log::debug(
       $logType,
@@ -20,9 +18,7 @@ class Message
 
   public static function error(
     LogType $logType,
-    string $logText,
-    string $logIp = "::1",
-    string $logPort = "00000"        
+    string $logText     
   ): bool {
     return Log::fail($logType, $logText);
   }

@@ -15,6 +15,7 @@ class UserDto {
   public string $body;
   public string $content;
   public int $test;
+  public array $access;
 }
 
 #[Authenticate]
@@ -28,16 +29,12 @@ class UserController
   public function list(
     #[Body] UserDto $body,
     #[Query] array $query,
-    #[Param] array $param
+    #[Param] array $param 
   ): mixed {
-    return [
-      "body" => $body,
-      "query" => $query,
-      "param" => $param
-    ];
+    return [ "body" => $body, "query" => $query, "param" => $param ];
   }
 
-  #[Post("/create")]
+  #[Post(uri: "/create")]
   #[AllowAnonymous]
   public function create(
     #[Body] array $items = []

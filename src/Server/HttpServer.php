@@ -436,9 +436,20 @@ class HttpServer
     Exception $error
   ): void {
     [ $message, $code ] = [
-      $error->getMessage(),
-      $error->getCode()
+      $error->getMessage(), $error->getCode()
     ];
+
+    /**
+     * Logs a service-level failure.
+     *
+     * This log entry is used to record errors related to internal services
+     * or infrastructure components (e.g. database, cache, external APIs),
+     * helping to distinguish them from application or client-side errors.
+     *
+     * The message should describe the failure context without exposing
+     * sensitive details.
+     */    
+    Log::fail( type: LogType::service, message: $message );
 
     /**
      * Sends a JSON response to the client using the resolved HTTP status code.
@@ -451,24 +462,59 @@ class HttpServer
      * safe, public-facing HTTP responses.
      */
     $this->response->json(
-      HttpStatus::resolvePublicMessage(
-        $code, $message
-      ), $code
+      value: HttpStatus::resolvePublicMessage(
+        code: $code, message: $message
+      ), code: $code
     );
   }
 
+  /**
+   * Executes the matched router for the current request.
+   *
+   * This method resolves the first matched route and determines how it
+   * should be executed based on its type:
+   *
+   * - RouteDirect: Executes a user-defined callable directly, passing
+   *   the response object and resolved request parameters.
+   * - Router: Delegates execution to a controller/action pipeline and
+   *   serializes the returned value as a JSON response.
+   *
+   * This method represents the final execution step of the routing
+   * pipeline, occurring after route matching and request parameter
+   * resolution.
+   */
   private function routersExec(
   ): void {
+    /**
+     * Retrieves the first matched router 
+     * */
     [ $router ] = $this->routers;
+
+    /**
+     * Direct route execution (closure or callable handler)
+     * */
     if( $router instanceof RouteDirect ){
       if( Util::isFN( fn: $router->handler )){
+
+        /* 
+         * Executes the user-defined handler, passing the response instance
+         * and resolved parameters based on the request URI
+         **/
         Util::callUserFN( fn: $router->handler, args: [
           $this->response, $this->request->defineParam(
             requestUri: $router->uri()
           ),
         ]);
       }
-    } else if( $router instanceof Router ) {
+    }
+    
+    /**
+     * Controller-based route execution  
+     **/
+    if( $router instanceof Router ) {
+      /** 
+       * Executes the controller action and serializes the result as JSON 
+       * */
       $this->response->json(
         value: $router->execute( 
           request: $this->request->defineParam(
