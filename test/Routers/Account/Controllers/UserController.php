@@ -5,6 +5,7 @@ namespace Websyspro\Test\Routers\Account\Controllers;
 use Websyspro\Core\Server\Decorations\Controller\AllowAnonymous;
 use Websyspro\Core\Server\Decorations\Controller\Authenticate;
 use Websyspro\Core\Server\Decorations\Controller\Controller;
+use Websyspro\Core\Server\Decorations\Controller\Query;
 use Websyspro\Core\Server\Decorations\Controller\Get;
 use Websyspro\Test\Views\Users\UserView;
 
@@ -17,7 +18,8 @@ class UserController
   #[Get( uri: "/" )]
   #[AllowAnonymous]
   public function list(
+    #[Query] array $query = []
   ): mixed {
-    return UserView::render();
+    return UserView::render( $query );
   }
 }

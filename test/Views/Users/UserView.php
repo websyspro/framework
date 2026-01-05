@@ -7,11 +7,11 @@ use Websyspro\Core\Elements\Shareds\Component;
 class UserView extends Component
 {
   public static function render(
-    string|object|null $routeView = null
+    array $query = []
   ): object {
     return new static( 
       [
-        "Componente UserView"
+        "Componente UserView - $query[userId]"
       ]
     );
   }

@@ -1,6 +1,7 @@
 <?php
 
 use Websyspro\Core\Server\WebServer;
+use Websyspro\Test\Routers\Account\AccountModule;
 use Websyspro\Test\Views\BaseView;
 
 /** 
@@ -15,9 +16,11 @@ $webServer = new WebServer();
  * The modules array can be used to configure routes,
  * services, middlewares, or other application components.
  */
-$webServer->module( [
-  
-]);
+$webServer->module( 
+  [
+    AccountModule::class
+  ]
+);
 
 /**
  * Bootstraps the web application using the Base view class.
@@ -27,3 +30,8 @@ $webServer->module( [
 $webServer->bootstrap(
   BaseView::class
 );
+
+/**
+ * Starts the HTTP server and begins listening for incoming requests.
+ */
+$webServer->load();
