@@ -9,21 +9,28 @@ use Websyspro\Core\Elements\Shareds\Component;
 class BaseView extends Component
 {
   public static function render(
+    string|object|null $routeView = null
   ): object {
     return new static( 
       [
-        Dom::flexContainer(FlexDirection::row)->add([
-          Dom::flexItem()->add(
-            [ 
-              Dom::div()->add( [ "Flex Item 1" ])
-            ]
-          ),
-          Dom::flexItem()->add(
-            [ 
-              Dom::div()->add( [ "Flex Item 2" ])
-            ]
-          )
-        ])
+        Dom::flexContainer(
+          FlexDirection::row
+        )->add( 
+          [
+            Dom::flexItem()->add(
+              [ 
+                Dom::div()->add( [ "Flex Item 1" ])
+              ]
+            ),
+            Dom::flexItem()->add(
+              [ 
+                Dom::div()->add( [
+                  $routeView ?? Dom::div()->add( [ "Flex Item 2" ])
+                ])
+              ]
+            )
+          ]
+        )
       ]
     );
   }

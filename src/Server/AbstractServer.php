@@ -59,6 +59,16 @@ class AbstractServer
     )
   ){}
 
+  public function response(
+  ): Response {
+    return $this->response;
+  }
+
+  public function request(
+  ): Request {
+    return $this->request;
+  }  
+
   /**
    * Registers or initializes modules for the application.
    *
@@ -394,7 +404,7 @@ class AbstractServer
    * keeping only those whose HTTP method matches the current
    * request method.
    */  
-  private function routersByMethods(
+  public function routersByMethods(
   ): void {
     $this->routers = Util::where( 
       $this->routers, 
@@ -413,7 +423,7 @@ class AbstractServer
    * keeping only those whose URI matches the current
    * request URI.
    */  
-  private function routersByUris(
+  public function routersByUris(
   ): void {
     $this->routers = Util::where( 
       array: $this->routers, 
@@ -429,7 +439,7 @@ class AbstractServer
    * If no routers are available after applying all filters,
    * this method triggers a "Not Found" error response.
    */  
-  private function routersEmpty(
+  public function routersEmpty(
   ): void {
     if( Util::exist( array: $this->routers ) === false ){
       Error::NotFound( message: "Route {$this->request->requestUri()} not found" );
@@ -445,7 +455,7 @@ class AbstractServer
    *
    * @param Exception $error The exception thrown during route handling.
    */  
-  private function routersIsError(
+  public function routersIsError(
     Exception $error
   ): void {
     [ $message, $code ] = [
@@ -496,7 +506,7 @@ class AbstractServer
    * pipeline, occurring after route matching and request parameter
    * resolution.
    */
-  private function routersExec(
+  public function routersExec(
   ): void {
     /**
      * Retrieves the first matched router 
