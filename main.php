@@ -2,7 +2,7 @@
 
 use Websyspro\Core\Server\HttpServer;
 use Websyspro\Test\Api\Account\AccountModule;
-use Websyspro\Test\Api\Markting\Controllers\ProductController;
+use Websyspro\Test\Api\Markting\MarkingModule;
 
 /**
  * Creates a new instance of the HTTP server.
@@ -17,9 +17,9 @@ $httpServer = new HttpServer();
  * that will be exposed through the HTTP server.
  */
 $httpServer->module(
-  [
+   [
     AccountModule::class,
-    ProductController::class
+    MarkingModule::class
   ]
 );
 

@@ -6,7 +6,7 @@ use Websyspro\Core\Server\Decorations\Controller\Module;
 use Websyspro\Test\Api\Markting\Controllers\ProductController;
 
 #[Module(
-  [
+  controllers: [
     ProductController::class
   ]
 )]

@@ -82,6 +82,32 @@ class HttpModule
       )
     );
   }
+
+  private function className(
+    string $class
+  ): array {
+    [ $classPaths ] = Util::slice(
+      array: preg_split( 
+        pattern: "#\\\\#", 
+        subject: $class, 
+        limit: -1, 
+        flags: PREG_SPLIT_DELIM_CAPTURE ),
+        offset: -1
+    );
+    
+    return Util::mapper(
+      array: Util::slice(
+        array: preg_split( 
+          pattern: "#(?=[A-Z])#", 
+          subject: $classPaths, 
+          limit: -1, 
+          flags: PREG_SPLIT_NO_EMPTY
+        ),
+        offset: 0,
+        length: -1
+      ), fn: fn(string $paths): string => strtolower( string: $paths )
+    );
+  }
   
   /**
    * Registra uma rota no HttpServer a partir de um endpoint.
@@ -99,32 +125,15 @@ class HttpModule
   ): void {
     [ $controller, $name, $endpoint ] = $endpoint;
     if( $endpoint instanceof AbstractEndpoint ){
-      [ $controllerPaths ] = Util::slice(
-        array: preg_split( 
-          pattern: "#\\\\#", 
-          subject: $controller, 
-          limit: -1, 
-          flags: PREG_SPLIT_DELIM_CAPTURE ),
-          offset: -1
-      );
-      
-      $controllerPaths = Util::mapper(
-        array: Util::slice(
-          array: preg_split( 
-            pattern: "#(?=[A-Z])#", 
-            subject: $controllerPaths, 
-            limit: -1, 
-            flags: PREG_SPLIT_NO_EMPTY
-          ),
-          offset: 0,
-          length: -1
-        ), fn: fn(string $paths): string => strtolower( string: $paths )
+      $controllerPaths = $this->className(
+        class: $controller 
       );
 
       $method = $endpoint->httpMethod()->value;
       $uri = Util::sprintFormat( 
-        format: "%s/{$endpoint->uri()}", args: [
-          implode( "/", $controllerPaths )
+        format: "%s/%s/{$endpoint->uri()}", args: [
+          implode( separator: "-", array: $this->className( class: $this->module )),
+          implode( separator: "/", array: $controllerPaths )
         ]
       );
 

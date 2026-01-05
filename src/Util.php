@@ -119,22 +119,6 @@ class Util
   }
 
   /**
-   * Counts how many parameters a callable accepts.
-   *
-   * Used to determine whether a callback expects
-   * value-only or value + key.
-   *
-   * @param callable $fn
-   * @return int
-   */  
-  public static function countArgs(
-    callable $fn
-  ): int {
-    $rf = new ReflectionFunction( $fn );
-    return $rf->getNumberOfParameters();
-  }  
-
-  /**
    * Maps over an array or object and transforms its values.
    *
    * The callback may receive:
@@ -188,6 +172,43 @@ class Util
 
     return $arrayFromArry;
   }
+
+  /**
+ * Finds and returns the first element in the array
+ * that matches the given callback condition.
+ *
+ * @param array    $array The array to search in
+ * @param callable $fn    Callback used to filter the array
+ *
+ * @return mixed The first matched element or null if none is found
+ */
+  public static function find(
+    array $array,
+    callable $fn
+  ): mixed {
+    [ $find ] = Util::where(
+      $array, $fn
+    );
+
+    return $find;
+  }
+  
+  /**
+   * Splits an iterable into chunks of a specified length.
+   *
+   * @param iterable $iterable The iterable to be split
+   * @param int      $length   The size of each chunk
+   *
+   * @return array An array of chunks
+   */  
+  public static function chunk(
+    iterable $iterable,
+    int $length
+  ): array {
+    return array_chunk(
+      $iterable, $length
+    );
+  }  
 
   /**
    * Merges multiple arrays into one.
@@ -261,6 +282,15 @@ class Util
     return implode( "\r\n", $array );
   }
   
+  /**
+   * Formats a string using a sprintf-style format
+   * and an array of arguments.
+   *
+   * @param string $format The format string
+   * @param array  $args   The values to be inserted into the format string
+   *
+   * @return string The formatted string
+   */  
   public static function sprintFormat(
     string $format,
     array $args
