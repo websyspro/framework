@@ -1,10 +1,10 @@
 <?php
 
-namespace Websyspro\Elements\Tags;
+namespace Websyspro\Core\Elements\Tags;
 
 use Websyspro\Core\Collection;
-use Websyspro\Elements\Enums\ConstHtmls;
-use Websyspro\Elements\Dom;
+use Websyspro\Core\Elements\Enums\ConstHtmls;
+use Websyspro\Core\Elements\Dom;
 
 class Head extends AbstractElement
 {

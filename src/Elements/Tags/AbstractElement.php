@@ -1,8 +1,8 @@
 <?php
 
-namespace Websyspro\Elements\Tags;
+namespace Websyspro\Core\Elements\Tags;
 
-use Websyspro\Elements\Enums\ConstHtmls;
+use Websyspro\Core\Elements\Enums\ConstHtmls;
 use Websyspro\Core\Collection;
 
 class AbstractElement

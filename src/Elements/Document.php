@@ -1,9 +1,9 @@
 <?php
 
-namespace Websyspro\Elements;
+namespace Websyspro\Core\Elements;
 
 use Websyspro\Core\Collection;
-use Websyspro\Elements\Tags\AbstractElement;
+use Websyspro\Core\Elements\Tags\AbstractElement;
 
 class Document
 {

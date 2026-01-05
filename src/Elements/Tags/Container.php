@@ -1,6 +1,6 @@
 <?php
 
-namespace Websyspro\Elements\Tags;
+namespace Websyspro\Core\Elements\Tags;
 
 use Websyspro\Core\Collection;
 

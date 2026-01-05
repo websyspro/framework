@@ -1,24 +1,24 @@
 <?php
 
-namespace Websyspro\Elements;
+namespace Websyspro\Core\Elements;
 
-use Websyspro\Elements\Tags\AbstractElement;
-use Websyspro\Elements\Tags\Body;
-use Websyspro\Elements\Tags\Container;
-use Websyspro\Elements\Tags\Div;
-use Websyspro\Elements\Tags\DocType;
-use Websyspro\Elements\Tags\FlexContainer;
-use Websyspro\Elements\Tags\FlexItem;
-use Websyspro\Elements\Tags\H1;
-use Websyspro\Elements\Tags\H2;
-use Websyspro\Elements\Tags\Head;
-use Websyspro\Elements\Tags\Html;
-use Websyspro\Elements\Tags\Meta;
-use Websyspro\Elements\Tags\Paragraph;
-use Websyspro\Elements\Tags\Scripts;
-use Websyspro\Elements\Tags\Style;
-use Websyspro\Elements\Tags\Title;
-use Websyspro\Elements\Enums\FlexDirection;
+use Websyspro\Core\Elements\Tags\AbstractElement;
+use Websyspro\Core\Elements\Tags\Body;
+use Websyspro\Core\Elements\Tags\Container;
+use Websyspro\Core\Elements\Tags\Div;
+use Websyspro\Core\Elements\Tags\DocType;
+use Websyspro\Core\Elements\Tags\FlexContainer;
+use Websyspro\Core\Elements\Tags\FlexItem;
+use Websyspro\Core\Elements\Tags\H1;
+use Websyspro\Core\Elements\Tags\H2;
+use Websyspro\Core\Elements\Tags\Head;
+use Websyspro\Core\Elements\Tags\Html;
+use Websyspro\Core\Elements\Tags\Meta;
+use Websyspro\Core\Elements\Tags\Paragraph;
+use Websyspro\Core\Elements\Tags\Scripts;
+use Websyspro\Core\Elements\Tags\Style;
+use Websyspro\Core\Elements\Tags\Title;
+use Websyspro\Core\Elements\Enums\FlexDirection;
 
 class Dom
 {

@@ -1,6 +1,6 @@
 <?php
 
-namespace Websyspro\Elements\Enums;
+namespace Websyspro\Core\Elements\Enums;
 
 enum ConstHtmls: string
 {

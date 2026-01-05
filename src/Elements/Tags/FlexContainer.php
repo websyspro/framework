@@ -1,8 +1,8 @@
 <?php
 
-namespace Websyspro\Elements\Tags;
+namespace Websyspro\Core\Elements\Tags;
 
-use Websyspro\Elements\Enums\FlexDirection;
+use Websyspro\Core\Elements\Enums\FlexDirection;
 use Websyspro\Core\Collection;
 
 class FlexContainer extends AbstractElement
