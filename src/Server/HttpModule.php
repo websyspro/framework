@@ -25,7 +25,7 @@ class HttpModule
    * @param string $module Classe do módulo anotada com #[Module]
    */ 
   public function __construct(
-    public HttpServer $httpServer,
+    public AbstractServer $httpServer,
     public string $module
   ){
     $this->ready();
