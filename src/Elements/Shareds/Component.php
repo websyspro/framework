@@ -72,7 +72,7 @@ class Component
 
   public function get(
   ): string {
-    return Dom::div( $this->getClassName() )
+    return Dom::div( [ $this->getClassName() ] )
       ->tag($this->tagElement)
       ->add($this->getChilds())->get();
   }

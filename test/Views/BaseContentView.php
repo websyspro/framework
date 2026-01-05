@@ -12,7 +12,7 @@ class BaseContentView extends Component
     return new static( 
       [
         BaseContentMenuView::render(),
-        BaseContentMainView::render()
+        BaseContentMainView::render( $routeView )
       ]
     );
   }

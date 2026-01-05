@@ -11,11 +11,16 @@ class BaseContentMenuView extends Component
   ): object {
     return new static( 
       [
-        Dom::div( 
-          ["header" ]
-        )->add(
-          [ "BaseHeaderView" ]
-        )
+        Dom::div( [ "header" ])->add(
+          [ "header" ]
+        ),
+        Dom::div( [ "main" ])->add(
+          [
+            Dom::div([ "menu-item" ])->add([ "Menu 1" ]),
+            Dom::div([ "menu-item" ])->add([ "Menu 2" ]),
+            Dom::div([ "menu-item" ])->add([ "Menu 3" ]),
+          ]
+        ),
       ]
     );
   }
