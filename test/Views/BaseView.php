@@ -13,24 +13,7 @@ class BaseView extends Component
   ): object {
     return new static( 
       [
-        Dom::flexContainer(
-          FlexDirection::row
-        )->add( 
-          [
-            Dom::flexItem()->add(
-              [ 
-                Dom::div()->add( [ "Flex Item 1" ])
-              ]
-            ),
-            Dom::flexItem()->add(
-              [ 
-                Dom::div()->add( [
-                  $routeView ?? Dom::div()->add( [ "Flex Item 2" ])
-                ])
-              ]
-            )
-          ]
-        )
+        $routeView
       ]
     );
   }

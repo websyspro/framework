@@ -19,6 +19,7 @@ use Websyspro\Core\Util;
 use ReflectionMethod;
 use ReflectionClass;
 use ReflectionType;
+use Websyspro\Core\Server\Decorations\Controller\Route;
 
 /**
  * Representa uma rota registrada a partir de um módulo.
@@ -43,6 +44,7 @@ class Router
     Put::class,
     Get::class,
     Post::class,
+    Route::class,
     Patch::class,
     Delete::class,
     Controller::class

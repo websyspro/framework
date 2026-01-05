@@ -2,9 +2,9 @@
 
 namespace Websyspro\Core\Server\Decorations\Controller;
 
-use Attribute;
 use Websyspro\Core\Server\Enums\ControllerType;
 use Websyspro\Core\Server\Enums\HttpMethod;
+use Attribute;
 
 
 /**
