@@ -4,13 +4,29 @@ namespace Websyspro\Core;
 
 use Attribute;
 
+/**
+ * Attribute-based collection wrapper that provides
+ * functional-style operations over arrays.
+ */
 #[Attribute(Attribute::TARGET_PROPERTY)]
 class Collection
 {
+  /**
+   * Creates a new Collection instance.
+   *
+   * @param array $items Initial collection items
+   */  
   public function __construct(
     public array $items = []
   ){}
 
+  /**
+   * Adds a single item to the collection.
+   *
+   * @param mixed $item Item to add
+   *
+   * @return Collection Fluent instance
+   */  
   public function add(
     mixed $item
   ): Collection {
@@ -18,6 +34,13 @@ class Collection
     return $this;
   }
 
+  /**
+   * Merges another collection or array into the current collection.
+   *
+   * @param Collection|array $array Collection or array to merge
+   *
+   * @return Collection Fluent instance
+   */  
   public function merge(
     Collection|array $array 
   ): Collection {
@@ -28,12 +51,24 @@ class Collection
     return $this;
   }
 
+  /**
+   * Maps each item in the collection using a callable.
+   *
+   * @param callable|object $fn Mapping function
+   *
+   * @return Collection New mapped collection
+   */  
   public function mapper(
     callable|object $fn
   ): Collection {
     if(is_callable( $fn ) === false){
-      // TODO:: mapper hidratate
-      return new Collection();
+      return new Collection(
+        Util::mapper(
+          $this->items, fn(mixed $item) => (
+              Util::hydrateObject( $item, $fn )
+            ) 
+          )
+      );
     }
 
     return new Collection(
@@ -43,6 +78,13 @@ class Collection
     );
   }
 
+  /**
+   * Filters the collection based on a condition.
+   *
+   * @param callable $fn Filter callback
+   *
+   * @return Collection Filtered collection
+   */  
   public function where(
     callable $fn
   ): Collection {
@@ -53,6 +95,13 @@ class Collection
     );
   }
 
+  /**
+   * Finds the first item that matches the condition.
+   *
+   * @param callable $fn Predicate function
+   *
+   * @return mixed First matched item or null
+   */  
   public function find(
     callable $fn
   ): mixed {
@@ -61,6 +110,14 @@ class Collection
     );
   }
 
+  /**
+   * Reduces the collection to a single value.
+   *
+   * @param mixed    $curremt Initial value
+   * @param callable $fn      Reduce callback
+   *
+   * @return mixed Reduced value
+   */  
   public function reduce(
     mixed $curremt,
     callable $fn
@@ -70,6 +127,14 @@ class Collection
     );
   }
 
+  /**
+   * Extracts a portion of the collection.
+   *
+   * @param int      $start  Start index
+   * @param int|null $lenght Length of the slice
+   *
+   * @return Collection New sliced collection
+   */  
   public function slice(
     int $start,
     int|null $lenght = null
@@ -77,6 +142,13 @@ class Collection
     return new Collection(array_slice($this->items, $start, $lenght));
   }
   
+  /**
+   * Splits the collection into chunks.
+   *
+   * @param int $length Size of each chunk
+   *
+   * @return Collection Fluent instance
+   */  
   public function chunk(
     int $length
   ): Collection {
@@ -84,42 +156,86 @@ class Collection
     return $this;
   }  
 
+  /**
+   * Joins collection items into a string.
+   *
+   * @param string $join Separator
+   *
+   * @return string Joined string
+   */  
   public function join(
     string $join = ""
   ): string {
     return implode($join, $this->items);
   }
 
+  /**
+   * Joins items using a comma and space.
+   *
+   * @return string
+   */  
   public function joinWithComma(
   ): string {
     return $this->Join(", ");
   }
 
+  /**
+   * Joins items using a space.
+   *
+   * @return string
+   */  
   public function joinWithSpace(
   ): string {
     return $this->Join(" ");
   }
 
+  /**
+   * Joins items without any separator.
+   *
+   * @return string
+   */  
   public function joinNotSpace(
   ): string {
     return $this->Join("");
   }
 
+  /**
+   * Joins items using a line break.
+   *
+   * @return string
+   */  
   public function joinWithBreak(
   ): string {
     return $this->Join( "\r\n" );
-  }  
+  }
 
+  /**
+   * Returns the number of items in the collection.
+   *
+   * @return int
+   */  
   public function count(
   ): int {
     return sizeof($this->items);
   }
 
+  /**
+   * Checks if the collection contains any items.
+   *
+   * @return bool
+   */  
   public function exist(
   ): bool {
     return sizeof($this->items) !== 0;
   }
   
+  /**
+   * Calculates the sum of mapped values.
+   *
+   * @param callable $callable Mapping function
+   *
+   * @return float
+   */  
   public function sum(
     callable $callable
   ): float {
@@ -130,6 +246,13 @@ class Collection
     );
   }
 
+  /**
+   * Returns the item at a specific index.
+   *
+   * @param int $eq Index
+   *
+   * @return Collection Single-item collection
+   */  
   public function eq(
     int $eq
   ): Collection {
@@ -138,24 +261,43 @@ class Collection
     );
   }
 
-  public function first(    
+  /**
+   * Returns the first item in the collection.
+   *
+   * @return mixed
+   */
+  public function first(
   ): mixed {
-    return reset($this->items);
+    return reset( $this->items );
   }
 
-  public function last(    
+  /**
+   * Returns the last item in the collection.
+   *
+   * @return mixed
+   */  
+  public function last(
   ): mixed {
-    return end($this->items);
+    return end( $this->items );
   } 
   
+  /**
+   * Sorts the collection by keys in ascending order.
+   *
+   * @return Collection Sorted collection
+   */  
   public function orderByAsc(
   ): Collection {
     ksort($this->items);
     return new Collection($this->items);
   }
 
-  public function all(
-  ): array {
+  /**
+   * Returns all items as a raw array.
+   *
+   * @return array
+   */  
+  public function all(): array {
     return $this->items;
   }
 }
