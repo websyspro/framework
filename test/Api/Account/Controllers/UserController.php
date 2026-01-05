@@ -1,6 +1,6 @@
 <?php
 
-namespace Websyspro\Test\Account\Controllers;
+namespace Websyspro\Test\Api\Account\Controllers;
 
 use Websyspro\Core\Server\Decorations\Controller\AllowAnonymous;
 use Websyspro\Core\Server\Decorations\Controller\Authenticate;

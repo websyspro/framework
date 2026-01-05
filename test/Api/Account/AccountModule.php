@@ -1,9 +1,9 @@
 <?php
 
-namespace Websyspro\Test\Account;
+namespace Websyspro\Test\Api\Account;
 
 use Websyspro\Core\Server\Decorations\Controller\Module;
-use Websyspro\Test\Account\Controllers\UserController;
+use Websyspro\Test\Api\Account\Controllers\UserController;
 
 #[Module(
   [

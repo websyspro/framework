@@ -343,6 +343,19 @@ class HttpServer
   }
 
   /**
+   * Checks whether the current request is an API request.
+   *
+   * This method inspects the request's Accept header information
+   * to determine if the client expects an API (e.g., JSON) response.
+   *
+   * @return bool Returns true if the request is identified as an API request,
+   *              otherwise false.
+   */  
+  private function isRequestApi(): bool {
+    return $this->request->acceptHeader->requestIsApi;
+  }
+
+  /**
    * Itera sobre todas as rotas registradas e faz o log de suas informações
    * somente se o contexto atual for de um cliente.
    *
@@ -561,7 +574,23 @@ class HttpServer
         $error
       );
     }    
-  }  
+  }
+
+  /**
+   * Starts the web layer of the application.
+   *
+   * This method checks if the public entry point (index.php)
+   * exists inside the test/Public directory. If found, it loads
+   * the file to bootstrap and execute the web application.
+   *
+   * @return void
+   */  
+  public function startWeb(
+  ): void {
+    if( file_exists( rootDir . "/test/Public/index.php" )){
+      require_once rootDir . "/test/Public/index.php";
+    }
+  }
 
   /**
    * Iterates through all registered routes and executes
@@ -580,8 +609,12 @@ class HttpServer
    */  
   public function listen(
   ): void {
-    $this->isClient()
-      ? $this->listenByClient()
-      : $this->listenByApi();
+    if($this->isRequestApi()){
+      $this->isClient()
+        ? $this->listenByClient()
+        : $this->listenByApi();
+    } else {
+      $this->startWeb();
+    }
   }
 }
