@@ -19,6 +19,7 @@ use Websyspro\Core\Elements\Tags\Scripts;
 use Websyspro\Core\Elements\Tags\Style;
 use Websyspro\Core\Elements\Tags\Title;
 use Websyspro\Core\Elements\Enums\FlexDirection;
+use Websyspro\Core\Util;
 
 class Dom
 {
@@ -26,14 +27,14 @@ class Dom
     string|array|null $classes = [],
     string|array|null $childs = []
   ): AbstractElement {
-    return new DocType( $classes, $childs );
+    return new DocType( Util::merge( $classes, [ "html" ]), $childs );
   }
 
   public static function html(
     string|array|null $data = [],
     string|array|null $childs = []
   ): AbstractElement {
-    return new Html( $data, $childs);
+    return new Html( Util::merge( $data, [ "lang" => "pt" ]), $childs);
   }
 
   public static function head(
@@ -44,10 +45,9 @@ class Dom
   }
 
   public static function title(
-    string|array|null $classes = [],
-    string|array|null $childs = []
+    string $title
   ): AbstractElement {
-    return new Title( $classes, $childs );
+    return new Title()->add([ $title ]);
   }
   
   public static function meta(
