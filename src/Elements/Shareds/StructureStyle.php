@@ -1,8 +1,8 @@
 <?php 
 
-namespace Websyspro\Elements\Shareds;
+namespace Websyspro\Core\Elements\Shareds;
 
-use Websyspro\Elements\Dom;
+use Websyspro\Core\Elements\Dom;
 
 class StructureStyle
 {

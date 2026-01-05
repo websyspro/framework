@@ -18,7 +18,7 @@ use Websyspro\Core\Elements\Dom;
 class WebServer extends AbstractServer
 {
   public function bootstrap(
-    string $view
+    object|string $baseView
   ): void {
     Document::render( [
       Dom::docType(),
@@ -27,7 +27,7 @@ class WebServer extends AbstractServer
           Dom::title( "Websyspro" )
         ]),
         Dom::body()->add( [
-          "Hello Word ....."
+          $baseView::render()
         ])
       ])
     ]);

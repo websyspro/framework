@@ -1,10 +1,10 @@
 <?php
 
-namespace Websyspro\Elements\Shareds;
+namespace Websyspro\Core\Elements\Shareds;
 
-use Websyspro\Elements\Collectons\Head;
-use Websyspro\Commons\DataList;
-use Websyspro\Elements\Dom;
+use Websyspro\Core\Elements\Tags\Head;
+use Websyspro\Core\Elements\Dom;
+use Websyspro\Core\Collection;
 use ReflectionClass;
 
 class Component
@@ -27,7 +27,7 @@ class Component
   private function getFilesByExt(
     string $ext
   ): string {
-    $contents = DataList::create([]);
+    $contents = new Collection();
     $globFind = sprintf(
       "{$this->getBasePath()}%s*.%s", DIRECTORY_SEPARATOR, $ext
     );
@@ -44,7 +44,7 @@ class Component
 
   private function getAssets(
   ): array {
-    $className = DataList::create(
+    $className = new Collection(
       explode("\\", get_class($this))
     )->last();
 
@@ -55,7 +55,7 @@ class Component
 
   private function getClassName(
   ): string {
-    return DataList::create(
+    return new Collection(
       explode(
         "\\", 
         get_class($this)

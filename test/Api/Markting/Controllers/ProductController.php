@@ -19,7 +19,7 @@ class ProductController
   #[AllowAnonymous]
   public function list(
   ): mixed {
-    return [ "Hello word!!!" ];
+    return [ "Hello word!!! -----" ];
   }
 
   #[Post(uri: "/create")]

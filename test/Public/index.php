@@ -1,7 +1,7 @@
 <?php
 
-use Test\Views\Base;
 use Websyspro\Core\Server\WebServer;
+use Websyspro\Test\Views\BaseView;
 
 /** 
  * Creates a new instance of the WebServer.
@@ -25,5 +25,5 @@ $webServer->module( [
  * and handling incoming HTTP requests.
  */
 $webServer->bootstrap(
-  Base::class
+  BaseView::class
 );
