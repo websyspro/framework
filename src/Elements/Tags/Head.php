@@ -2,9 +2,9 @@
 
 namespace Websyspro\Core\Elements\Tags;
 
-use Websyspro\Core\Collection;
 use Websyspro\Core\Elements\Enums\ConstHtmls;
 use Websyspro\Core\Elements\Dom;
+use Websyspro\Core\Collection;
 
 class Head extends AbstractElement
 {
