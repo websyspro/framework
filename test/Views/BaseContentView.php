@@ -4,17 +4,15 @@ namespace Websyspro\Test\Views;
 
 use Websyspro\Core\Elements\Shareds\Component;
 
-class BaseView extends Component
+class BaseContentView extends Component
 {
   public static function render(
     string|object|null $routeView = null
   ): object {
     return new static( 
       [
-        BaseHeaderView::render(),
-        BaseContentView::render(
-          $routeView
-        )
+        BaseContentMenuView::render(),
+        BaseContentMainView::render()
       ]
     );
   }

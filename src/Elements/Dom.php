@@ -76,9 +76,10 @@ class Dom
   }
 
   public static function div(
-    mixed ...$classes
+    string|array|null $classes = [],
+    string|array|null $childs = []
   ): AbstractElement {
-    return new Div( $classes, [] );
+    return new Div( $classes, $childs );
   }
   
   public static function container(

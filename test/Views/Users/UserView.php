@@ -2,6 +2,7 @@
 
 namespace Websyspro\Test\Views\Users;
 
+use Websyspro\Core\Elements\Dom;
 use Websyspro\Core\Elements\Shareds\Component;
 
 class UserView extends Component
@@ -11,7 +12,11 @@ class UserView extends Component
   ): object {
     return new static( 
       [
-        "Componente UserView - $query[userId]"
+        Dom::flexContainer()->add([
+          Dom::flexItem()->add([
+            "UserID: $query[userId]"
+          ])
+        ])
       ]
     );
   }

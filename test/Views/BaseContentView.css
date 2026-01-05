@@ -1,0 +1,5 @@
+.BaseContentView {
+  flex-direction: row;
+  display: flex;
+  flex: 1;
+}

@@ -23,8 +23,8 @@ class AbstractElement
     string|array|null $classes = [],
     string|array|null $childs = []
   ){
-    $this->classList = new Collection()->merge( $classes );
-    $this->childList = new Collection()->merge( $childs ) ;
+    $this->classList = new Collection( $classes );
+    $this->childList = new Collection( $childs );
   }
 
   public function tag(

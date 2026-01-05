@@ -1,0 +1,8 @@
+.BaseView {
+  background-color: rgb(242,244,246);
+  flex-direction: column;
+  overflow: hidden;
+  display: flex;
+  height: 100vh;
+  width: 100%;
+}
