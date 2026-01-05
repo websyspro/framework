@@ -85,7 +85,7 @@ class Dom
     string|array|null $classes = [],
     string|array|null $childs = []
   ): AbstractElement {
-    return new Container($classes, $childs);
+    return new Container( $classes, $childs );
   } 
   
   public static function flexContainer(
