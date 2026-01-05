@@ -1,11 +1,29 @@
-<!DOCTYPE html>
-<html lang="en">
-<head>
-  <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Public</title>
-</head>
-<body>
-  Public
-</body>
-</html>
+<?php
+
+use Test\Views\Base;
+use Websyspro\Core\Server\WebServer;
+
+/** 
+ * Creates a new instance of the WebServer.
+ * This object is responsible for initializing and running
+ * the web application lifecycle.
+ */
+$webServer = new WebServer();
+
+/**
+ * Registers application modules.
+ * The modules array can be used to configure routes,
+ * services, middlewares, or other application components.
+ */
+$webServer->module( [
+  
+]);
+
+/**
+ * Bootstraps the web application using the Base view class.
+ * This defines the main entry point for rendering views
+ * and handling incoming HTTP requests.
+ */
+$webServer->bootstrap(
+  Base::class
+);
