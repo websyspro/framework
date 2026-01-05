@@ -1,9 +1,8 @@
 <?php
 
-namespace Websyspro\Elements\Collectons;
+namespace Websyspro\Elements\Tags;
 
-class Paragraph
-extends AbstractElement
+class Paragraph extends AbstractElement
 {
   public string $tagElement = "p";
 }

@@ -1,9 +1,8 @@
 <?php
 
-namespace Websyspro\Elements\Collectons;
+namespace Websyspro\Elements\Tags;
 
-class Div
-extends AbstractElement
+class Div extends AbstractElement
 {
   public string $tagElement = "div";
 }

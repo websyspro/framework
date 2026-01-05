@@ -1,17 +1,15 @@
 <?php
 
-namespace Websyspro\Elements\Collectons;
+namespace Websyspro\Elements\Tags;
 
-use Websyspro\Commons\DataList;
-use Websyspro\Elements\Dom;
+use Websyspro\Core\Collection;
 use Websyspro\Elements\Enums\ConstHtmls;
-use Websyspro\Elements\Shareds\StructureStyle;
+use Websyspro\Elements\Dom;
 
-class Head
-extends AbstractElement
+class Head extends AbstractElement
 {
-  public static DataList $styles;
-  public static DataList $scripts;
+  public static Collection $styles;
+  public static Collection $scripts;
   
   public string $tagElement = "head";
 
@@ -20,7 +18,7 @@ extends AbstractElement
     string $styleText
   ): void {
     if(isset(Head::$styles) === false){
-      Head::$styles = DataList::create([]);
+      Head::$styles = new Collection();
     }
 
     Head::$styles->add(
@@ -35,7 +33,7 @@ extends AbstractElement
     string $scriptText
   ): void {
     if(isset(Head::$scripts) === false){
-      Head::$scripts = DataList::create([]);
+      Head::$scripts = new Collection();
     }
 
     Head::$scripts->add(

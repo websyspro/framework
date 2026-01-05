@@ -1,24 +1,25 @@
 <?php
 
-namespace Websyspro\Elements\Collectons;
+namespace Websyspro\Elements\Tags;
 
-use Websyspro\Commons\DataList;
+use Websyspro\Core\Collection;
 
-class Script
-extends AbstractElement
+class Script extends AbstractElement
 {
   public string $tagElement = "script";
-  public DataList $stringList;
+  public Collection $stringList;
 
   public function __construct(
     string|array|null $strings = []
   ){
-    $this->stringList = DataList::create([$strings]);
+    $this->stringList = new Collection(
+      [ $strings ]
+    );
   }
   
   public function get(
   ): string {
-    return DataList::create([
+    return new Collection( [
       "<{$this->tagElement}{$this->getAttributes()}>",
         "{$this->stringList->joinNotSpace()}",
       "</{$this->tagElement}>"

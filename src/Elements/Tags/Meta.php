@@ -1,8 +1,8 @@
 <?php
 
-namespace Websyspro\Elements\Collectons;
+namespace Websyspro\Elements\Tags;
 
-use Websyspro\Commons\DataList;
+use Websyspro\Core\Collection;
 
 class Meta
 extends AbstractElement
@@ -13,6 +13,6 @@ extends AbstractElement
   public function __construct(
     string|array|null $data = []
   ){
-    $this->dataList = DataList::create([])->merge($data);
+    $this->dataList = new Collection()->merge( $data );
   }  
 }

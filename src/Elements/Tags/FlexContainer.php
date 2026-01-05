@@ -1,12 +1,11 @@
 <?php
 
-namespace Websyspro\Elements\Collectons;
+namespace Websyspro\Elements\Tags;
 
-use Websyspro\Commons\DataList;
 use Websyspro\Elements\Enums\FlexDirection;
+use Websyspro\Core\Collection;
 
-class FlexContainer
-extends AbstractElement
+class FlexContainer extends AbstractElement
 {
   public string $tagElement = "div";
 
@@ -14,7 +13,7 @@ extends AbstractElement
     FlexDirection $flexDirection = FlexDirection::column,
     int $flexGap = 0
   ){
-    $this->cssList   = DataList::create([])->merge([
+    $this->cssList = new Collection()->merge( [
       "flex-direction" => "{$flexDirection->value}",
       "gap" => "{$flexGap}px",
       "display" => "flex",

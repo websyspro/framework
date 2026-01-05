@@ -1,9 +1,9 @@
 <?php
 
-namespace Websyspro\Elements\Collectons;
+namespace Websyspro\Elements\Tags;
 
-use Websyspro\Commons\DataList;
 use Websyspro\Elements\Enums\ConstHtmls;
+use Websyspro\Core\Collection;
 
 class AbstractElement
 {
@@ -13,18 +13,18 @@ class AbstractElement
     "img"
   ];
 
-  public DataList $childList;
-  public DataList $classList;
-  public DataList $dataList;
-  public DataList $cssList;
-  public DataList $eventList;
+  public Collection $childList;
+  public Collection $classList;
+  public Collection $dataList;
+  public Collection $cssList;
+  public Collection $eventList;
 
   public function __construct(
     string|array|null $classes = [],
     string|array|null $childs = []
   ){
-    $this->classList = DataList::create([])->merge($classes);
-    $this->childList = DataList::create([])->merge($childs);
+    $this->classList = new Collection()->merge( $classes );
+    $this->childList = new Collection()->merge( $childs ) ;
   }
 
   public function tag(
@@ -38,7 +38,7 @@ class AbstractElement
     array $childs = []
   ): mixed {
     if(isset($this->childList) === false){
-      $this->childList = DataList::create([]);
+      $this->childList = new Collection();
     }
 
     $this->childList->merge($childs);
@@ -49,7 +49,7 @@ class AbstractElement
     array $css = []
   ): mixed {
     if(isset($this->cssList) === false){
-      $this->cssList = DataList::create([]);
+      $this->cssList = new Collection();
     }
 
     $this->cssList->merge($css);
@@ -60,7 +60,7 @@ class AbstractElement
     array $data = []
   ): mixed {
     if(isset($this->dataList) === false){
-      $this->dataList = DataList::create([]);
+      $this->dataList = new Collection();
     }
 
     $this->dataList->merge($data);
@@ -71,7 +71,7 @@ class AbstractElement
     array $event = []
   ): mixed {
     if(isset($this->eventList) === false){
-      $this->eventList = DataList::create([]);
+      $this->eventList = new Collection();
     }
 
     $this->dataList->merge($event);
@@ -155,7 +155,7 @@ class AbstractElement
   public function getAttributes(
   ): string {
     $attributes = (
-      DataList::create([
+      new Collection([
         $this->getClasses(),
         $this->getEvents(),
         $this->getDatas(),
@@ -171,7 +171,7 @@ class AbstractElement
       return ConstHtmls::emptyHtml->value;
     }
 
-    return DataList::create([
+    return new Collection([
       ConstHtmls::emptyHtml->value, $attributes->joinWithSpace()
     ])->joinWithSpace();
   }
@@ -180,18 +180,18 @@ class AbstractElement
   ): string {
     if($this->isEndTag === false){
       if(in_array($this->tagElement, $this->isElementEndBar) === true){
-        return DataList::create([
+        return new Collection([
           "<{$this->tagElement}{$this->getAttributes()}/>"
         ])->joinNotSpace();
       } else {
-        return DataList::create([
+        return new Collection([
           "<{$this->tagElement}{$this->getAttributes()}>"
         ])->joinNotSpace();        
       }
 
     }
 
-    return DataList::create([
+    return new Collection([
       "<{$this->tagElement}{$this->getAttributes()}>",
         "{$this->getChilds()}",
       "</{$this->tagElement}>"

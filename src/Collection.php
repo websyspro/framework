@@ -166,7 +166,7 @@ class Collection
   public function join(
     string $join = ""
   ): string {
-    return implode($join, $this->items);
+    return implode( $join, $this->items );
   }
 
   /**
@@ -176,7 +176,7 @@ class Collection
    */  
   public function joinWithComma(
   ): string {
-    return $this->Join(", ");
+    return $this->Join( ", " );
   }
 
   /**
@@ -186,7 +186,7 @@ class Collection
    */  
   public function joinWithSpace(
   ): string {
-    return $this->Join(" ");
+    return $this->Join( " " );
   }
 
   /**
@@ -196,7 +196,7 @@ class Collection
    */  
   public function joinNotSpace(
   ): string {
-    return $this->Join("");
+    return $this->Join( "" );
   }
 
   /**

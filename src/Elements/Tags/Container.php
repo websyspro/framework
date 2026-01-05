@@ -1,11 +1,10 @@
 <?php
 
-namespace Websyspro\Elements\Collectons;
+namespace Websyspro\Elements\Tags;
 
-use Websyspro\Commons\DataList;
+use Websyspro\Core\Collection;
 
-class Container
-extends AbstractElement
+class Container extends AbstractElement
 {
   public string $tagElement = "div";
 
@@ -13,9 +12,9 @@ extends AbstractElement
     string|array|null $classes = [],
     string|array|null $childs = []
   ){
-    $this->classList = DataList::create([])->merge($classes);
-    $this->childList = DataList::create([])->merge($childs);
-    $this->cssList   = DataList::create([])->merge([
+    $this->classList = new Collection()->merge($classes);
+    $this->childList = new Collection()->merge($childs);
+    $this->cssList   = new Collection()->merge([
       "height" => "100vh",
       "width" => "100vw"
     ]);

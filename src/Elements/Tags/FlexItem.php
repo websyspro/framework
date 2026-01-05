@@ -1,11 +1,10 @@
 <?php
 
-namespace Websyspro\Elements\Collectons;
+namespace Websyspro\Elements\Tags;
 
-use Websyspro\Commons\DataList;
+use Websyspro\Core\Collection;
 
-class FlexItem
-extends AbstractElement
+class FlexItem extends AbstractElement
 {
   public string $tagElement = "div";
 
@@ -13,7 +12,7 @@ extends AbstractElement
     private int $size = 0,
     private bool $resized = true
   ){
-    $this->cssList = DataList::create([])
+    $this->cssList = new Collection()
       ->merge($this->defaultCSS())
       ->merge($this->defaultCSSResized())
       ->merge($this->defaultCSSFlex());

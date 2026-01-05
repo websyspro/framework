@@ -1,11 +1,10 @@
 <?php
 
-namespace Websyspro\Elements\Collectons;
+namespace Websyspro\Elements\Tags;
 
-use Websyspro\Commons\DataList;
+use Websyspro\Core\Collection;
 
-class Body
-extends AbstractElement
+class Body extends AbstractElement
 {
   public string $tagElement = "body";
 
@@ -13,14 +12,14 @@ extends AbstractElement
     string|array|null $classes = [],
     string|array|null $childs = []
   ){
-    $this->classList = DataList::create([])->merge($classes);
-    $this->cssList   = DataList::create([])->merge([
+    $this->classList = new Collection()->merge($classes);
+    $this->cssList   = new Collection()->merge([
       "box-sizing" => "border-box",
       "font-family" => "roboto",
       "padding" => "0px",
       "margin" => "0px"
     ]);
-    $this->childList = DataList::create([])->merge([
+    $this->childList = new Collection()->merge([
       "<script src=\"//ajax.googleapis.com/ajax/libs/webfont/1.6.26/webfont.js\"></script>",
       "<script>",
         "WebFont.load({",

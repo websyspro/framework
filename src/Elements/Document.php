@@ -2,15 +2,15 @@
 
 namespace Websyspro\Elements;
 
-use Websyspro\Commons\DataList;
-use Websyspro\Elements\Collectons\AbstractElement;
+use Websyspro\Core\Collection;
+use Websyspro\Elements\Tags\AbstractElement;
 
 class Document
 {
   public static function render(
     array $childs = []
   ): void {
-    print DataList::create($childs)
+    print new Collection( $childs )
       ->mapper(fn( AbstractElement $abstractElement ) => $abstractElement->get())
       ->joinNotSpace();
   }

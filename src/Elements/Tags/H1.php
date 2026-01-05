@@ -1,9 +1,8 @@
 <?php
 
-namespace Websyspro\Elements\Collectons;
+namespace Websyspro\Elements\Tags;
 
-class H1
-extends AbstractElement
+class H1 extends AbstractElement
 {
   public string $tagElement = "h1";
 }

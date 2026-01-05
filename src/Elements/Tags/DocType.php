@@ -1,9 +1,8 @@
 <?php
 
-namespace Websyspro\Elements\Collectons;
+namespace Websyspro\Elements\Tags;
 
-class DocType
-extends AbstractElement
+class DocType extends AbstractElement
 {
   public string $tagElement = "!DOCTYPE";
   public bool $isEndTag = false;
