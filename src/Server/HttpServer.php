@@ -516,7 +516,7 @@ class HttpServer
         Util::callUserFN( fn: $router->handler, args: [
           $this->response, $this->request->defineParam(
             requestUri: $router->uri()
-          ),
+          )
         ]);
       }
     }
@@ -568,8 +568,7 @@ class HttpServer
       $this->routersByUris();
       $this->routersEmpty();
       $this->routersExec();
-    } 
-    catch ( Exception $error ){
+    } catch ( Exception $error ){
       $this->routersIsError( 
         $error
       );
@@ -587,7 +586,7 @@ class HttpServer
    */  
   public function startWeb(
   ): void {
-    if( file_exists( rootDir . "/test/Public/index.php" )){
+    if(file_exists( rootDir . "/test/Public/index.php" )){
       require_once rootDir . "/test/Public/index.php";
     }
   }
