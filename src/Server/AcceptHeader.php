@@ -1,5 +1,11 @@
 <?php
 
+namespace Websyspro\Core\Server;
+
+use Websyspro\Core\Server\Exceptions\Error;
+use Websyspro\Core\Util;
+use Exception;
+
 /**
  * Class AcceptHeader
  *
@@ -15,15 +21,6 @@
  *
  * @package Websyspro\Core\Server
  */
-
-namespace Websyspro\Core\Server;
-
-use Exception;
-use Websyspro\Core\Server\Enums\HttpMethod;
-use Websyspro\Core\Server\Enums\HttpStatus;
-use Websyspro\Core\Server\Exceptions\Error;
-use Websyspro\Core\Util;
-
 class AcceptHeader
 {
   /** @var string|null HTTP request method */
@@ -430,7 +427,7 @@ class AcceptHeader
    */
   private function acceptContentParse(
   ): void {
-    if( $this->contentType !== null ){
+    if( Util::isNull($this->contentType) === false ){
       $this->contentBoundary = preg_replace( "#^.*-#", "", $this->contentType );
       $this->contentType = preg_replace( "#;.*$#", "", $this->contentType );
     }

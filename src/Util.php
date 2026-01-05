@@ -151,14 +151,12 @@ class Util
   ): array|object {
     if(is_array($array)){
       foreach($array as $key => $val){
-        $array[$key] = Util::countArgs( $fn ) === 2 
-          ? $fn($val, $key) : $fn($val);
+        $array[$key] = $fn($val, $key);
       }
     } else
     if(is_object($array)){
       foreach($array as $key => $val){
-        $array->{$key} = Util::countArgs( $fn ) === 2 
-          ? $fn($val, $key) : $fn($val);
+        $array->{$key} = $fn($val, $key);
       }      
     }
 
@@ -182,13 +180,9 @@ class Util
   ): array {
     foreach($array as $key => $val){
       if(is_numeric($key)){
-        Util::countArgs($fn) === 2
-          ? ($fn($val, $key) ? $arrayFromArry[] = $val : [])
-          : ($fn($val) ? $arrayFromArry[] = $val : []);
+        $fn($val, $key) ? $arrayFromArry[] = $val : [];
       } else {
-        Util::countArgs($fn) === 2
-          ? ($fn($val, $key) ? $arrayFromArry[$key] = $val : [])
-          : ($fn($val) ? $arrayFromArry[$key] = $val : []);
+        $fn($val, $key) ? $arrayFromArry[$key] = $val : [];
       }
     }
 

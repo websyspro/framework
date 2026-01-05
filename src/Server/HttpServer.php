@@ -81,9 +81,9 @@ class HttpServer
   public function module(
     array $modules = []
   ): void {
-    if( Util::exist( $modules )){
-      Util::mapper( $modules, fn(string $module) => (
-        new HttpModule( $this, $module )
+    if( Util::exist( array: $modules )){
+      Util::mapper( array: $modules, fn: fn(string $module): HttpModule => (
+        new HttpModule( httpServer: $this, module: $module )
       ));
     }
   }
