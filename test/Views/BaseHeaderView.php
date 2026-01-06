@@ -9,7 +9,7 @@ class BaseHeaderView extends Component
   public static function render(
   ): object {
     return new static( 
-      [ "BaseHeaderView" ]
+      [ "" ]
     );
   }
 }

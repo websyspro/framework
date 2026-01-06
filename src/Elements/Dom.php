@@ -19,8 +19,9 @@ use Websyspro\Core\Elements\Tags\Scripts;
 use Websyspro\Core\Elements\Tags\Style;
 use Websyspro\Core\Elements\Tags\Table;
 use Websyspro\Core\Elements\Tags\TBody;
-use Websyspro\Core\Elements\Tags\TColumn;
+use Websyspro\Core\Elements\Tags\Td;
 use Websyspro\Core\Elements\Tags\TFoot;
+use Websyspro\Core\Elements\Tags\Th;
 use Websyspro\Core\Elements\Tags\THead;
 use Websyspro\Core\Elements\Tags\Title;
 use Websyspro\Core\Elements\Enums\FlexDirection;
@@ -164,11 +165,18 @@ class Dom
   ): AbstractElement {
     return new TRow( $classes, $childs );
   }
-  
-  public static function tcolimn(
+
+  public static function th(
     string|array|null $classes = [],
     string|array|null $childs = []
   ): AbstractElement {
-    return new TColumn( $classes, $childs );
+    return new Th( $classes, $childs );
+  }  
+  
+  public static function td(
+    string|array|null $classes = [],
+    string|array|null $childs = []
+  ): AbstractElement {
+    return new Td( $classes, $childs );
   }  
 }

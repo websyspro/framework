@@ -2,7 +2,7 @@
 
 namespace Websyspro\Core\Elements\Tags;
 
-class TColumn extends AbstractElement
+class Td extends AbstractElement
 {
   public string $tagElement = "td";
 }
