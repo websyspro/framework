@@ -1,13 +1,14 @@
 <?php
 
-namespace Websyspro\Entity\Decorations\Columns;
+namespace Websyspro\Core\Entitys\Decorations\Columns;
 
+use Websyspro\Core\Entitys\Enums\ColumnType;
+use Websyspro\Core\Entitys\Enums\AttributeType;
+use Websyspro\Core\Entitys\Interfaces\IAbstractColumn;
+use Websyspro\Core\Collection;
+use Websyspro\Core\Util;
 use Attribute;
 use UnitEnum;
-use Websyspro\Commons\DataList;
-use Websyspro\Entity\Enums\ColumnType;
-use Websyspro\Entity\Enums\AttributeType;
-use Websyspro\Entity\Interfaces\IAbstractColumn;
 
 #[Attribute( Attribute::TARGET_PROPERTY )]
 class Enum
@@ -22,12 +23,12 @@ extends IAbstractColumn
 
   public function sql(
   ): string {
-    $enums = DataList::create(
+    $enums = new Collection(
       $this->enum::cases()
     )->mapper(fn(UnitEnum $case) => "'{$case->value}'");
 
-    return sprintf("enum(%s)", ...[
-      $enums->joinWithComma()
-    ]);
+    return Util::sprintFormat(
+      "enum(%s)", [ $enums->joinWithComma()]
+    );
   } 
 }

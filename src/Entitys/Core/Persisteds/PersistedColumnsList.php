@@ -1,19 +1,19 @@
 <?php
 
-namespace Websyspro\Entity\Core\Persisteds;
+namespace Websyspro\Core\Entitys\Core\Persisteds;
 
-use Websyspro\Commons\DataList;
-use Websyspro\Entity\Interfaces\IPersistedColumn;
+use Websyspro\Core\Collection;
+use Websyspro\Core\Entitys\Interfaces\IPersistedColumn;
 
 class PersistedColumnsList
 {
   public function __construct(
-    private DataList $columns
+    private Collection $columns
   ){}
 
   public function columns(
-  ): DataList {
-    return $this->columns->copy()->mapper(
+  ): Collection {
+    return $this->columns->mapper(
       function(IPersistedColumn $iPersistedColumn){
         if(preg_match("#^(decimal|varchar)#", $iPersistedColumn->type) === 0){
           $iPersistedColumn->type = preg_replace(

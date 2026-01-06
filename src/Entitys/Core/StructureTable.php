@@ -1,6 +1,6 @@
 <?php
 
-namespace Websyspro\Entity\Core;
+namespace Websyspro\Core\Entitys\Core;
 
 use Websyspro\Commons\DataList;
 use Websyspro\Commons\Statics;

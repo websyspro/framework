@@ -1,19 +1,19 @@
 <?php
 
-namespace Websyspro\Entity\Core\Persisteds;
+namespace Websyspro\Core\Entitys\Core\Persisteds;
 
-use Websyspro\Commons\DataList;
-use Websyspro\Entity\Interfaces\IPersistedRequireds;
+use Websyspro\Core\Entitys\Interfaces\IPersistedRequireds;
+use Websyspro\Core\Collection;
 
 class PersistedRequiredsList
 {
   public function __construct(
-    private DataList $requireds
+    private Collection $requireds
   ){}
 
   public function list(
-  ): DataList {
-    return $this->requireds->copy();
+  ): Collection {
+    return $this->requireds;
   }
 
   public function isRequired(

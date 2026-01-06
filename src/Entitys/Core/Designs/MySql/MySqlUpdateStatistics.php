@@ -1,13 +1,13 @@
 <?php
 
-namespace Websyspro\Entity\Core\Designs\MySql;
+namespace Websyspro\Core\Entitys\Core\Designs\MySql;
 
 use Websyspro\Commons\DataList;
-use Websyspro\Entity\Core\Persisteds\PersistedStatisticsList;
-use Websyspro\Entity\Core\StructureTable;
-use Websyspro\Entity\Enums\ScriptType;
-use Websyspro\Entity\Interfaces\IStatisticsNamesItem;
-use Websyspro\Entity\Interfaces\IUpdateScript;
+use Websyspro\Core\Entitys\Core\Persisteds\PersistedStatisticsList;
+use Websyspro\Core\Entitys\Core\StructureTable;
+use Websyspro\Core\Entitys\Enums\ScriptType;
+use Websyspro\Core\Entitys\Interfaces\IStatisticsNamesItem;
+use Websyspro\Core\Entitys\Interfaces\IUpdateScript;
 
 class MySqlUpdateStatistics
 {

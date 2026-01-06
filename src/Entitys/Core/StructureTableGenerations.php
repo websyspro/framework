@@ -1,10 +1,10 @@
 <?php
 
-namespace Websyspro\Entity\Core;
+namespace Websyspro\Core\Entitys\Core;
 
 use Websyspro\Commons\DataList;
-use Websyspro\Entity\Enums\AttributeType;
-use Websyspro\Entity\Interfaces\IProperties;
+use Websyspro\Core\Entitys\Enums\AttributeType;
+use Websyspro\Core\Entitys\Interfaces\IProperties;
 
 class StructureTableGenerations
 extends StructureTableAbstract

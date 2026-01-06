@@ -1,9 +1,9 @@
 <?php
 
-namespace Websyspro\Entity\Interfaces;
+namespace Websyspro\Core\Entitys\Interfaces;
 
-use Websyspro\Entity\Enums\AttributeType;
-use Websyspro\Entity\Enums\ColumnType;
+use Websyspro\Core\Entitys\Enums\AttributeType;
+use Websyspro\Core\Entitys\Enums\ColumnType;
 
 class IAbstractColumn
 {

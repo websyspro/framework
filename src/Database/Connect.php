@@ -1,6 +1,6 @@
 <?php
 
-namespace Websyspro\Database;
+namespace Websyspro\Core\Database;
 
 use Websyspro\Core\Database\Enums\ConnectDriver;
 use Websyspro\Core\Server\Exceptions\Error;

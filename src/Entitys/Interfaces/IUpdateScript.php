@@ -1,8 +1,8 @@
 <?php
 
-namespace Websyspro\Entity\Interfaces;
+namespace Websyspro\Core\Entitys\Interfaces;
 
-use Websyspro\Entity\Enums\ScriptType;
+use Websyspro\Core\Entitys\Enums\ScriptType;
 
 class IUpdateScript
 {

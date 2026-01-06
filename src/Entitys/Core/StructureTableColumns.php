@@ -1,13 +1,13 @@
 <?php
 
-namespace Websyspro\Entity\Core;
+namespace Websyspro\Core\Entitys\Core;
 
 use Websyspro\Commons\DataList;
-use Websyspro\Entity\Enums\AttributeType;
-use Websyspro\Entity\Enums\ColumnOrder;
-use Websyspro\Entity\Interfaces\IAbstractColumn;
-use Websyspro\Entity\Interfaces\IColumnType;
-use Websyspro\Entity\Interfaces\IProperties;
+use Websyspro\Core\Entitys\Enums\AttributeType;
+use Websyspro\Core\Entitys\Enums\ColumnOrder;
+use Websyspro\Core\Entitys\Interfaces\IAbstractColumn;
+use Websyspro\Core\Entitys\Interfaces\IColumnType;
+use Websyspro\Core\Entitys\Interfaces\IProperties;
 
 class StructureTableColumns
 extends StructureTableAbstract

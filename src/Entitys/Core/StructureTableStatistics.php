@@ -1,12 +1,12 @@
 <?php
 
-namespace Websyspro\Entity\Core;
+namespace Websyspro\Core\Entitys\Core;
 
 use Websyspro\Commons\DataList;
-use Websyspro\Entity\Enums\AttributeType;
-use Websyspro\Entity\Interfaces\IProperties;
-use Websyspro\Entity\Interfaces\IStatisticsItem;
-use Websyspro\Entity\Interfaces\IStatisticsNamesItem;
+use Websyspro\Core\Entitys\Enums\AttributeType;
+use Websyspro\Core\Entitys\Interfaces\IProperties;
+use Websyspro\Core\Entitys\Interfaces\IStatisticsItem;
+use Websyspro\Core\Entitys\Interfaces\IStatisticsNamesItem;
 
 class StructureTableStatistics
 extends StructureTableAbstract

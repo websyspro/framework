@@ -1,23 +1,23 @@
 <?php
 
-namespace Websyspro\Entity\Core\Persisteds;
+namespace Websyspro\Core\Entitys\Core\Persisteds;
 
-use Websyspro\Commons\DataList;
-use Websyspro\Entity\Interfaces\IPersistedUnique;
+use Websyspro\Core\Entitys\Interfaces\IPersistedUnique;
+use Websyspro\Core\Collection;
 
 class PersistedUniquesList
 {
   public function __construct(
-    private DataList $uniques
+    private Collection $uniques
   ){} 
   
   public function list(
-  ): DataList {
-    return $this->uniques->copy();
+  ): Collection {
+    return $this->uniques;
   }
 
   public function listNames(
-  ): DataList {
+  ): Collection {
     return $this->list()->mapper(
       fn(IPersistedUnique $persistedUnique) => (
         $persistedUnique->name

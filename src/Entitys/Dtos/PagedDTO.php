@@ -1,6 +1,6 @@
 <?php
 
-namespace Websyspro\Entity\Dtos;
+namespace Websyspro\Core\Entitys\Dtos;
 
 class PagedDTO
 {

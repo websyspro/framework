@@ -1,10 +1,10 @@
 <?php
 
-namespace Websyspro\Entity\Interfaces;
+namespace Websyspro\Core\Entitys\Interfaces;
 
 use Websyspro\Commons\DataList;
-use Websyspro\Entity\Core\Shareds\ForeignKeyItem;
-use Websyspro\Entity\Core\StructureTable;
+use Websyspro\Core\Entitys\Core\Shareds\ForeignKeyItem;
+use Websyspro\Core\Entitys\Core\StructureTable;
 
 class IEntityGroup
 {

@@ -1,13 +1,13 @@
 <?php
 
-namespace Websyspro\Entity\Core\Designs\MySql;
+namespace Websyspro\Core\Entitys\Core\Designs\MySql;
 
 use Websyspro\Commons\DataList;
 use Websyspro\Commons\Util;
-use Websyspro\Entity\Core\Persisteds\PersistedPrimaryKeysList;
-use Websyspro\Entity\Core\StructureTable;
-use Websyspro\Entity\Enums\ScriptType;
-use Websyspro\Entity\Interfaces\IUpdateScript;
+use Websyspro\Core\Entitys\Core\Persisteds\PersistedPrimaryKeysList;
+use Websyspro\Core\Entitys\Core\StructureTable;
+use Websyspro\Core\Entitys\Enums\ScriptType;
+use Websyspro\Core\Entitys\Interfaces\IUpdateScript;
 
 class MySqlUpdatePrimaryKeys
 {

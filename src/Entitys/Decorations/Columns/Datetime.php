@@ -1,11 +1,11 @@
 <?php
 
-namespace Websyspro\Entity\Decorations\Columns;
+namespace Websyspro\Core\Entitys\Decorations\Columns;
 
 use Attribute;
-use Websyspro\Entity\Enums\ColumnType;
-use Websyspro\Entity\Enums\AttributeType;
-use Websyspro\Entity\Interfaces\IAbstractColumn;
+use Websyspro\Core\Entitys\Enums\ColumnType;
+use Websyspro\Core\Entitys\Enums\AttributeType;
+use Websyspro\Core\Entitys\Interfaces\IAbstractColumn;
 
 #[Attribute( Attribute::TARGET_PROPERTY )]
 class Datetime 

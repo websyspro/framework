@@ -1,19 +1,19 @@
 <?php
 
-namespace Websyspro\Entity\Core\Persisteds;
+namespace Websyspro\Core\Entitys\Core\Persisteds;
 
-use Websyspro\Commons\DataList;
-use Websyspro\Entity\Interfaces\IPersistedPrimaryKey;
+use Websyspro\Core\Entitys\Interfaces\IPersistedPrimaryKey;
+use Websyspro\Core\Collection;
 
 class PersistedPrimaryKeysList
 {
   public function __construct(
-    private DataList $primaryKeys
+    private Collection $primaryKeys
   ){}
 
   public function list(
-  ): DataList {
-    return $this->primaryKeys->copy()->mapper(
+  ): Collection {
+    return $this->primaryKeys->mapper(
       fn(IPersistedPrimaryKey $persistedPrimaryKey) => (
         $persistedPrimaryKey->name
       )

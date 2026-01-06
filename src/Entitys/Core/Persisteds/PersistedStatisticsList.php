@@ -1,23 +1,23 @@
 <?php
 
-namespace Websyspro\Entity\Core\Persisteds;
+namespace Websyspro\Core\Entitys\Core\Persisteds;
 
-use Websyspro\Commons\DataList;
-use Websyspro\Entity\Interfaces\IPersistedStatistics;
+use Websyspro\Core\Entitys\Interfaces\IPersistedStatistics;
+use Websyspro\Core\Collection;
 
 class PersistedStatisticsList
 {
   public function __construct(
-    private DataList $indexes
+    private Collection $indexes
   ){} 
   
   public function list(
-  ): DataList {
-    return $this->indexes->copy();
+  ): Collection {
+    return $this->indexes;
   }
 
   public function listNames(
-  ): DataList {
+  ): Collection {
     return $this->List()->mapper(
       fn(IPersistedStatistics $persistedStatistics) => (
         $persistedStatistics->name

@@ -1,12 +1,12 @@
 <?php
 
-namespace Websyspro\Entity\Core;
+namespace Websyspro\Core\Entitys\Core;
 
 use Websyspro\Commons\DataList;
-use Websyspro\Entity\Core\Shareds\OneToManyItem;
-use Websyspro\Entity\Core\Shareds\OneToManyReferenceItem;
-use Websyspro\Entity\Enums\AttributeType;
-use Websyspro\Entity\Interfaces\IProperties;
+use Websyspro\Core\Entitys\Core\Shareds\OneToManyItem;
+use Websyspro\Core\Entitys\Core\Shareds\OneToManyReferenceItem;
+use Websyspro\Core\Entitys\Enums\AttributeType;
+use Websyspro\Core\Entitys\Interfaces\IProperties;
 
 class StructureTableOneToManys
 extends StructureTableAbstract

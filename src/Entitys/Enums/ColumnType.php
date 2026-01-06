@@ -1,6 +1,6 @@
 <?php
 
-namespace Websyspro\Entity\Enums;
+namespace Websyspro\Core\Entitys\Enums;
 
 enum ColumnType: string
 {

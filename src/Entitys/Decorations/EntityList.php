@@ -1,6 +1,6 @@
 <?php
 
-namespace Websyspro\Entity\Decorations;
+namespace Websyspro\Core\Entitys\Decorations;
 
 use Attribute;
 

@@ -1,20 +1,20 @@
 <?php
 
-namespace Websyspro\Entity\Core\Designs\MySql;
+namespace Websyspro\Core\Entitys\Core\Designs\MySql;
 
-use Websyspro\Commons\DataList;
-use Websyspro\Database\Connect;
-use Websyspro\Entity\Core\Persisteds\PersistedColumnsList;
-use Websyspro\Entity\Core\Persisteds\PersistedRequiredsList;
-use Websyspro\Entity\Core\StructureTable;
-use Websyspro\Entity\Enums\ScriptType;
-use Websyspro\Entity\Interfaces\IColumnType;
-use Websyspro\Entity\Interfaces\IPersistedColumn;
-use Websyspro\Entity\Interfaces\IUpdateScript;
+use Websyspro\Core\Collection;
+use Websyspro\Core\Database\Connect;
+use Websyspro\Core\Entitys\Core\Persisteds\PersistedColumnsList;
+use Websyspro\Core\Entitys\Core\Persisteds\PersistedRequiredsList;
+use Websyspro\Core\Entitys\Core\StructureTable;
+use Websyspro\Core\Entitys\Enums\ScriptType;
+use Websyspro\Core\Entitys\Interfaces\IColumnType;
+use Websyspro\Core\Entitys\Interfaces\IPersistedColumn;
+use Websyspro\Core\Entitys\Interfaces\IUpdateScript;
 
 class MySqlUpdateColumns
 {
-  public DataList $updateScripts;
+  public Collection $updateScripts;
 
   public function __construct(
     public PersistedColumnsList $persistedColumnsList,
@@ -26,7 +26,7 @@ class MySqlUpdateColumns
   public function setStarteds(
   ): void {
     $this->updateScripts = (
-      DataList::create()
+      new Collection()
     );
   }
 

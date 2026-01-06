@@ -1,23 +1,23 @@
 <?php
 
-namespace Websyspro\Entity\Core\Persisteds;
+namespace Websyspro\Core\Entitys\Core\Persisteds;
 
-use Websyspro\Commons\DataList;
-use Websyspro\Entity\Interfaces\IPersistedOneToOnes;
+use Websyspro\Core\Entitys\Interfaces\IPersistedOneToOnes;
+use Websyspro\Core\Collection;
 
 class PersistedOneToOnesList
 {
   public function __construct(
-    private DataList $foreignKeys
+    private Collection $foreignKeys
   ){}
 
   public function list(
-  ): DataList {
-    return $this->foreignKeys->copy();
+  ): Collection {
+    return $this->foreignKeys;
   }
 
   public function listNames(
-  ): DataList {
+  ): Collection {
     return $this->list();
   }
 

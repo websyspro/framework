@@ -1,13 +1,13 @@
 <?php
 
-namespace Websyspro\Entity\Core\Designs\MySql;
+namespace Websyspro\Core\Entitys\Core\Designs\MySql;
 
-use Websyspro\Entity\Core\Persisteds\PersistedOneToOnesList;
-use Websyspro\Entity\Interfaces\IPersistedOneToOnes;
-use Websyspro\Entity\Core\Shareds\OneToOneItem;
-use Websyspro\Entity\Interfaces\IUpdateScript;
-use Websyspro\Entity\Core\StructureTable;
-use Websyspro\Entity\Enums\ScriptType;
+use Websyspro\Core\Entitys\Core\Persisteds\PersistedOneToOnesList;
+use Websyspro\Core\Entitys\Interfaces\IPersistedOneToOnes;
+use Websyspro\Core\Entitys\Core\Shareds\OneToOneItem;
+use Websyspro\Core\Entitys\Interfaces\IUpdateScript;
+use Websyspro\Core\Entitys\Core\StructureTable;
+use Websyspro\Core\Entitys\Enums\ScriptType;
 use Websyspro\Commons\DataList;
 
 class MySqlUpdateOneToOne

@@ -1,8 +1,8 @@
 <?php
 
-namespace Websyspro\Entity\Core\Shareds;
+namespace Websyspro\Core\Entitys\Core\Shareds;
 
-use Websyspro\Entity\Core\StructureTable;
+use Websyspro\Core\Entitys\Core\StructureTable;
 
 class ForeignKeyReferenceItem
 {

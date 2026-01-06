@@ -1,23 +1,23 @@
 <?php
 
-namespace Websyspro\Entity\Core\Persisteds;
+namespace Websyspro\Core\Entitys\Core\Persisteds;
 
-use Websyspro\Commons\DataList;
-use Websyspro\Entity\Interfaces\IPersistedGeneration;
+use Websyspro\Core\Collection;
+use Websyspro\Core\Entitys\Interfaces\IPersistedGeneration;
 
 class PersistedGenerationsList
 {
   public function __construct(
-    private DataList $generations
+    private Collection $generations
   ){}
 
   public function list(
-  ): DataList {
-    return $this->generations->copy();
+  ): Collection {
+    return $this->generations;
   }
 
   public function listNames(
-  ): DataList {
+  ): Collection {
     return $this->list()->mapper(
       fn(IPersistedGeneration $persistedGeneration) => (
         $persistedGeneration->name

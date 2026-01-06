@@ -1,6 +1,6 @@
 <?php
 
-namespace Websyspro\Entity\Core\Shareds;
+namespace Websyspro\Core\Entitys\Core\Shareds;
 
 class OneToOneItem
 {

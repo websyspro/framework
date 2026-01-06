@@ -1,10 +1,10 @@
 <?php
 
-namespace Websyspro\Entity\Decorations\Requireds;
+namespace Websyspro\Core\Entitys\Decorations\Requireds;
 
 use Attribute;
-use Websyspro\Entity\Enums\AttributeType;
-use Websyspro\Entity\Interfaces\IAbstractColumn;
+use Websyspro\Core\Entitys\Enums\AttributeType;
+use Websyspro\Core\Entitys\Interfaces\IAbstractColumn;
 
 #[Attribute( Attribute::TARGET_PROPERTY )]
 class NotNull

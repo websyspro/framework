@@ -2,20 +2,22 @@
 
 namespace Websyspro\Core\Entitys;
 
-use ReflectionProperty;
-use Websyspro\Core\Commons\Reflect;
-use Websyspro\Core\Commons\Util;
-use Websyspro\Core\Database\Connect;
-use Websyspro\Core\DynamicSql\Core\DataByFn;
-use Websyspro\Core\DynamicSql\QueryBuild;
+use ReflectionClass;
 use Websyspro\Core\DynamicSql\Shareds\ItemParameter;
-use Websyspro\Core\Entity\Core\Shareds\StdClassToEntity;
-use Websyspro\Core\Entity\Core\StructureTable;
-use Websyspro\Core\Entity\Dtos\PagedDTO;
-use Websyspro\Core\Entity\Enums\AttributeType;
-use Websyspro\Core\Entity\Enums\RelationshipType;
-use Websyspro\Core\Entity\Interfaces\IEntityGroup;
-use Websyspro\Core\Entity\Interfaces\IProperties;
+use Websyspro\Core\Entitys\Core\Shareds\StdClassToEntity;
+use Websyspro\Core\Entitys\Interfaces\IEntityGroup;
+use Websyspro\Core\Entitys\Enums\RelationshipType;
+use Websyspro\Core\Entitys\Interfaces\IProperties;
+use Websyspro\Core\Entitys\Core\StructureTable;
+use Websyspro\Core\Entitys\Enums\AttributeType;
+use Websyspro\Core\DynamicSql\Core\DataByFn;
+use Websyspro\Core\Entitys\Dtos\PagedDTO;
+use Websyspro\Core\DynamicSql\QueryBuild;
+use Websyspro\Core\Database\Connect;
+use Websyspro\Core\Commons\Reflect;
+use Websyspro\Core\Collection;
+use Websyspro\Core\Util;
+use ReflectionProperty;
 
 class Repository
 {
@@ -64,7 +66,7 @@ class Repository
 
   private function defaultEvents(
     AttributeType $attributeType
-  ): DataList {
+  ): Collection {
     if(AttributeType::insert === $attributeType){
       $defaultEvents = $this->structureTable->eventInserts()->list();
     } else
@@ -76,7 +78,7 @@ class Repository
     } 
 
     if($defaultEvents->exist() === false){
-      return DataList::create();
+      return new Collection();
     }
 
     $defaultEvents->reduce([], function(array $curr, IProperties $event){
@@ -93,8 +95,8 @@ class Repository
   ): array {
     return (
       Util::mapper(
-        Util::whereByKey(
-          $row, fn(string $key) => in_array($key, array_keys($columns))
+        Util::where(
+          $row, fn($_, string $key) => in_array($key, array_keys($columns))
         ), fn(mixed $value, string $key) => (
             $columns[$key]->encode($value)
         )
@@ -103,9 +105,9 @@ class Repository
   }
 
   private function parseDecode(
-    DataList $row,
-    DataList $columns
-  ): DataList {
+    Collection $row,
+    Collection $columns
+  ): Collection {
     $row->mapper(
       fn(mixed $stdClass) => (
         StdClassToEntity::parse(
@@ -121,8 +123,8 @@ class Repository
             mixed $value, 
             string $name
           ) use($columns) {
-            return $columns->copy()->whereByKey(
-              fn(string $columnName) => $columnName === $name
+            return $columns->where(
+              fn($_, string $columnName) => $columnName === $name
             )->first()->decode($value);
           }
         )
@@ -144,21 +146,21 @@ class Repository
   }
 
   private function insertValues(
-    DataList $data
-  ): DataList {
+    Collection $data
+  ): Collection {
     $headers = array_keys(
-      $data->copy()->first()
+      $data->first()
     );
 
     return $data
       ->chunk(500)
       ->mapper(
-          fn(DataList $chunkRow) => $chunkRow->mapper(
+          fn(Collection $chunkRow) => $chunkRow->mapper(
             fn(array $row) => Util::joinWithComma($row, "(%s)")
           )
         )
       ->mapper(
-        fn(DataList $chunkRow) => sprintf(
+        fn(Collection $chunkRow) => sprintf(
           "Insert into {$this->structureTable->table} %s values %s", ...[
             Util::joinWithComma($headers, "(%s)"), $chunkRow->joinWithComma()
           ]
@@ -175,7 +177,7 @@ class Repository
     array $data = []
   ): bool {
     [ $dataList, $columns ] = [
-      DataList::create($data), $this->columns()
+      new Collection($data), $this->columns()
     ];
 
     $this->insertValues(
@@ -197,7 +199,7 @@ class Repository
     string|object $object,
     array $arrayValues = []
   ): array {
-    $objectRefs = Reflect::class($object);
+    $objectRefs = new ReflectionClass( $object );
     $objectRefsProperts = $objectRefs->getProperties(
       ReflectionProperty::IS_PUBLIC
     );
@@ -218,7 +220,7 @@ class Repository
       }
     }
     
-    $dataList = DataList::create([
+    $dataList = new Collection([
       is_callable($data) === true
       ? DataByFn::create($data)->arrayFromFn()
       : $data
@@ -244,7 +246,7 @@ class Repository
   }
 
   private function generations(
-  ): DataList {
+  ): Collection {
     return (
       $this->structureTable
         ->primaryKeys()
@@ -274,8 +276,8 @@ class Repository
   }
 
   public function updateValues(
-    DataList $data
-  ): DataList {
+    Collection $data
+  ): Collection {
     return (
       $data->mapper(
         fn(array $row) => (
@@ -286,8 +288,8 @@ class Repository
       )
       ->mapper(
         fn(array $row) => (
-          [ Util::whereByKey($row, fn(string $key) => in_array($key, $this->generations()->all()) === false),
-            Util::whereByKey($row, fn(string $key) => in_array($key, $this->generations()->all()) === true) ]
+          [ Util::where($row, fn($_, string $key) => Util::inArray($key, $this->generations()->all()) === false),
+            Util::where($row, fn($_, string $key) => Util::inArray($key, $this->generations()->all()) === true) ]
         )
       )
       ->mapper(
@@ -296,8 +298,8 @@ class Repository
 
           return sprintf(
             "Update {$this->structureTable->table} Set %s Where %s", ...[
-              Util::join(", ", $updates),
-              Util::join(" and ", $wheres),
+              Util::join( ", ", $updates ),
+              Util::join( " and ", $wheres ),
             ]
           );
         }
@@ -317,7 +319,7 @@ class Repository
       $data = $this->objectToArray($data);
     }
 
-    $dataList = DataList::create([
+    $dataList = new Collection([
       is_callable($data) === true
         ? DataByFn::create($data)->arrayFromFn()
         : $data
@@ -359,8 +361,8 @@ class Repository
 
   public function entityGroupList(
     QueryBuild $queryBuild,
-    DataList $queryRows
-  ): DataList {
+    Collection $queryRows
+  ): Collection {
   if($queryBuild->hasSelect()){
       if($queryBuild->select->getParameters()->exist() === true){
         $groupRows = $queryBuild->select->getParameters()->copy()->mapper(
@@ -384,8 +386,8 @@ class Repository
   }
 
   public function entityGroupManyList(
-    DataList $entityGroupList
-  ): DataList {
+    Collection $entityGroupList
+  ): Collection {
     foreach($entityGroupList->all() as $entityGroup){
       if($entityGroup instanceof IEntityGroup){
         $entityGroup->defineOneToMany(
@@ -400,12 +402,12 @@ class Repository
   private function entityGroupRelationship(
     array $row,
     IEntityGroup $entityGroupBase,
-    DataList $entityGroupList,
+    Collection $entityGroupList,
     RelationshipType $relationshipType
   ): array {
     if($relationshipType === RelationshipType::oneToOne){
       foreach($entityGroupBase->oneToOne->all() as $oneToOne){
-        $entityList = $entityGroupList->copy()->where(
+        $entityList = $entityGroupList->where(
           fn(IEntityGroup $entityGroup) => (
             $entityGroup->structure->table === $oneToOne->reference
           )
@@ -445,7 +447,7 @@ class Repository
     } else
     if($relationshipType === RelationshipType::oneToMany){
       foreach($entityGroupBase->oneToMany->all() as $oneToMany){
-        $entityList = $entityGroupList->copy()->where(
+        $entityList = $entityGroupList->where(
           fn(IEntityGroup $entityGroup) => (
             $entityGroup->structure->table === $oneToMany->reference
           )
@@ -477,10 +479,8 @@ class Repository
               }
             }
 
-            $row = array_merge($row, [
-              $oneToManyNames->first()->name => DataList::create(
-                $rowLists
-              )
+            $row = array_merge( $row, [
+              $oneToManyNames->first()->name => new Collection( $rowLists )
             ]);
           }
         }
@@ -493,15 +493,12 @@ class Repository
   }  
 
   public function entityGroupListToTree(
-    DataList $entityGroupList
-  ): DataList {
-    $entityBase = (
-      $entityGroupList
-        ->copy()->slice(0, 1)
-    );
+    Collection $entityGroupList
+  ): Collection {
+    $entityBase = $entityGroupList->slice( 0, 1 );
 
     if(isset($entityBase->first()->rowList) === false){
-      return DataList::create([]);
+      return new Collection([]);
     }    
 
     if($entityBase->first() instanceof IEntityGroup){
@@ -523,7 +520,7 @@ class Repository
 
   public function queryBuild(
     QueryBuild $queryBuild    
-  ): DataList {
+  ): Collection {
     $queryRows = (
       $this->connect()->query(
         $queryBuild->get(
@@ -609,11 +606,9 @@ class Repository
   }
 
   public function all(
-  ): DataList {
-    $queryBuild = (
-      new QueryBuild(
-        $this->table
-      )
+  ): Collection {
+    $queryBuild = new QueryBuild(
+      $this->table
     );
 
     if(isset($this->selectFn))

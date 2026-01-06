@@ -1,14 +1,14 @@
 <?php
 
-namespace Websyspro\Entity\Core\Designs\MySql;
+namespace Websyspro\Core\Entitys\Core\Designs\MySql;
 
 use Websyspro\Commons\DataList;
-use Websyspro\Entity\Core\Persisteds\PersistedForeignKeysList;
-use Websyspro\Entity\Core\Shareds\ForeignKeyItem;
-use Websyspro\Entity\Core\StructureTable;
-use Websyspro\Entity\Enums\ScriptType;
-use Websyspro\Entity\Interfaces\IPersistedForeignKeys;
-use Websyspro\Entity\Interfaces\IUpdateScript;
+use Websyspro\Core\Entitys\Core\Persisteds\PersistedForeignKeysList;
+use Websyspro\Core\Entitys\Core\Shareds\ForeignKeyItem;
+use Websyspro\Core\Entitys\Core\StructureTable;
+use Websyspro\Core\Entitys\Enums\ScriptType;
+use Websyspro\Core\Entitys\Interfaces\IPersistedForeignKeys;
+use Websyspro\Core\Entitys\Interfaces\IUpdateScript;
 
 class MySqlUpdateForeignKeys
 {

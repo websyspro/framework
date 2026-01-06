@@ -1,23 +1,23 @@
 <?php
 
-namespace Websyspro\Entity\Core\Persisteds;
+namespace Websyspro\Core\Entitys\Core\Persisteds;
 
-use Websyspro\Commons\DataList;
-use Websyspro\Entity\Interfaces\IPersistedForeignKeys;
+use Websyspro\Core\Collection;
+use Websyspro\Core\Entitys\Interfaces\IPersistedForeignKeys;
 
 class PersistedForeignKeysList
 {
   public function __construct(
-    private DataList $foreignKeys
+    private Collection $foreignKeys
   ){}
 
   public function list(
-  ): DataList {
-    return $this->foreignKeys->copy();
+  ): Collection {
+    return $this->foreignKeys;
   }
 
   public function listNames(
-  ): DataList {
+  ): Collection {
     return $this->list();
   }
 

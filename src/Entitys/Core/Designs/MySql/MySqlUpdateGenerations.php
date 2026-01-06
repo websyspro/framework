@@ -1,15 +1,15 @@
 <?php
 
-namespace Websyspro\Entity\Core\Designs\MySql;
+namespace Websyspro\Core\Entitys\Core\Designs\MySql;
 
 use Websyspro\Commons\DataList;
 use Websyspro\Commons\Util;
-use Websyspro\Entity\Core\Persisteds\PersistedGenerationsList;
-use Websyspro\Entity\Core\StructureTable;
-use Websyspro\Entity\Enums\ScriptType;
-use Websyspro\Entity\Interfaces\IPersistedGeneration;
-use Websyspro\Entity\Interfaces\IProperties;
-use Websyspro\Entity\Interfaces\IUpdateScript;
+use Websyspro\Core\Entitys\Core\Persisteds\PersistedGenerationsList;
+use Websyspro\Core\Entitys\Core\StructureTable;
+use Websyspro\Core\Entitys\Enums\ScriptType;
+use Websyspro\Core\Entitys\Interfaces\IPersistedGeneration;
+use Websyspro\Core\Entitys\Interfaces\IProperties;
+use Websyspro\Core\Entitys\Interfaces\IUpdateScript;
 
 class MySqlUpdateGenerations
 {

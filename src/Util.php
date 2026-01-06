@@ -278,6 +278,12 @@ class Util
   ): bool {
     return \in_array( $value, $array);
   }
+
+  public static function join(
+    string $separator, array $array 
+  ): string {
+    return implode($separator, $array);
+  }
   
   /**
    * Joins array elements using CRLF line breaks.
@@ -296,6 +302,36 @@ class Util
   ): mixed {
     return implode( "\r\n", $array );
   }
+
+  /**
+   * Joins the given array values using a comma as separator.
+   * Optionally applies a format string or format array around the result.
+   *
+   * Examples:
+   * - joinWithComma(['a', 'b', 'c'], null)        => "a,b,c"
+   * - joinWithComma(['a', 'b', 'c'], '(%s)')      => "(a,b,c)"
+   * - joinWithComma(['a', 'b', 'c'], ['[%s]'])    => "[a,b,c]"
+   *
+   * @param array $array
+   *   The array of values to be joined.
+   *
+   * @param string|array $format
+   *   A format string or array of formats to be applied using sprintf.
+   *   If empty, the array values are simply joined by commas.
+   *
+   * @return string
+   *   The formatted string or the comma-separated values.
+   */  
+  public static function joinWithComma(
+    array $array,
+    string | array $format
+  ): string {
+    return (
+      empty($format) === false || sizeof($format) !== 0
+    ) ? Util::sprintFormat( $format, [
+          Util::join(",", $array )
+        ]) : Util::join( ",", $array ); 
+  } 
   
   /**
    * Formats a string using a sprintf-style format

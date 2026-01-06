@@ -1,6 +1,6 @@
 <?php
 
-namespace Websyspro\Entity\Interfaces;
+namespace Websyspro\Core\Entitys\Interfaces;
 
 use ReflectionAttribute;
 use Websyspro\Commons\DataList;
