@@ -2,14 +2,14 @@
 
 namespace Websyspro\Core\DynamicSql\Interfaces;
 
-use Websyspro\Commons\DataList;
+use Websyspro\Core\Collection;
 
 class ICompare
 {
   public function __construct(
-    public DataList $froms,
-    public DataList $leftJoins,
-    public DataList $conditionsPrimary,
-    public DataList $conditionsSecundary
+    public Collection $froms,
+    public Collection $leftJoins,
+    public Collection $conditionsPrimary,
+    public Collection $conditionsSecundary
   ){}
 }

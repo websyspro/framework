@@ -2,11 +2,11 @@
 
 namespace Websyspro\Core\DynamicSql\Core;
 
-use Websyspro\Commons\DataList;
 use Websyspro\Core\DynamicSql\Interfaces\ICompare;
 use Websyspro\Core\DynamicSql\Shareds\Equal;
 use Websyspro\Core\DynamicSql\Shareds\ItemParameter;
 use Websyspro\Core\DynamicSql\Shareds\Token;
+use Websyspro\Core\Collection;
 
 class WhereByFn
 extends AbstractByFn
@@ -36,7 +36,7 @@ extends AbstractByFn
 
   private function defineConditionsBlocks(
   ): void {
-    $this->tokens->forEach(
+    $this->tokens->mapper(
       function(Token $token){
         if( in_array($token->getString(), $this->equals )){
           $this->isEquals = true;
@@ -74,7 +74,7 @@ extends AbstractByFn
 
   private function defineConditionsSplits(
   ): void {
-    $this->tokens = DataList::create(
+    $this->tokens = new Collection(
       preg_split( "/(\s{1,}&&\s{1,})|(\s{1,}and\s{1,})|(\s{1,}\|\|\s{1,})|(\s{1,}or\s{1,})|(__\()|(\)__)/i", (
         $this->tokens->Mapper(fn(Token $token) => $token->getString())->joinNotSpace()
       ), -1, ( PREG_SPLIT_DELIM_CAPTURE | PREG_SPLIT_NO_EMPTY ))
@@ -129,20 +129,20 @@ extends AbstractByFn
       fn( ItemParameter $itemParameter ) => $itemParameter->structureTable->table
     );
 
-    $leftJoins = $this->tokens->copy()
+    $leftJoins = $this->tokens
       ->where(fn(Equal $token) => $token->isLeftJoin || $token->isPrimary)
       ->mapper(fn(Equal $token) => $token->leftJoin);
 
-    $conditionsPrimary = DataList::create([
-      $this->tokens->copy()->mapper(
+    $conditionsPrimary = new Collection([
+      $this->tokens->mapper(
         fn(Equal $token) => $token->getCompare(
           $forms->first()
         )
       )->joinWithSpace()
     ]);
 
-    $conditionsSecundary = DataList::create([
-      $this->tokens->copy()->mapper(
+    $conditionsSecundary = new Collection([
+      $this->tokens->mapper(
         fn(Equal $token) => $token->getCompare(
           $forms->first(), true
         )
