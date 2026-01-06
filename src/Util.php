@@ -394,7 +394,75 @@ class Util
     ) ? Util::sprintFormat( $format, [
           Util::join(",", $array )
         ]) : Util::join( ",", $array ); 
-  } 
+  }
+
+  /**
+   * Converts a comma-separated string into a Collection.
+   *
+   * Square brackets at the beginning or end of the string are removed
+   * before splitting. Each resulting value is trimmed to remove
+   * surrounding whitespace.
+   *
+   * Examples:
+   *   "[a, b, c]" -> ["a", "b", "c"]
+   *   "1,2,3"     -> ["1", "2", "3"]
+   *
+   * @param string $valueStr The input string to be converted.
+   *
+   * @return Collection A Collection containing the parsed and trimmed values.
+   */  
+  public static function strToArray(
+    string $valueStr  
+  ): Collection {
+    return new Collection(
+      explode(",", preg_replace(
+        "#(^\[)|(\]$)#", "", $valueStr
+      ))
+    )->mapper(fn(string $str) => trim($str));
+  }  
+
+  /**
+   * Flattens a nested array or object into a single-level associative array
+   * using dot notation for keys.
+   *
+   * Nested associative arrays and objects are recursively expanded, while
+   * numeric-indexed arrays (lists) are encoded as JSON strings to preserve
+   * their structure.
+   *
+   * Examples:
+   *   ['user' => ['name' => 'John']] becomes ['user.name' => 'John']
+   *   ['tags' => ['php', 'api']]     becomes ['tags' => '["php","api"]']
+   *
+   * @param array  $array  The input array to be flattened.
+   * @param string $prefix Internal prefix used for recursive key generation.
+   *
+   * @return array A flattened associative array with dot-notated keys.
+   */  
+  public static function ParseBodyStaticsUnion(
+    array $array,
+    string $prefix = ""
+  ): array {
+    $result = [];
+
+    foreach ($array as $key => $value) {
+      $newKey = $prefix === "" ? $key : "{$prefix}.{$key}";
+
+      if (is_array($value) || is_object($value)) {
+        if (is_array($value) && array_keys($value) === range(0, count($value) - 1)) {
+          $result[$newKey] = json_encode($value);
+        } else {
+          $flattened = Util::ParseBodyStaticsUnion((array)$value, $newKey);
+          foreach ($flattened as $fKey => $fValue) {
+              $result[$fKey] = $fValue;
+          }
+        }
+      } else {
+        $result[$newKey] = $value;
+      }
+    }
+
+    return $result;
+  }
   
   /**
    * Formats a string using a sprintf-style format

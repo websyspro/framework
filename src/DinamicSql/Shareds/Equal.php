@@ -2,18 +2,18 @@
 
 namespace Websyspro\Core\DynamicSql\Shareds;
 
-use UnitEnum;
-use Websyspro\Commons\DataList;
-use Websyspro\Entity\Enums\ColumnType;
-use Websyspro\Core\DynamicSql\Commons\Util;
-use Websyspro\Core\DynamicSql\Enums\EqualType;
 use Websyspro\Core\DynamicSql\Interfaces\IEqualUnitEnum;
-use Websyspro\Entity\Core\Shareds\ForeignKeyItem;
-use Websyspro\Entity\Interfaces\IColumnType;
+use Websyspro\Core\DynamicSql\Enums\EqualType;
+use Websyspro\Core\Entitys\Core\Shareds\ForeignKeyItem;
+use Websyspro\Core\Entitys\Interfaces\IColumnType;
+use Websyspro\Core\Entitys\Enums\ColumnType;
+use Websyspro\Core\Collection;
+use Websyspro\Core\Util;
+use UnitEnum;
 
 class Equal
 {
-  public DataList $equals;
+  public Collection $equals;
   public EqualType $equalType;
   public string $leftJoin;
   public bool $isLeftJoin;
@@ -21,8 +21,8 @@ class Equal
   
   public function __construct(
     public string $value,
-    public DataList $parameters,
-    public DataList $statics,
+    public Collection $parameters,
+    public Collection $statics,
     public bool $isParse,
   ){
     $this->define();
@@ -42,7 +42,7 @@ class Equal
     $this->isLeftJoin = false;
     $this->isPrimary = false;
 
-    $this->equals = DataList::create(
+    $this->equals = new Collection(
       preg_split("/(!=|==|>=|<=|<>)/", $this->value, 2, (
         PREG_SPLIT_DELIM_CAPTURE | PREG_SPLIT_NO_EMPTY
       ))
@@ -91,7 +91,7 @@ class Equal
   public function defineEntity(
   ): void {
     if($this->equalType === EqualType::Equal){
-      $this->parameters->forEach(
+      $this->parameters->mapper(
         fn(ItemParameter $itemParameter) => (
           $this->equals->mapper(
             fn(EqualField|EqualVar|IEqualUnitEnum|string $equal) => (
@@ -112,8 +112,8 @@ class Equal
 
     if(preg_match("/\\$/", $equal) === 1){
       if(preg_match( "/(!=|==|>=|<=|<>)/i", $equal) === 0){
-        $hasStatic = $this->statics->Copy()->whereByKey(
-          function(string $key) use($equal) {
+        $hasStatic = $this->statics->where(
+          function($_, string $key) use($equal) {
             //// antigo preg_match("#(\{\\$$key\})|(\\$$key)|(\w+\.\w+))#", $equal) === 1
             return preg_match("#(^\{\\$$key)|(^\\$$key)#", preg_replace("#\->#", ".", $equal)) === 1;
           }
@@ -214,7 +214,7 @@ class Equal
   public function defineEvaluate(
   ): void {
     if($this->equalType === EqualType::Equal){
-      $this->equals->forEach(
+      $this->equals->mapper(
         function(EqualField|EqualVar|IEqualUnitEnum|string $equal){
           if($equal instanceof EqualVar){
             $equal->value = EvaluateFromString::execute($equal->value);
@@ -227,7 +227,7 @@ class Equal
   public function defineNulls(
   ): void {
     if($this->equalType === EqualType::Equal){
-      $this->equals->forEach(
+      $this->equals->mapper(
         function(EqualField|EqualVar|IEqualUnitEnum|string $equal){
           if($equal instanceof EqualVar){
             if(preg_match( "/null/i", $equal->value)){

@@ -2,11 +2,11 @@
 
 namespace Websyspro\Core\DynamicSql\Core;
 
-use Websyspro\Commons\DataList;
 use Websyspro\Core\DynamicSql\Shareds\Column;
 use Websyspro\Core\DynamicSql\Shareds\ItemParameter;
 use Websyspro\Core\DynamicSql\Shareds\Token;
-use Websyspro\Entity\Interfaces\IColumnType;
+use Websyspro\Core\Entitys\Interfaces\IColumnType;
+use Websyspro\Core\Collection;
 
 class AbstractColumnByFn
 extends AbstractByFn
@@ -38,16 +38,16 @@ extends AbstractByFn
 
   private function defineColumnsSplits(
   ): void {
-    $this->tokens = DataList::create(
+    $this->tokens = new Collection(
       explode(",", $this->tokens->joinNotSpace())
     );
   }
 
   private function defineColumnsEntitys(
   ): void {
-    $this->getParameters()->forEach(
+    $this->getParameters()->mapper(
       fn(ItemParameter $itemParameter) => (
-        $itemParameter->structureTable->columns()->listType()->forEach(
+        $itemParameter->structureTable->columns()->listType()->mapper(
           fn(IColumnType $columnType) => (
             $this->tokens->mapper(
               fn(string $token) => preg_replace(

@@ -73,9 +73,9 @@ class Connect
   ): PDO {
     // Extracts connection settings from environment variables
     [ $type, $host, $name, $port, $user, $pass ] = [
-      getenv( "TYPE" ), getenv( "HOST" ),
-      getenv( "NAME" ), getenv( "PORT" ),
-      getenv( "USER" ), getenv( "PASS" )
+      getenv( "DATABASE_TYPE" ), getenv( "DATABASE_HOST" ),
+      getenv( "DATABASE_NAME" ), getenv( "DATABASE_PORT" ),
+      getenv( "DATABASE_USER" ), getenv( "DATABASE_PASS" )
     ];
 
     // Determines DSN based on database type

@@ -2,9 +2,9 @@
 
 namespace Websyspro\Core\DynamicSql\Core;
 
-use Websyspro\Commons\DataList;
 use Websyspro\Core\DynamicSql\Shareds\Equal;
 use Websyspro\Core\DynamicSql\Shareds\Token;
+use Websyspro\Core\Collection;
 
 class DataByFn
 extends AbstractByFn
@@ -26,7 +26,7 @@ extends AbstractByFn
 
   private function defineConditionsSplits(
   ): void {
-    $this->tokens = DataList::create(
+    $this->tokens = new Collection(
       preg_split( "/\\$\|\|/i", ($this->tokens->joinNotSpace()), -1, (
         PREG_SPLIT_DELIM_CAPTURE | PREG_SPLIT_NO_EMPTY 
       ))

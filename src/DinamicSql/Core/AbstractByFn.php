@@ -2,12 +2,12 @@
 
 namespace Websyspro\Core\DynamicSql\Core;
 
-use ReflectionParameter;
-use Websyspro\Commons\DataList;
-use Websyspro\Commons\Reflect;
-use Websyspro\Core\DynamicSql\Commons\Util;
 use Websyspro\Core\DynamicSql\Shareds\ItemParameter;
 use Websyspro\Core\DynamicSql\Shareds\Token;
+use Websyspro\Core\Collection;
+use Websyspro\Core\Util;
+use ReflectionParameter;
+use ReflectionFunction;
 
 class AbstractByFn
 {
@@ -15,7 +15,7 @@ class AbstractByFn
   private int $brackets = 0;
   private int $parentheses = 0;
 
-  public DataList $tokens;
+  public Collection $tokens;
 
   public function __construct(
     private mixed $fn
@@ -26,9 +26,9 @@ class AbstractByFn
   }
 
   public function getParameters(
-  ): DataList {
-    return DataList::create(
-      Reflect::fn($this->fn)->getParameters()
+  ): Collection {
+    return new Collection(
+      new ReflectionFunction($this->fn)->getParameters()
     )->mapper(
       fn(ReflectionParameter $rp) => (
         new ItemParameter(
@@ -40,10 +40,10 @@ class AbstractByFn
   }
 
   public function getStatics(
-  ): DataList {
-    return DataList::create(
-      Util::parseBodyStaticsUnion(
-        Reflect::fn(
+  ): Collection {
+    return new Collection(
+      Util::ParseBodyStaticsUnion(
+        new ReflectionFunction(
           $this->fn
         )->getStaticVariables()
       )
@@ -66,15 +66,15 @@ class AbstractByFn
 
   private function getTokenAll(
     string $bodyStr
-  ): DataList {
-    return DataList::create(
+  ): Collection {
+    return new Collection(
       token_get_all( "<?php {$bodyStr}" )
     )->mapper(fn(array|string $token) => new Token($token))->slice(1);
   }  
 
   private function defineStartAndEndBody(
-    DataList $reflectFnBodyTokens
-  ): DataList {
+    Collection $reflectFnBodyTokens
+  ): Collection {
     $reflectFnBodyTokens->where(
       function(Token $token){
         if( $token->type === T_DOUBLE_ARROW ){
@@ -116,8 +116,8 @@ class AbstractByFn
   }
 
   private function dropSpacesExtras(
-    DataList $reflectFnBodyTokens
-  ): DataList {
+    Collection $reflectFnBodyTokens
+  ): Collection {
     return (
       $this->getTokenAll(
         preg_replace([
@@ -135,16 +135,12 @@ class AbstractByFn
 
   private function load(
     callable $fn
-  ): DataList {
-    $reflectFn = (
-      Reflect::fn($fn)
-    );
+  ): Collection {
+    $reflectFn = new ReflectionFunction($fn);
     
     if( $reflectFn ){
-      $reflectFNLines = (
-        DataList::create(
-          file( $reflectFn->getFileName())
-        ) 
+      $reflectFNLines =  new Collection(
+        file( $reflectFn->getFileName())
       );
 
       $reflectFnBody = (

@@ -2,9 +2,9 @@
 
 namespace Websyspro\Core\DynamicSql\Shareds;
 
-use Websyspro\Entity\Enums\ColumnType;
-use Websyspro\Entity\Core\StructureTable;
-use Websyspro\Entity\Interfaces\IProperties;
+use Websyspro\Core\Entitys\Enums\ColumnType;
+use Websyspro\Core\Entitys\Core\StructureTable;
+use Websyspro\Core\Entitys\Interfaces\IProperties;
 
 class EqualField
 {

@@ -2,12 +2,12 @@
 
 namespace Websyspro\Core\DynamicSql\Shareds;
 
-use Websyspro\Commons\DataList;
+use Websyspro\Core\Collection;
 
 class EqualVar
 {
   public function __construct(
-    public DataList $statics,
+    public Collection $statics,
     public mixed $value
   ){
     $this->defineFilter();
@@ -26,7 +26,7 @@ class EqualVar
 
   private function defineStatics(
   ): void {
-    $this->statics->forEach(
+    $this->statics->mapper(
       function(mixed $value, string $key){
         $keyStatic = preg_replace(
           [ "/(^\\$)|(\"\])/", "/(\[\")|(\->)/", "/\\$/" ],
