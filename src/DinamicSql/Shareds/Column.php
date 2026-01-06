@@ -2,7 +2,7 @@
 
 namespace Websyspro\Core\DynamicSql\Shareds;
 
-use Websyspro\Commons\DataList;
+use Websyspro\Core\Collection;
 use Websyspro\Core\DynamicSql\Enums\EColumnPriorityType;
 
 class Column
@@ -103,7 +103,7 @@ class Column
   }
 
   public function toString___(
-    DataList $parameters,
+    Collection $parameters,
     string|null $table = null
   ): string {
     $hasTableBase = (
@@ -114,7 +114,7 @@ class Column
       is_null($table) === false
     );
 
-    [ $aliasFromParameter ] = $parameters->copy()->where(
+    [ $aliasFromParameter ] = $parameters->where(
       fn(ItemParameter $ip) => $ip->structureTable->table === (
         $hasTableBase ? $this->table : $table
       ) 
@@ -156,7 +156,7 @@ class Column
       $table !== null
     );
 
-    [ $itemParameter ] = $parameters->copy()->where(
+    [ $itemParameter ] = $parameters->where(
       fn(ItemParameter $itemParameter) => (
         $itemParameter->structureTable->table === (
           $isPrimary ? $table : $this->table 

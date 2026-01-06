@@ -2,8 +2,7 @@
 
 namespace Websyspro\Core\DynamicSql;
 
-use Websyspro\Commons\DataList;
-use Websyspro\Commons\Util;
+use Websyspro\Core\Database\Enums\ConnectDriver;
 use Websyspro\Core\DynamicSql\Core\GroupByFn;
 use Websyspro\Core\DynamicSql\Core\OrderByAscByFn;
 use Websyspro\Core\DynamicSql\Core\OrderByDescByFn;
@@ -14,7 +13,9 @@ use Websyspro\Core\DynamicSql\Enums\EDriverType;
 use Websyspro\Core\DynamicSql\Enums\EOrderByPriorityType;
 use Websyspro\Core\DynamicSql\Shareds\Column;
 use Websyspro\Core\DynamicSql\Shareds\ItemParameter;
-use Websyspro\Entity\Core\StructureTable;
+use Websyspro\Core\Entitys\Core\StructureTable;
+use Websyspro\Core\Collection;
+use Websyspro\Core\Util;
 
 class QueryBuild
 {
@@ -24,7 +25,7 @@ class QueryBuild
   public GroupByFn $groupBy;
   public OrderByAscByFn $orderByAsc;
   public OrderByDescByFn $orderByDesc;
-  public EDriverType $driverType;
+  public ConnectDriver $driverType;
   public int $limit;
   public int $offSet;
 
@@ -299,7 +300,7 @@ class QueryBuild
   private function getOrderBy(
     EOrderByPriorityType $orderByPriorityType
   ): string {
-    $orderByList = DataList::create(
+    $orderByList = new Collection(
       array_merge(
         $this->getOrderByList("orderByAsc", "Asc", $orderByPriorityType),
         $this->getOrderByList("orderByDesc", "Desc", $orderByPriorityType)
@@ -342,7 +343,7 @@ class QueryBuild
   }  
 
   public function get(
-    EDriverType|null $driverType = null
+    ConnectDriver|null $driverType = null
   ): string {
     if($driverType !== null){
       $this->driverType = $driverType;

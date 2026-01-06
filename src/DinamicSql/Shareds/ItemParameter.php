@@ -2,12 +2,12 @@
 
 namespace Websyspro\Core\DynamicSql\Shareds;
 
-use Websyspro\Commons\DataList;
-use Websyspro\Entity\Core\StructureTable;
+use Websyspro\Core\Collection;
+use Websyspro\Core\Entitys\Core\StructureTable;
 
 class ItemParameter
 {
-  public DataList $properts;
+  public Collection $properts;
   public StructureTable $structureTable;
 
   public function __construct(

@@ -2,21 +2,21 @@
 
 namespace Websyspro\Core\Entitys\Interfaces;
 
-use Websyspro\Commons\DataList;
 use Websyspro\Core\Entitys\Core\Shareds\ForeignKeyItem;
 use Websyspro\Core\Entitys\Core\StructureTable;
+use Websyspro\Core\Collection;
 
 class IEntityGroup
 {
-  public DataList $rowList;
-  public DataList $primaryKeys;
-  public DataList $foreignKeys;
-  public DataList $oneToOne;
-  public DataList $oneToMany;
+  public Collection $rowList;
+  public Collection $primaryKeys;
+  public Collection $foreignKeys;
+  public Collection $oneToOne;
+  public Collection $oneToMany;
 
   public function __construct(
     public StructureTable $structure,
-    public DataList $queryRows,
+    public Collection $queryRows,
     public String $alias,
   ){
     $this->defineOneToOne();
@@ -44,7 +44,7 @@ class IEntityGroup
   }
 
   public function defineOneToMany(
-    DataList $entityGroupList
+    Collection $entityGroupList
   ): void {
     $oneToMany = [];
 
@@ -69,16 +69,14 @@ class IEntityGroup
       }
     }
 
-    $this->oneToMany = (
-      DataList::create(
-        $oneToMany
-      )
+    $this->oneToMany = new Collection(
+      $oneToMany
     );
   } 
 
   private function definePrimaryKey(
   ): void {
-    $this->primaryKeys = DataList::create(
+    $this->primaryKeys = new Collection(
       array_flip($this->structure->primaryKeys()->list()->all())
     );
   }
@@ -86,7 +84,7 @@ class IEntityGroup
   private function defineFilter(
   ): void {
     if($this->queryRows->exist() === true){
-      $this->rowList = DataList::create();
+      $this->rowList = new Collection();
 
       foreach($this->queryRows->all() as $row){
         $rowNew = [];
@@ -105,9 +103,9 @@ class IEntityGroup
           $this->rowList->add($rowNew);
         } else {
           $hasQueryRowsFilter = (
-            $this->rowList->copy()->where(
+            $this->rowList->where(
               fn(array $row) => (
-                $this->primaryKeys->copy()->where(
+                $this->primaryKeys->where(
                   fn(mixed $val, string $key) => (
                     isset($row[$key]) === true && $row[$key] === $val
                   )

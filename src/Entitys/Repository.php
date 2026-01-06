@@ -2,22 +2,22 @@
 
 namespace Websyspro\Core\Entitys;
 
-use ReflectionClass;
+use Websyspro\Core\Database\Enums\ConnectDriver;
+use Websyspro\Core\Database\Connect;
 use Websyspro\Core\DynamicSql\Shareds\ItemParameter;
+use Websyspro\Core\DynamicSql\Core\DataByFn;
+use Websyspro\Core\DynamicSql\QueryBuild;
 use Websyspro\Core\Entitys\Core\Shareds\StdClassToEntity;
 use Websyspro\Core\Entitys\Interfaces\IEntityGroup;
 use Websyspro\Core\Entitys\Enums\RelationshipType;
 use Websyspro\Core\Entitys\Interfaces\IProperties;
 use Websyspro\Core\Entitys\Core\StructureTable;
 use Websyspro\Core\Entitys\Enums\AttributeType;
-use Websyspro\Core\DynamicSql\Core\DataByFn;
 use Websyspro\Core\Entitys\Dtos\PagedDTO;
-use Websyspro\Core\DynamicSql\QueryBuild;
-use Websyspro\Core\Database\Connect;
-use Websyspro\Core\Commons\Reflect;
 use Websyspro\Core\Collection;
 use Websyspro\Core\Util;
 use ReflectionProperty;
+use ReflectionClass;
 
 /**
  * Classe Repository para operações de banco de dados.
@@ -569,7 +569,7 @@ class Repository
     $queryRows = (
       $this->connect()->query(
         $queryBuild->get(
-          $this->connect()->driverType()
+          ConnectDriver::mysql /* $this->connect()->driverType() */
         )
       )
     );
