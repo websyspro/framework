@@ -2,12 +2,13 @@
 
 namespace Websyspro\Core\Entitys\Core;
 
-use ReflectionProperty;
-use Websyspro\Commons\DataList;
-use Websyspro\Commons\Reflect;
-use Websyspro\Core\Entitys\Enums\AttributeType;
 use Websyspro\Core\Entitys\Interfaces\IAbstractColumn;
 use Websyspro\Core\Entitys\Interfaces\IProperties;
+use Websyspro\Core\Entitys\Enums\AttributeType;
+use Websyspro\Core\Collection;
+use ReflectionAttribute;
+use ReflectionProperty;
+use ReflectionClass;
 
 class StructureTableAbstract
 {
@@ -16,19 +17,24 @@ class StructureTableAbstract
   ){}
 
   private function propertiesBase(
-  ): DataList {
-    $properts = new DataList(
-      Reflect::propertsFromClass(
-        $this->entity
-      )
+  ): Collection {
+    $properts = new Collection(
+      new ReflectionClass( 
+        $this->entity 
+      )->getAttributes()
     );
 
-    return (
-      $properts->mapper(
-        fn(ReflectionProperty $reflectionProperty) => (
-          new IProperties($reflectionProperty->name, (
-            new DataList($reflectionProperty->getAttributes())
-          ))
+    $properts = $properts->mapper(
+      fn(ReflectionAttribute $reflectionAttribute) => (
+        $reflectionAttribute->newInstance()
+      )
+    );    
+
+    return $properts->mapper(
+      fn(ReflectionProperty $reflectionProperty) => (
+        new IProperties(
+          $reflectionProperty->name, 
+          new Collection( $reflectionProperty->getAttributes() )
         )
       )
     );
@@ -36,9 +42,9 @@ class StructureTableAbstract
 
   public function properties(
     AttributeType $attributeType
-  ): DataList {
-    return (
-      $this->propertiesBase()->forEach(
+  ): Collection {
+    return $this->propertiesBase()
+      ->mapper(
         fn(IProperties $properties) => (
           $properties->items->where(
             fn(IAbstractColumn $abstractColumn) => (
@@ -48,7 +54,6 @@ class StructureTableAbstract
         )
       )->where(fn(IProperties $properties) => (
         $properties->items->count() !== 0
-      ))
-    );
+      ));
   }
 }

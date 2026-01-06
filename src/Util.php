@@ -279,6 +279,32 @@ class Util
     return \in_array( $value, $array);
   }
 
+  /**
+   * Finds the index (key) of the first element in an array or iterable object
+   * that satisfies the given callback condition.
+   *
+   * The callback receives the current value and its key as arguments.
+   * If the callback returns true, the corresponding key is returned.
+   * If no element matches the condition, -1 is returned.
+   *
+   * @param array|object $arr The array or iterable object to search.
+   * @param callable $fn A callback function with signature fn($value, $key): bool.
+   *
+   * @return int The key of the first matching element, or -1 if none is found.
+   */  
+  public static function indexOf(
+    array|object $arr,
+    callable $fn
+  ): int {
+    foreach($arr as $key => $val){
+      if($fn($val, $key) === true){
+        return $key;
+      }
+    }
+
+    return -1;   
+  }  
+
   public static function join(
     string $separator, array $array 
   ): string {

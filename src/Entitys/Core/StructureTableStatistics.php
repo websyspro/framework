@@ -2,7 +2,7 @@
 
 namespace Websyspro\Core\Entitys\Core;
 
-use Websyspro\Commons\DataList;
+use Websyspro\Core\Collection;
 use Websyspro\Core\Entitys\Enums\AttributeType;
 use Websyspro\Core\Entitys\Interfaces\IProperties;
 use Websyspro\Core\Entitys\Interfaces\IStatisticsItem;
@@ -12,14 +12,14 @@ class StructureTableStatistics
 extends StructureTableAbstract
 {
   public function list(
-  ): DataList {
+  ): Collection {
     return $this->properties(
       AttributeType::indexes
     );
   }
 
   public function listNames(
-  ): DataList  {
+  ): Collection {
     return (
       $this
         ->list()
@@ -36,8 +36,8 @@ extends StructureTableAbstract
           $curr[$statisticsItem->indexGroup][] = $statisticsItem->name; 
           return $curr;
         })
-        ->mapper(fn(array $indexGroups) => DataList::create($indexGroups))
-        ->mapper(fn(DataList $indexe) => new IStatisticsNamesItem("Index_{$indexe->join("_")}", $indexe->joinWithComma()))
+        ->mapper(fn(array $indexGroups) => new Collection($indexGroups))
+        ->mapper(fn(Collection $indexe) => new IStatisticsNamesItem("Index_{$indexe->join("_")}", $indexe->joinWithComma()))
     );
   }
 

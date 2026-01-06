@@ -2,17 +2,17 @@
 
 namespace Websyspro\Core\Entitys\Core;
 
-use Websyspro\Commons\DataList;
-use Websyspro\Core\Entitys\Core\Shareds\OneToOneItem;
 use Websyspro\Core\Entitys\Core\Shareds\OneToOneReferenceItem;
-use Websyspro\Core\Entitys\Enums\AttributeType;
+use Websyspro\Core\Entitys\Core\Shareds\OneToOneItem;
 use Websyspro\Core\Entitys\Interfaces\IProperties;
+use Websyspro\Core\Entitys\Enums\AttributeType;
+use Websyspro\Core\Collection;
 
 class StructureTableOneToOnes
 extends StructureTableAbstract
 {
   public function list(
-  ): DataList {
+  ): Collection {
     return $this->properties(
       AttributeType::oneToOne
     );
@@ -20,7 +20,7 @@ extends StructureTableAbstract
 
   public function listNames(
     string $table
-  ): DataList {
+  ): Collection {
     return (
       $this->list()->mapper(
         fn(IProperties $property) => (

@@ -257,7 +257,11 @@ class Collection
     int $eq
   ): Collection {
     return new Collection(
-      array_slice($this->items, $eq, 1)
+      Util::slice(
+        $this->items,
+        $eq, 
+        1
+      )
     );
   }
 
@@ -280,6 +284,14 @@ class Collection
   ): mixed {
     return end( $this->items );
   } 
+
+  public function indexOf(
+    callable $fn
+  ): int {
+    return Util::indexOf(
+      $this->items, $fn
+    );
+  }  
   
   /**
    * Sorts the collection by keys in ascending order.

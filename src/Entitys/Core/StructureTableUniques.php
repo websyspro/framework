@@ -2,24 +2,24 @@
 
 namespace Websyspro\Core\Entity\Core;
 
-use Websyspro\Core\Commons\DataList;
-use Websyspro\Core\Entity\Enums\AttributeType;
-use Websyspro\Core\Entity\Interfaces\IProperties;
-use Websyspro\Core\Entity\Interfaces\IUniqueItem;
-use Websyspro\Core\Entity\Interfaces\IUniqueNameItems;
+use Websyspro\Core\Entitys\Interfaces\IUniqueNameItems;
+use Websyspro\Core\Entitys\Interfaces\IProperties;
+use Websyspro\Core\Entitys\Interfaces\IUniqueItem;
+use Websyspro\Core\Entitys\Enums\AttributeType;
+use Websyspro\Core\Collection;
 
 class StructureTableUniques
 extends StructureTableAbstract
 {
   public function list(
-  ): DataList {
+  ): Collection {
     return $this->properties(
       AttributeType::uniques
     );
   }
 
   public function listNames(
-  ): DataList  {
+  ): Collection  {
     return (
       $this
         ->list()
@@ -36,8 +36,8 @@ extends StructureTableAbstract
           $curr[$uniqueItem->uniqueGroup][] = $uniqueItem->name; 
           return $curr;
         })
-        ->mapper(fn(array $uniqueGroups) => DataList::create($uniqueGroups))
-        ->mapper(fn(DataList $uniques) => new IUniqueNameItems("Unique_{$uniques->join("_")}", $uniques->joinWithComma()))
+        ->mapper(fn(array $uniqueGroups) => new Collection($uniqueGroups))
+        ->mapper(fn(Collection $uniques) => new IUniqueNameItems("Unique_{$uniques->join("_")}", $uniques->joinWithComma()))
     );
   }
 

@@ -2,17 +2,17 @@
 
 namespace Websyspro\Core\Entitys\Core;
 
-use Websyspro\Commons\DataList;
-use Websyspro\Core\Entitys\Core\Shareds\ForeignKeyItem;
 use Websyspro\Core\Entitys\Core\Shareds\ForeignKeyReferenceItem;
-use Websyspro\Core\Entitys\Enums\AttributeType;
+use Websyspro\Core\Entitys\Core\Shareds\ForeignKeyItem;
 use Websyspro\Core\Entitys\Interfaces\IProperties;
+use Websyspro\Core\Entitys\Enums\AttributeType;
+use Websyspro\Core\Collection;
 
 class StructureTableForeignKeys
 extends StructureTableAbstract
 {
   public function list(
-  ): DataList {
+  ): Collection {
     return $this->properties(
       AttributeType::foreigns
     );
@@ -20,7 +20,7 @@ extends StructureTableAbstract
 
   public function listNames(
     string $table
-  ): DataList {
+  ): Collection {
     return (
       $this->list()->mapper(
         fn(IProperties $property) => (

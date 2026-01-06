@@ -2,7 +2,7 @@
 
 namespace Websyspro\Core\Entitys\Core;
 
-use Websyspro\Commons\DataList;
+use Websyspro\Core\Collection;
 use Websyspro\Core\Entitys\Enums\AttributeType;
 use Websyspro\Core\Entitys\Interfaces\IProperties;
 
@@ -10,7 +10,7 @@ class StructureTableEventUpdates
 extends StructureTableAbstract
 {
   public function list(
-  ): DataList {
+  ): Collection {
     return $this->properties(
       AttributeType::update
     );

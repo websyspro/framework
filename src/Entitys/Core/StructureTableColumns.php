@@ -2,7 +2,7 @@
 
 namespace Websyspro\Core\Entitys\Core;
 
-use Websyspro\Commons\DataList;
+use Websyspro\Core\Collection;
 use Websyspro\Core\Entitys\Enums\AttributeType;
 use Websyspro\Core\Entitys\Enums\ColumnOrder;
 use Websyspro\Core\Entitys\Interfaces\IAbstractColumn;
@@ -13,7 +13,7 @@ class StructureTableColumns
 extends StructureTableAbstract
 {
   public function list(
-  ): DataList  {
+  ): Collection  {
     $propertiesInitial = $this->properties(
       AttributeType::column
     )->where(fn(IProperties $property) => (
@@ -38,7 +38,7 @@ extends StructureTableAbstract
       )) === true
     ));    
 
-    return DataList::create(
+    return new Collection(
       array_merge(
         $propertiesInitial->all(),
         $propertiesBase->all(),
@@ -48,7 +48,7 @@ extends StructureTableAbstract
   }
 
   public function listType(
-  ): DataList {
+  ): Collection {
     return (
       $this->list()->mapper(
         fn(IProperties $properties) => (
@@ -90,7 +90,7 @@ extends StructureTableAbstract
   } 
   
   public function listNames(
-  ): DataList  {
+  ): Collection  {
     return $this->list()->mapper(
       fn(IProperties $property) => (
         $property->name
@@ -101,9 +101,9 @@ extends StructureTableAbstract
   public function before(
     string $name
   ): string {
-    $columnBefore = $this->listType()->eq(
+    [ $columnBefore ] = $this->listType()->eq(
       $this->listType()->indexOf(
-        fn(IColumnType $columnType) => (
+        fn( IColumnType $columnType ) => (
           $columnType->name === $name
         )
       ) - 1

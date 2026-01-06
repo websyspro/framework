@@ -2,33 +2,31 @@
 
 namespace Websyspro\Core\Entitys\Core;
 
-use Websyspro\Commons\DataList;
-use Websyspro\Core\Entitys\Enums\AttributeType;
 use Websyspro\Core\Entitys\Interfaces\IProperties;
+use Websyspro\Core\Entitys\Enums\AttributeType;
+use Websyspro\Core\Collection;
 
 class StructureTableRequireds
 extends StructureTableAbstract
 {
   public function list(
-  ): DataList {
+  ): Collection {
     return $this->properties(
       AttributeType::requireds
     );
   }
 
   public function listKeysNames(
-  ): DataList {
-    return (
-      DataList::create(
-        array_flip(
-          $this->list()->mapper(
-            fn(IProperties $properties) => (
-              $properties->name
-            )
-          )->all()
-        )
-      )->mapper(fn() => null)
-    );
+  ): Collection {
+    return new Collection(
+      array_flip(
+        $this->list()->mapper(
+          fn(IProperties $properties) => (
+            $properties->name
+          )
+        )->all()
+      )
+    )->mapper(fn() => null);
   }  
 
   public function isRequired(

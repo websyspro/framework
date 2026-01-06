@@ -2,14 +2,14 @@
 
 namespace Websyspro\Core\Entitys\Interfaces;
 
+use Websyspro\Core\Collection;
 use ReflectionAttribute;
-use Websyspro\Commons\DataList;
 
 class IProperties
 {
   public function __construct(
     public string $name,
-    public DataList $items
+    public Collection $items
   ){
     $this->items->mapper(
       fn(ReflectionAttribute $ra ) => $ra->newInstance()
