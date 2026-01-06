@@ -1,22 +1,21 @@
 <?php
 
-namespace Websyspro\Entity;
+namespace Websyspro\Core\Entitys;
 
 use ReflectionProperty;
-use Websyspro\Commons\DataList;
-use Websyspro\Commons\Reflect;
-use Websyspro\Commons\Util;
-use Websyspro\Database\Connect;
-use Websyspro\DynamicSql\Core\DataByFn;
-use Websyspro\DynamicSql\QueryBuild;
-use Websyspro\DynamicSql\Shareds\ItemParameter;
-use Websyspro\Entity\Core\Shareds\StdClassToEntity;
-use Websyspro\Entity\Core\StructureTable;
-use Websyspro\Entity\Dtos\PagedDTO;
-use Websyspro\Entity\Enums\AttributeType;
-use Websyspro\Entity\Enums\RelationshipType;
-use Websyspro\Entity\Interfaces\IEntityGroup;
-use Websyspro\Entity\Interfaces\IProperties;
+use Websyspro\Core\Commons\Reflect;
+use Websyspro\Core\Commons\Util;
+use Websyspro\Core\Database\Connect;
+use Websyspro\Core\DynamicSql\Core\DataByFn;
+use Websyspro\Core\DynamicSql\QueryBuild;
+use Websyspro\Core\DynamicSql\Shareds\ItemParameter;
+use Websyspro\Core\Entity\Core\Shareds\StdClassToEntity;
+use Websyspro\Core\Entity\Core\StructureTable;
+use Websyspro\Core\Entity\Dtos\PagedDTO;
+use Websyspro\Core\Entity\Enums\AttributeType;
+use Websyspro\Core\Entity\Enums\RelationshipType;
+use Websyspro\Core\Entity\Interfaces\IEntityGroup;
+use Websyspro\Core\Entity\Interfaces\IProperties;
 
 class Repository
 {
