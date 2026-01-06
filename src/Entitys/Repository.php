@@ -19,18 +19,50 @@ use Websyspro\Core\Collection;
 use Websyspro\Core\Util;
 use ReflectionProperty;
 
+/**
+ * Classe Repository para operações de banco de dados.
+ * 
+ * Fornece uma interface de alto nível para operações CRUD e consultas complexas,
+ * incluindo relacionamentos entre entidades, paginação e construção dinâmica de queries.
+ * 
+ * @package Websyspro\Core\Entitys
+ * @author Framework Websyspro
+ * @version 1.0
+ */
 class Repository
 {
+  /** @var StructureTable Estrutura da tabela associada à entidade */
   public StructureTable $structureTable;
 
+  /** @var mixed Função de seleção de campos */
   public mixed $selectFn;
+  
+  /** @var mixed Função de filtro WHERE */
   public mixed $whereFn;
+  
+  /** @var mixed Função de agrupamento GROUP BY */
   public mixed $groupByFn;
+  
+  /** @var mixed Função de ordenação ascendente */
   public mixed $orderByAscFn;
+  
+  /** @var mixed Função de ordenação descendente */
   public mixed $orderByDescFn;
+  
+  /** @var int Limite de registros para paginação */
   public int $limit;
+  
+  /** @var int Offset para paginação */
   public int $offSet;
 
+  /**
+   * Construtor do Repository.
+   * 
+   * Inicializa o repository com a entidade especificada e
+   * cria a estrutura da tabela correspondente.
+   * 
+   * @param string $table Nome da classe da entidade
+   */
   public function __construct(
     public string $table
   ){
@@ -41,12 +73,25 @@ class Repository
     );
   }
   
+  /**
+   * Método estático para criar uma instância do Repository.
+   * 
+   * Fornece uma interface fluente para criar repositories.
+   * 
+   * @param string $entity Nome da classe da entidade
+   * @return Repository Nova instância do repository
+   */
   public static function entity(
     string $entity
   ): Repository {
     return new static($entity);
   }
 
+  /**
+   * Obtém a conexão com o banco de dados.
+   * 
+   * @return Connect Instância da conexão ativa
+   */
   public function connect(
   ): Connect {
     return Connect::set();

@@ -2,17 +2,12 @@
 
 namespace Websyspro\Core\Entitys\Core;
 
-use Websyspro\Commons\DataList;
-use Websyspro\Commons\Util;
-use Websyspro\Database\Connect;
 use Websyspro\Core\Entitys\Core\Designs\MySql\MySqlUpdateColumns;
 use Websyspro\Core\Entitys\Core\Designs\MySql\MySqlUpdateForeignKeys;
 use Websyspro\Core\Entitys\Core\Designs\MySql\MySqlUpdateGenerations;
-use Websyspro\Core\Entitys\Core\Designs\MySql\MySqlUpdateOneToOne;
 use Websyspro\Core\Entitys\Core\Designs\MySql\MySqlUpdatePrimaryKeys;
 use Websyspro\Core\Entitys\Core\Designs\MySql\MySqlUpdateStatistics;
 use Websyspro\Core\Entitys\Core\Designs\MySql\MySqlUpdateUniques;
-use Websyspro\Core\Entitys\Core\Persisteds\MySqlScript;
 use Websyspro\Core\Entitys\Core\Persisteds\PersistedColumnsList;
 use Websyspro\Core\Entitys\Core\Persisteds\PersistedForeignKeysList;
 use Websyspro\Core\Entitys\Core\Persisteds\PersistedGenerationsList;
@@ -21,8 +16,7 @@ use Websyspro\Core\Entitys\Core\Persisteds\PersistedPrimaryKeysList;
 use Websyspro\Core\Entitys\Core\Persisteds\PersistedRequiredsList;
 use Websyspro\Core\Entitys\Core\Persisteds\PersistedStatisticsList;
 use Websyspro\Core\Entitys\Core\Persisteds\PersistedUniquesList;
-use Websyspro\Core\Entitys\Enums\ScriptType;
-use Websyspro\Core\Entitys\Interfaces\IPersistedColumn;
+use Websyspro\Core\Entitys\Core\Persisteds\MySqlScript;
 use Websyspro\Core\Entitys\Interfaces\IPersistedForeignKeys;
 use Websyspro\Core\Entitys\Interfaces\IPersistedGeneration;
 use Websyspro\Core\Entitys\Interfaces\IPersistedOneToOnes;
@@ -30,40 +24,36 @@ use Websyspro\Core\Entitys\Interfaces\IPersistedPrimaryKey;
 use Websyspro\Core\Entitys\Interfaces\IPersistedRequireds;
 use Websyspro\Core\Entitys\Interfaces\IPersistedStatistics;
 use Websyspro\Core\Entitys\Interfaces\IPersistedUnique;
+use Websyspro\Core\Entitys\Interfaces\IPersistedColumn;
 use Websyspro\Core\Entitys\Interfaces\IUpdateScript;
-use Websyspro\Logger\Enums\LogType;
-use Websyspro\Logger\Message;
+use Websyspro\Core\Entitys\Enums\ScriptType;
+use Websyspro\Core\Server\Logger\Log;
+use Websyspro\Core\Database\Connect;
+use Websyspro\Core\Collection;
+use Websyspro\Core\Server\Logger\Enums\LogType;
 
 class StructureDatabase
 {
   public Connect $connect;
-  public DataList $updateScripts;
-  public DataList $structureTable;
-  public DataList $persistedColumn;
-  public DataList $persistedPrimaryKeys;
-  public DataList $persistedGenerations;
-  public DataList $persistedRequireds;
-  public DataList $persistedUniques;
-  public DataList $persistedStatistics;
-  public DataList $persistedForeignKeys;
-  public DataList $persistedOneToOnes;
+  public Collection $updateScripts;
+  public Collection $structureTable;
+  public Collection $persistedColumn;
+  public Collection $persistedPrimaryKeys;
+  public Collection $persistedGenerations;
+  public Collection $persistedRequireds;
+  public Collection $persistedUniques;
+  public Collection $persistedStatistics;
+  public Collection $persistedForeignKeys;
+  public Collection $persistedOneToOnes;
 
   public function __construct(
-    public DataList $entitys,
+    public Collection $entitys,
     public string $module
   ){}
 
   public function getDatabase(
   ): void {
-    $connect = (
-      Connect::set(
-        lcfirst(
-          Util::className(
-            $this->module
-          )
-        )
-      )
-    );
+    $connect = Connect::set();
 
     if(is_null($connect) === false){
       $this->connect = $connect;
@@ -82,12 +72,12 @@ class StructureDatabase
 
   private function get(
     string $query
-  ): DataList {
+  ): Collection {
     return $this->connect->query($query);
   }
 
   private function setPersistedsColumns(
-  ): DataList {
+  ): Collection {
     return (
       $this->get(
         MySqlScript::columns(
@@ -102,7 +92,7 @@ class StructureDatabase
   }
 
   private function setPersistedsRequireds(
-  ): DataList {
+  ): Collection {
     return $this->get(
       MySqlScript::requireds(
         $this->connect->database()
@@ -115,7 +105,7 @@ class StructureDatabase
   }  
 
   private function setPersistedsPrimaryKeys(
-  ): DataList {
+  ): Collection {
     return $this->get(
       MySqlScript::primaryKeys(
         $this->connect->database()
@@ -128,7 +118,7 @@ class StructureDatabase
   }
   
   private function setPersistedsGenerations(
-  ): DataList {
+  ): Collection {
     return $this->get(
       MySqlScript::generations(
         $this->connect->database()
@@ -141,7 +131,7 @@ class StructureDatabase
   }
   
   private function setPersistedsUniques(
-  ): DataList {
+  ): Collection {
     return $this->get(
       MySqlScript::uniques(
         $this->connect->database()
@@ -154,7 +144,7 @@ class StructureDatabase
   }
   
   private function setPersistedsStatistics(
-  ): DataList {
+  ): Collection {
     return $this->get(
       MySqlScript::statistics(
         $this->connect->database()
@@ -167,7 +157,7 @@ class StructureDatabase
   }
 
   private function setPersistedsForeignKeys(
-  ): DataList {
+  ): Collection {
     return $this->get(
       MySqlScript::foreignKeys(
         $this->connect->database()
@@ -195,12 +185,12 @@ class StructureDatabase
   ): PersistedColumnsList {
     if(isset($this->persistedColumn) === false){
       return new PersistedColumnsList(
-        DataList::create()
+        new Collection()
       );
     }
 
     return new PersistedColumnsList(
-      $this->persistedColumn->copy()->where(
+      $this->persistedColumn->where(
         fn(IPersistedColumn $persistedColumn) => (
           $persistedColumn->table === $structureTable->table
         )
@@ -212,7 +202,7 @@ class StructureDatabase
     StructureTable $structureTable
   ): PersistedRequiredsList {
     return new PersistedRequiredsList( 
-      $this->persistedRequireds->copy()->where(
+      $this->persistedRequireds->where(
         fn(IPersistedRequireds $persistedRequireds) => (
           $persistedRequireds->table === $structureTable->table
         )
@@ -225,12 +215,12 @@ class StructureDatabase
   ): PersistedPrimaryKeysList {
     if(isset($this->persistedPrimaryKeys) === false){
       return new PersistedPrimaryKeysList(
-        DataList::create()
+        new Collection()
       );
     }
 
     return new PersistedPrimaryKeysList(
-      $this->persistedPrimaryKeys->copy()->where(
+      $this->persistedPrimaryKeys->where(
         fn(IPersistedPrimaryKey $persistedPrimaryKey) => (
           $persistedPrimaryKey->table === $structureTable->table
         )
@@ -243,12 +233,12 @@ class StructureDatabase
   ): PersistedGenerationsList {
     if(isset($this->persistedGenerations) === false){
       return new PersistedGenerationsList(
-        DataList::create()
+        new Collection()
       );
     }
 
     return new PersistedGenerationsList(
-      $this->persistedGenerations->copy()->where(
+      $this->persistedGenerations->where(
         fn(IPersistedGeneration $persistedGeneration) => (
           $persistedGeneration->table === $structureTable->table
         )
@@ -261,12 +251,12 @@ class StructureDatabase
   ): PersistedUniquesList {
     if(isset($this->persistedUniques) === false){
       return new PersistedUniquesList(
-        DataList::create()
+        new Collection()
       );
     }
 
     return new PersistedUniquesList(
-      $this->persistedUniques->copy()->where(
+      $this->persistedUniques->where(
         fn(IPersistedUnique $persistedUnique) => (
           $persistedUnique->table === $structureTable->table
         )
@@ -279,12 +269,12 @@ class StructureDatabase
   ): PersistedStatisticsList {
     if(isset($this->persistedStatistics) === false){
       return new PersistedStatisticsList(
-        DataList::create()
+        new Collection()
       );
     }
 
     return new PersistedStatisticsList(
-      $this->persistedStatistics->copy()->where(
+      $this->persistedStatistics->where(
         fn(IPersistedStatistics $persistedStatistic) => (
           $persistedStatistic->table === $structureTable->table
         )
@@ -297,12 +287,12 @@ class StructureDatabase
   ): PersistedForeignKeysList {
     if(isset($this->persistedForeignKeys) === false){
       return new PersistedForeignKeysList(
-        DataList::create()
+        new Collection()
       );
     }
 
     return new PersistedForeignKeysList(
-      $this->persistedForeignKeys->copy()->where(
+      $this->persistedForeignKeys->where(
         fn(IPersistedForeignKeys $persistedForeignKey) => (
           $persistedForeignKey->table === $structureTable->table
         )
@@ -315,12 +305,12 @@ class StructureDatabase
   ): PersistedOneToOnesList {
     if(isset($this->persistedOneToOnes) === false){
       return new PersistedOneToOnesList(
-        DataList::create()
+        new Collection()
       );
     }
 
     return new PersistedOneToOnesList(
-      $this->persistedOneToOnes->copy()->where(
+      $this->persistedOneToOnes->where(
         fn(IPersistedOneToOnes $persistedOneToOnes) => (
           $persistedOneToOnes->table === $structureTable->table
         )
@@ -329,15 +319,15 @@ class StructureDatabase
   }  
 
   private function addUpdateScripts(
-    DataList $updateScripts
+    Collection $updateScripts
   ): void {
     if(isset($this->updateScripts) === false){
       $this->updateScripts = (
-        DataList::create()
+        new Collection()
       );
     }
     
-    $updateScripts->forEach(
+    $updateScripts->mapper(
       fn(IUpdateScript $updateScripts) => (
         $this->updateScripts->add(
           $updateScripts
@@ -409,7 +399,7 @@ class StructureDatabase
   
   private function getUpdateEntitys(
   ): void {
-    $this->structureTable->forEach(
+    $this->structureTable->mapper(
       function(StructureTable $structureTable){
         $this->getUpdateStructureColumns($structureTable);
         $this->getUpdateStructurePrimaryKeys($structureTable);
@@ -425,26 +415,26 @@ class StructureDatabase
     IUpdateScript $updateScript
   ): void {
     if($this->connect->exec($updateScript->sql) === true){
-      Message::infors(LogType::database, $updateScript->message);
+      Log::debug( LogType::database, $updateScript->message);
     }
   }
 
   private function SetUpdateDatabase(
   ): void {
-    $updateScriptsNotDependence = $this->updateScripts->copy()->where(
+    $updateScriptsNotDependence = $this->updateScripts->where(
       fn(IUpdateScript $updateScript) => (
         $updateScript->scriptType === ScriptType::notDependence
       )
     );
 
-    $updateScriptsDependence = $this->updateScripts->copy()->where(
+    $updateScriptsDependence = $this->updateScripts->where(
       fn(IUpdateScript $updateScript) => (
         $updateScript->scriptType === ScriptType::dependence
       )
     );    
 
-    $updateScriptsNotDependence->forEach(fn(IUpdateScript $updateScript) => $this->executeDatabase($updateScript));
-    $updateScriptsDependence->forEach(fn(IUpdateScript $updateScript) => $this->executeDatabase($updateScript));
+    $updateScriptsNotDependence->mapper(fn(IUpdateScript $updateScript) => $this->executeDatabase($updateScript));
+    $updateScriptsDependence->mapper(fn(IUpdateScript $updateScript) => $this->executeDatabase($updateScript));
   }
   
   public function update(

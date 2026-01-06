@@ -2,19 +2,54 @@
 
 namespace Websyspro\Core\Entitys\Enums;
 
+/**
+ * Enumeração dos tipos de colunas suportados.
+ * 
+ * Define os tipos de dados disponíveis para colunas de banco de dados
+ * e fornece métodos para codificação e decodificação de valores.
+ * 
+ * @package Websyspro\Core\Entitys\Enums
+ * @author Framework Websyspro
+ * @version 1.0
+ */
 enum ColumnType: string
 {
+  /** Tipo numérico (INT, BIGINT) */
   case number = "number";
+  
+  /** Tipo texto curto (VARCHAR) */
   case text = "text";
+  
+  /** Tipo texto longo (TEXT, LONGTEXT) */
   case longtext = "longtext";
+  
+  /** Tipo enumeração (ENUM) */
   case enum = "enum";
+  
+  /** Tipo decimal (DECIMAL, FLOAT) */
   case decimal = "decimal";
+  
+  /** Tipo hora (TIME) */
   case time = "time";
+  
+  /** Tipo data (DATE) */
   case date = "date";
+  
+  /** Tipo data e hora (DATETIME, TIMESTAMP) */
   case datetime = "datetime";
+  
+  /** Tipo booleano (TINYINT, BOOLEAN) */
   case flag = "flag";
+  
+  /** Tipo mapeamento personalizado */
   case mapper = "mapper";
 
+  /**
+   * Remove aspas simples do início e fim de uma string.
+   * 
+   * @param string $string String a ser processada
+   * @return string String sem aspas nas extremidades
+   */
   private function stringFilterQuotes(
     string $string
   ): string {

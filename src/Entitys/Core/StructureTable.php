@@ -2,8 +2,7 @@
 
 namespace Websyspro\Core\Entitys\Core;
 
-use Websyspro\Commons\DataList;
-use Websyspro\Commons\Statics;
+use Websyspro\Core\Collection;
 
 class StructureTable
 { 
@@ -19,18 +18,19 @@ class StructureTable
 
   private function entityModule(
   ): void {
+    /*
     if(isset(Statics::$modules)){
-      $this->module = Statics::$modules->copy()->where(
+      $this->module = Statics::$modules->where(
         fn(mixed $itemModule) => $itemModule->entity === $this->entity
       )->first()->module;
-    }
+    } */
   } 
 
   private function entityParse(
   ): void {
     $this->table = (
-      new DataList(explode( "\\", $this->entity))
-    )->slice(-1)->mapper(fn(string $str) => preg_replace("/Entity$/", "", $str))->first();
+      new Collection(explode( "\\", $this->entity))
+    )->slice(-1)->mapper(fn(string $str) => preg_replace("#Entity$#", "", $str))->first();
   }
 
   public function columns(
