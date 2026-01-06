@@ -17,8 +17,14 @@ use Websyspro\Core\Elements\Tags\Meta;
 use Websyspro\Core\Elements\Tags\Paragraph;
 use Websyspro\Core\Elements\Tags\Scripts;
 use Websyspro\Core\Elements\Tags\Style;
+use Websyspro\Core\Elements\Tags\Table;
+use Websyspro\Core\Elements\Tags\TBody;
+use Websyspro\Core\Elements\Tags\TColumn;
+use Websyspro\Core\Elements\Tags\TFoot;
+use Websyspro\Core\Elements\Tags\THead;
 use Websyspro\Core\Elements\Tags\Title;
 use Websyspro\Core\Elements\Enums\FlexDirection;
+use Websyspro\Core\Elements\Tags\TRow;
 use Websyspro\Core\Util;
 
 class Dom
@@ -123,4 +129,46 @@ class Dom
   ): AbstractElement {
     return new Paragraph( $classes, $childs );
   }
+
+  public static function table(
+    string|array|null $classes = [],
+    string|array|null $childs = []
+  ): AbstractElement {
+    return new Table( $classes, $childs );
+  }
+
+  public static function thead(
+    string|array|null $classes = [],
+    string|array|null $childs = []
+  ): AbstractElement {
+    return new THead( $classes, $childs );
+  }
+  
+  public static function tbody(
+    string|array|null $classes = [],
+    string|array|null $childs = []
+  ): AbstractElement {
+    return new TBody( $classes, $childs );
+  }
+  
+  public static function tfoot(
+    string|array|null $classes = [],
+    string|array|null $childs = []
+  ): AbstractElement {
+    return new TFoot( $classes, $childs );
+  }
+
+  public static function trow(
+    string|array|null $classes = [],
+    string|array|null $childs = []
+  ): AbstractElement {
+    return new TRow( $classes, $childs );
+  }
+  
+  public static function tcolimn(
+    string|array|null $classes = [],
+    string|array|null $childs = []
+  ): AbstractElement {
+    return new TColumn( $classes, $childs );
+  }  
 }
