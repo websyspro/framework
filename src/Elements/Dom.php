@@ -25,7 +25,7 @@ use Websyspro\Core\Elements\Tags\Th;
 use Websyspro\Core\Elements\Tags\THead;
 use Websyspro\Core\Elements\Tags\Title;
 use Websyspro\Core\Elements\Enums\FlexDirection;
-use Websyspro\Core\Elements\Tags\TRow;
+use Websyspro\Core\Elements\Tags\Tr;
 use Websyspro\Core\Util;
 
 class Dom
@@ -159,11 +159,11 @@ class Dom
     return new TFoot( $classes, $childs );
   }
 
-  public static function trow(
+  public static function tr(
     string|array|null $classes = [],
     string|array|null $childs = []
   ): AbstractElement {
-    return new TRow( $classes, $childs );
+    return new Tr( $classes, $childs );
   }
 
   public static function th(

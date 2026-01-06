@@ -16,7 +16,7 @@ class BaseContentMenuView extends Component
         ),
         Dom::div( [ "main" ])->add(
           [
-            Dom::div([ "menu-item" ])->add([ "Menu 1" ]),
+            Dom::div([ "menu-item" ])->add([ "Listagem de Posts" ]),
             Dom::div([ "menu-item" ])->add([ "Menu 2" ]),
             Dom::div([ "menu-item" ])->add([ "Menu 3" ]),
           ]

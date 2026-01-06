@@ -9,7 +9,7 @@
 @media (max-width: 1280px) {
   .BaseContentMenuView {
     position: fixed;
-    display: flex;
+    display: none;
     width: 240px;
     bottom: 0px;
     left: 0px;
@@ -40,8 +40,8 @@
   flex: 1; 
 }
 .BaseContentMenuView .main .menu-item {
-  font-weight: 400;
   padding: 16px 16px;
+  font-weight: 400;
 }
 .BaseContentMenuView .main .menu-item:hover {
   background-color: rgba(235,235,235,.8);

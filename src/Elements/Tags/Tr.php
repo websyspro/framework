@@ -2,7 +2,7 @@
 
 namespace Websyspro\Core\Elements\Tags;
 
-class TRow extends AbstractElement
+class Tr extends AbstractElement
 {
   public string $tagElement = "tr";
 }
