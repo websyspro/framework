@@ -305,11 +305,48 @@ class Util
     return -1;   
   }  
 
+  /**
+   * Joins array elements into a single string using a given separator.
+   *
+   * This is a wrapper around PHP's implode function, provided for
+   * consistency or fluent utility usage.
+   *
+   * @param string $separator The string used to separate each element.
+   * @param array  $array     The array of elements to join.
+   *
+   * @return string The resulting joined string.
+   */  
   public static function join(
     string $separator, array $array 
   ): string {
     return implode($separator, $array);
   }
+
+  /**
+   * Checks whether two arrays contain the same values, regardless of order.
+   *
+   * The comparison is order-insensitive and requires both arrays to have
+   * the same number of elements. Values are sorted before comparison.
+   *
+   * @param array $arrayFirst  The first array to compare.
+   * @param array $arraySecond The second array to compare.
+   *
+   * @return bool True if both arrays contain the same values; false otherwise.
+   */  
+  public static function arrayEquais(
+    array $arrayFirst,
+    array $arraySecond
+  ): bool {
+    if(sizeof($arrayFirst) !== sizeof($arraySecond)){
+      return false;
+    }
+
+    sort($arrayFirst);
+    sort($arraySecond);
+
+    return array_values($arrayFirst) 
+       === array_values($arraySecond);
+  }  
   
   /**
    * Joins array elements using CRLF line breaks.

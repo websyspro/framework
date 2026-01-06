@@ -2,16 +2,16 @@
 
 namespace Websyspro\Core\Entitys\Core\Designs\MySql;
 
-use Websyspro\Commons\DataList;
 use Websyspro\Core\Entitys\Core\Persisteds\PersistedUniquesList;
-use Websyspro\Core\Entitys\Core\StructureTable;
-use Websyspro\Core\Entitys\Enums\ScriptType;
 use Websyspro\Core\Entitys\Interfaces\IUniqueNameItems;
 use Websyspro\Core\Entitys\Interfaces\IUpdateScript;
+use Websyspro\Core\Entitys\Core\StructureTable;
+use Websyspro\Core\Entitys\Enums\ScriptType;
+use Websyspro\Core\Collection;
 
 class MySqlUpdateUniques
 {
-  public DataList $updateScripts;
+  public Collection $updateScripts;
 
   public function __construct(
     public PersistedUniquesList $persistedUniquesList,
@@ -20,7 +20,7 @@ class MySqlUpdateUniques
 
   public function setInicial(
   ): void {
-    $this->updateScripts = DataList::create();
+    $this->updateScripts = new Collection();
   }
 
   public function setAdd(
@@ -95,7 +95,7 @@ class MySqlUpdateUniques
   }
 
   public function updateScripts(
-  ): DataList {
+  ): Collection {
     return $this->updateScripts;
   }  
 }

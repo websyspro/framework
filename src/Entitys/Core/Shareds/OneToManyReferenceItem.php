@@ -50,7 +50,7 @@ class OneToManyReferenceItem
             )
         )
       )
-      ->forEach(
+      ->mapper(
         fn(string $primaryKeyName) => (
           $this->key = $primaryKeyName
         )

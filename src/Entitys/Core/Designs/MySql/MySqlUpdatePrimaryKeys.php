@@ -2,16 +2,16 @@
 
 namespace Websyspro\Core\Entitys\Core\Designs\MySql;
 
-use Websyspro\Commons\DataList;
-use Websyspro\Commons\Util;
 use Websyspro\Core\Entitys\Core\Persisteds\PersistedPrimaryKeysList;
+use Websyspro\Core\Entitys\Interfaces\IUpdateScript;
 use Websyspro\Core\Entitys\Core\StructureTable;
 use Websyspro\Core\Entitys\Enums\ScriptType;
-use Websyspro\Core\Entitys\Interfaces\IUpdateScript;
+use Websyspro\Core\Collection;
+use Websyspro\Core\Util;
 
 class MySqlUpdatePrimaryKeys
 {
-  public DataList $updateScripts;
+  public Collection $updateScripts;
 
   public function __construct(
     public PersistedPrimaryKeysList $persistedPrimaryKeysList,
@@ -20,9 +20,7 @@ class MySqlUpdatePrimaryKeys
 
   public function setStarteds(
   ): void {
-    $this->updateScripts = (
-      DataList::create()
-    );
+    $this->updateScripts = new Collection();
   }
 
   public function setModify(
@@ -76,7 +74,7 @@ class MySqlUpdatePrimaryKeys
   }
 
   public function updateScripts(
-  ): DataList {
+  ): Collection {
     return $this->updateScripts;
   }  
 }

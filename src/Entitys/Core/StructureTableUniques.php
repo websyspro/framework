@@ -1,6 +1,6 @@
 <?php
 
-namespace Websyspro\Core\Entity\Core;
+namespace Websyspro\Core\Entitys\Core;
 
 use Websyspro\Core\Entitys\Interfaces\IUniqueNameItems;
 use Websyspro\Core\Entitys\Interfaces\IProperties;

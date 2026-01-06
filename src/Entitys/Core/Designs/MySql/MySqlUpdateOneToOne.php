@@ -8,11 +8,11 @@ use Websyspro\Core\Entitys\Core\Shareds\OneToOneItem;
 use Websyspro\Core\Entitys\Interfaces\IUpdateScript;
 use Websyspro\Core\Entitys\Core\StructureTable;
 use Websyspro\Core\Entitys\Enums\ScriptType;
-use Websyspro\Commons\DataList;
+use Websyspro\Core\Collection;
 
 class MySqlUpdateOneToOne
 {
-  public DataList $updateScripts;
+  public Collection $updateScripts;
 
   public function __construct(
     public PersistedOneToOnesList $persistedOneToOnesList,
@@ -21,7 +21,7 @@ class MySqlUpdateOneToOne
 
   private function setInicial(
   ): void {
-    $this->updateScripts = DataList::Create();
+    $this->updateScripts = new Collection();
   }
 
   private function setAdd(
@@ -94,7 +94,7 @@ class MySqlUpdateOneToOne
   }
 
   public function updateScripts(
-  ): DataList {
+  ): Collection {
     return $this->updateScripts;
   }  
 }

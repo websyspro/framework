@@ -2,17 +2,17 @@
 
 namespace Websyspro\Core\Entitys\Core\Designs\MySql;
 
-use Websyspro\Commons\DataList;
 use Websyspro\Core\Entitys\Core\Persisteds\PersistedForeignKeysList;
+use Websyspro\Core\Entitys\Interfaces\IPersistedForeignKeys;
 use Websyspro\Core\Entitys\Core\Shareds\ForeignKeyItem;
+use Websyspro\Core\Entitys\Interfaces\IUpdateScript;
 use Websyspro\Core\Entitys\Core\StructureTable;
 use Websyspro\Core\Entitys\Enums\ScriptType;
-use Websyspro\Core\Entitys\Interfaces\IPersistedForeignKeys;
-use Websyspro\Core\Entitys\Interfaces\IUpdateScript;
+use Websyspro\Core\Collection;
 
 class MySqlUpdateForeignKeys
 {
-  public DataList $updateScripts;
+  public Collection $updateScripts;
 
   public function __construct(
     public PersistedForeignKeysList $persistedForeignKeysList,
@@ -21,7 +21,7 @@ class MySqlUpdateForeignKeys
 
   private function setInicial(
   ): void {
-    $this->updateScripts = DataList::Create();
+    $this->updateScripts = new Collection();
   }
 
   private function setAdd(
@@ -94,7 +94,7 @@ class MySqlUpdateForeignKeys
   }
 
   public function updateScripts(
-  ): DataList {
+  ): Collection {
     return $this->updateScripts;
   }  
 }

@@ -2,16 +2,16 @@
 
 namespace Websyspro\Core\Entitys\Core\Designs\MySql;
 
-use Websyspro\Commons\DataList;
 use Websyspro\Core\Entitys\Core\Persisteds\PersistedStatisticsList;
-use Websyspro\Core\Entitys\Core\StructureTable;
-use Websyspro\Core\Entitys\Enums\ScriptType;
 use Websyspro\Core\Entitys\Interfaces\IStatisticsNamesItem;
 use Websyspro\Core\Entitys\Interfaces\IUpdateScript;
+use Websyspro\Core\Entitys\Core\StructureTable;
+use Websyspro\Core\Entitys\Enums\ScriptType;
+use Websyspro\Core\Collection;
 
 class MySqlUpdateStatistics
 {
-  public DataList $updateScripts;
+  public Collection $updateScripts;
 
   public function __construct(
     public PersistedStatisticsList $persistedStatisticsList,
@@ -20,7 +20,7 @@ class MySqlUpdateStatistics
 
   public function setInicial(
   ): void {
-    $this->updateScripts = DataList::create();
+    $this->updateScripts = new Collection();
   }
 
   public function setAdd(
@@ -97,7 +97,7 @@ class MySqlUpdateStatistics
   }
 
   public function updateScripts(
-  ): DataList {
+  ): Collection {
     return $this->updateScripts;
   }  
 }

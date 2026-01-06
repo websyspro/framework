@@ -2,15 +2,15 @@
 
 namespace Websyspro\Core\Entitys\Core\Designs\MySql;
 
-use Websyspro\Core\Collection;
-use Websyspro\Core\Database\Connect;
-use Websyspro\Core\Entitys\Core\Persisteds\PersistedColumnsList;
 use Websyspro\Core\Entitys\Core\Persisteds\PersistedRequiredsList;
-use Websyspro\Core\Entitys\Core\StructureTable;
-use Websyspro\Core\Entitys\Enums\ScriptType;
-use Websyspro\Core\Entitys\Interfaces\IColumnType;
+use Websyspro\Core\Entitys\Core\Persisteds\PersistedColumnsList;
 use Websyspro\Core\Entitys\Interfaces\IPersistedColumn;
 use Websyspro\Core\Entitys\Interfaces\IUpdateScript;
+use Websyspro\Core\Entitys\Interfaces\IColumnType;
+use Websyspro\Core\Entitys\Core\StructureTable;
+use Websyspro\Core\Entitys\Enums\ScriptType;
+use Websyspro\Core\Database\Connect;
+use Websyspro\Core\Collection;
 
 class MySqlUpdateColumns
 {
@@ -54,7 +54,7 @@ class MySqlUpdateColumns
       );
 
       if($columnsAdd->exist() === true){
-        $columnsAdd->forEach(fn(IColumnType $columnType) => (
+        $columnsAdd->mapper(fn(IColumnType $columnType) => (
           $this->updateScripts->add(
             new IUpdateScript(
               "Alter Table {$this->structureTable->table} Add Column {$columnType->name} {$columnType->type} {$this->structureTable->requireds()->sql($columnType->name)} {$this->structureTable->columns()->before($columnType->name)}",
@@ -79,7 +79,7 @@ class MySqlUpdateColumns
       );
 
       if($columnsModify->exist()){
-        $columnsModify->forEach(fn(IColumnType $columnType) => (
+        $columnsModify->mapper(fn(IColumnType $columnType) => (
           $this->updateScripts->add(
             new IUpdateScript(
               "Alter Table {$this->structureTable->table} Modify Column {$columnType->name} {$columnType->type} {$this->structureTable->requireds()->sql($columnType->name)}",
@@ -101,12 +101,12 @@ class MySqlUpdateColumns
       );
 
       if($persistedColumns->exist() === true){
-        $persistedColumns->forEach(fn(IPersistedColumn $persistedColumn) => (
+        $persistedColumns->mapper(fn(IPersistedColumn $persistedColumn) => (
           $this->connect->query(
             "Select Count(*) as IsNotNull 
                From {$this->structureTable->table} 
               Where {$persistedColumn->name} Is Not Null"
-          )->forEach(
+          )->mapper(
             function(object $row) use($persistedColumn) {
               if((int)$row->IsNotNull === 0){
                 $this->updateScripts->add(
@@ -134,7 +134,7 @@ class MySqlUpdateColumns
   }
 
   public function updateScripts(
-  ): DataList {
+  ): Collection {
     return $this->updateScripts;
   }
 }

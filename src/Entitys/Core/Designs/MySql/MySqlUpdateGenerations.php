@@ -2,18 +2,18 @@
 
 namespace Websyspro\Core\Entitys\Core\Designs\MySql;
 
-use Websyspro\Commons\DataList;
-use Websyspro\Commons\Util;
 use Websyspro\Core\Entitys\Core\Persisteds\PersistedGenerationsList;
+use Websyspro\Core\Entitys\Interfaces\IPersistedGeneration;
+use Websyspro\Core\Entitys\Interfaces\IUpdateScript;
+use Websyspro\Core\Entitys\Interfaces\IProperties;
 use Websyspro\Core\Entitys\Core\StructureTable;
 use Websyspro\Core\Entitys\Enums\ScriptType;
-use Websyspro\Core\Entitys\Interfaces\IPersistedGeneration;
-use Websyspro\Core\Entitys\Interfaces\IProperties;
-use Websyspro\Core\Entitys\Interfaces\IUpdateScript;
+use Websyspro\Core\Collection;
+use Websyspro\Core\Util;
 
 class MySqlUpdateGenerations
 {
-  public DataList $updateScripts;
+  public Collection $updateScripts;
 
   public function __construct(
     public PersistedGenerationsList $persistedGenerationsList,
@@ -22,7 +22,7 @@ class MySqlUpdateGenerations
 
   public function setInicial(
   ): void {
-    $this->updateScripts = DataList::create();
+    $this->updateScripts = new Collection();
   }
 
   public function setAdd(
@@ -107,7 +107,7 @@ class MySqlUpdateGenerations
   }
 
   public function updateScripts(
-  ): DataList {
+  ): Collection {
     return $this->updateScripts;
   }  
 }
