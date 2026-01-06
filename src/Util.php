@@ -208,7 +208,22 @@ class Util
     return array_chunk(
       $iterable, $length
     );
-  }  
+  }
+
+  /**
+   * Repeats execution N times.
+   * Returning false from the callback stops the loop.
+   */  
+  public static function repeat(
+    int $times,
+    callable $fn
+  ): void {
+    for ($i = 0; $i < $times; $i++) {
+      if($fn() === false){
+        break;
+      }
+    }
+  }
 
   /**
    * Merges multiple arrays into one.

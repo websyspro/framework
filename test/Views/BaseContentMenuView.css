@@ -3,14 +3,14 @@
   background-color: white;
   box-sizing: border-box;
   flex-direction: column;
-  flex: 0 0 300px;
+  flex: 0 0 240px;
 }
 
 @media (max-width: 1280px) {
   .BaseContentMenuView {
     position: fixed;
     display: flex;
-    width: 300px;
+    width: 240px;
     bottom: 0px;
     left: 0px;
     top: 0px;
@@ -41,7 +41,7 @@
 }
 .BaseContentMenuView .main .menu-item {
   font-weight: 400;
-  padding: 16px 12px;
+  padding: 16px 16px;
 }
 .BaseContentMenuView .main .menu-item:hover {
   background-color: rgba(235,235,235,.8);
