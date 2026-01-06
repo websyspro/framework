@@ -24,33 +24,33 @@ class UserView extends Component
     ];
 
     $ufs = [
-      ["Acre", "Rio Branco", "900_000"],
-      ["Alagoas", "Maceió", "3_300_000"],
-      ["Amapá", "Macapá", "880_000"],
-      ["Amazonas", "Manaus", "4_200_000"],
-      ["Bahia", "Salvador", "14_900_000"],
-      ["Ceará", "Fortaleza", "9_200_000"],
-      ["Distrito Federal", "Brasília", "3_100_000"],
-      ["Espírito Santo", "Vitória", "4_100_000"],
-      ["Goiás", "Goiânia", "7_200_000"],
-      ["Maranhão", "São Luís", "7_100_000"],
-      ["Mato Grosso", "Cuiabá", "3_600_000"],
-      ["Mato Grosso do Sul", "Campo Grande", "2_800_000"],
-      ["Minas Gerais", "Belo Horizonte", "21_400_000"],
-      ["Pará", "Belém", "8_700_000"],
-      ["Paraíba", "João Pessoa", "4_000_000"],
-      ["Paraná", "Curitiba", "11_600_000"],
-      ["Pernambuco", "Recife", "9_600_000"],
-      ["Piauí", "Teresina", "3_300_000"],
-      ["Rio de Janeiro", "Rio de Janeiro", "17_300_000"],
-      ["Rio Grande do Norte", "Natal", "3_500_000"],
-      ["Rio Grande do Sul", "Porto Alegre", "11_300_000"],
-      ["Rondônia", "Porto Velho", "1_800_000"],
-      ["Roraima", "Boa Vista", "650_000"],
-      ["Santa Catarina", "Florianópolis", "7_700_000"],
-      ["São Paulo", "São Paulo", "46_000_000"],
-      ["Sergipe", "Aracaju", "2_300_000"],
-      ["Tocantins", "Palmas", "1_600_000"],
+      ["Acre", "Rio Branco", "900000"],
+      ["Alagoas", "Maceió", "3300000"],
+      ["Amapá", "Macapá", "880000"],
+      ["Amazonas", "Manaus", "4200000"],
+      ["Bahia", "Salvador", "14900000"],
+      ["Ceará", "Fortaleza", "9200000"],
+      ["Distrito Federal", "Brasília", "3100000"],
+      ["Espírito Santo", "Vitória", "4100000"],
+      ["Goiás", "Goiânia", "7200000"],
+      ["Maranhão", "São Luís", "7100000"],
+      ["Mato Grosso", "Cuiabá", "3600000"],
+      ["Mato Grosso do Sul", "Campo Grande", "2800000"],
+      ["Minas Gerais", "Belo Horizonte", "21400000"],
+      ["Pará", "Belém", "8700000"],
+      ["Paraíba", "João Pessoa", "4000000"],
+      ["Paraná", "Curitiba", "11600000"],
+      ["Pernambuco", "Recife", "9600000"],
+      ["Piauí", "Teresina", "3300000"],
+      ["Rio de Janeiro", "Rio de Janeiro", "17300000"],
+      ["Rio Grande do Norte", "Natal", "3500000"],
+      ["Rio Grande do Sul", "Porto Alegre", "11300000"],
+      ["Rondônia", "Porto Velho", "1800000"],
+      ["Roraima", "Boa Vista", "650000"],
+      ["Santa Catarina", "Florianópolis", "7700000"],
+      ["São Paulo", "São Paulo", "46000000"],
+      ["Sergipe", "Aracaju", "2300000"],
+      ["Tocantins", "Palmas", "1600000"],
     ];
     
     return new static( 
@@ -72,7 +72,9 @@ class UserView extends Component
               Dom::trow()->add( [
                 Dom::td()->css( $cssColumn )->add([ $uf[0] ]),
                 Dom::td()->css( $cssColumn )->add([ $uf[1] ]),
-                Dom::td()->css( array_merge( $cssColumn, [ "text-align" => "right" ]) )->add([ $uf[2] ])
+                Dom::td()->css( array_merge( $cssColumn, [ "text-align" => "right" ]) )->add([
+                  number_format($uf[2], 2, ',', '.')
+                ])
              ])
             ))
           )
