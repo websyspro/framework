@@ -1,18 +1,18 @@
 <?php
 
-namespace Websyspro\Entity\Core\Bases;
+namespace Websyspro\Core\Entitys\Core\Bases;
 
-use Websyspro\Commons\Mapper;
-use Websyspro\Entity\Core\Commons\Now;
-use Websyspro\Entity\Decorations\Columns\Datetime;
-use Websyspro\Entity\Decorations\Columns\Flag;
-use Websyspro\Entity\Decorations\Columns\Number;
-use Websyspro\Entity\Decorations\Constraints\PrimaryKey;
-use Websyspro\Entity\Decorations\Events\Delete;
-use Websyspro\Entity\Decorations\Events\Insert;
-use Websyspro\Entity\Decorations\Events\Update;
-use Websyspro\Entity\Decorations\Generations\AutoIncrement;
-use Websyspro\Entity\Decorations\Requireds\NotNull;
+use Websyspro\Core\Util;
+use Websyspro\Core\Entitys\Core\Commons\Now;
+use Websyspro\Core\Entitys\Decorations\Columns\Datetime;
+use Websyspro\Core\Entitys\Decorations\Columns\Flag;
+use Websyspro\Core\Entitys\Decorations\Columns\Number;
+use Websyspro\Core\Entitys\Decorations\Constraints\PrimaryKey;
+use Websyspro\Core\Entitys\Decorations\Events\Delete;
+use Websyspro\Core\Entitys\Decorations\Events\Insert;
+use Websyspro\Core\Entitys\Decorations\Events\Update;
+use Websyspro\Core\Entitys\Decorations\Generations\AutoIncrement;
+use Websyspro\Core\Entitys\Decorations\Requireds\NotNull;
 
 class BaseEntity
 {
@@ -76,6 +76,9 @@ class BaseEntity
   public function mapper(
     string $toEntity
   ): mixed {
-    return Mapper::to($toEntity)->from($this);
+    return Util::hydrateObject(
+      $this, 
+      $toEntity
+    );
   }
 }

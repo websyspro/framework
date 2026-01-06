@@ -1,12 +1,12 @@
 <?php
 
-namespace Websyspro\Entity\Core;
+namespace Websyspro\Core\Entity\Core;
 
-use Websyspro\Commons\DataList;
-use Websyspro\Entity\Enums\AttributeType;
-use Websyspro\Entity\Interfaces\IProperties;
-use Websyspro\Entity\Interfaces\IUniqueItem;
-use Websyspro\Entity\Interfaces\IUniqueNameItems;
+use Websyspro\Core\Commons\DataList;
+use Websyspro\Core\Entity\Enums\AttributeType;
+use Websyspro\Core\Entity\Interfaces\IProperties;
+use Websyspro\Core\Entity\Interfaces\IUniqueItem;
+use Websyspro\Core\Entity\Interfaces\IUniqueNameItems;
 
 class StructureTableUniques
 extends StructureTableAbstract

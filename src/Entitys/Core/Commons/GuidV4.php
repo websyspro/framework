@@ -1,8 +1,8 @@
 <?php
 
-namespace Websyspro\Entity\Core\Commons;
+namespace Websyspro\Core\Entitys\Core\Commons;
 
-use Websyspro\Commons\Util;
+use Websyspro\Core\Util;
 
 class GuidV4
 {

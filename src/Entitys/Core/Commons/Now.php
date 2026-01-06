@@ -1,6 +1,6 @@
 <?php
 
-namespace Websyspro\Entity\Core\Commons;
+namespace Websyspro\Core\Entitys\Core\Commons;
 
 class Now
 {
